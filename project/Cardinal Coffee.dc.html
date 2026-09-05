@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;background:#F4C0D6;color:#4A1F0D;font-family:'DM Mono',ui-monospace,Menlo,monospace;-webkit-font-smoothing:antialiased}
+a{color:#4A1F0D;text-decoration:none}a:hover{color:#9F4920}
+*{box-sizing:border-box}
+@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.rail::-webkit-scrollbar{height:8px}.rail::-webkit-scrollbar-track{background:transparent}.rail::-webkit-scrollbar-thumb{background:#4A1F0D}
+</style>
+</helmet>
+
+<div style="min-height:100vh;display:flex;flex-direction:column">
+
+<div style="background:#9F4920;color:#FFFDF2;font-size:11px;letter-spacing:.28em;text-transform:uppercase;text-align:center;padding:9px 16px">Orders $60 or more ship free</div>
+
+<header style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 20px;border-bottom:2px solid #4A1F0D;position:sticky;top:0;background:#F4C0D6;z-index:20">
+  <a href="#top" style="font-size:15px;letter-spacing:.3em;text-transform:uppercase;font-weight:500">Cardinal</a>
+  <nav style="display:flex;gap:20px;font-size:11px;letter-spacing:.24em;text-transform:uppercase;align-items:center;flex-wrap:wrap;justify-content:flex-end">
+    <a href="#shop">Shop</a><a href="#about">About</a><a href="#world">World</a>
+    <button onClick="{{ openNews }}" style="border:0;background:transparent;font:inherit;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:#4A1F0D;cursor:pointer;padding:0">Newsletter</button>
+    <span style="display:flex;gap:7px;align-items:center">Cart <span style="background:#9F4920;color:#FFFDF2;padding:2px 8px;font-size:10px">{{ cartCount }}</span></span>
+  </nav>
+</header>
+
+<section id="top" data-screen-label="Hero" style="padding:clamp(48px,9vw,120px) 20px clamp(40px,7vw,88px);border-bottom:2px solid #4A1F0D">
+  <h1 style="margin:0;font-size:clamp(34px,7.2vw,100px);line-height:1.03;letter-spacing:-.045em;text-transform:uppercase;font-weight:500;color:#9F4920;max-width:16ch">Sensible coffees, roasted in Portland</h1>
+  <p style="margin:26px 0 0;font-size:clamp(13px,1.3vw,17px);line-height:1.55;max-width:48ch">Small lots, bought from farms we can name, roasted every Monday and out the door by Wednesday. Whole bean, one grind setting, no pods.</p>
+</section>
+
+<section id="shop" data-screen-label="Shop" style="display:grid;grid-template-columns:44px minmax(0,1fr);border-bottom:2px solid #4A1F0D;background:#D0EAF4">
+  <div style="border-right:2px solid #4A1F0D;display:flex;justify-content:center;padding:26px 0"><span style="writing-mode:vertical-rl;font-size:10px;letter-spacing:.7em;text-transform:uppercase">In our shop</span></div>
+  <div class="rail" style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory">
+    <sc-for list="{{ products }}" as="p" hint-placeholder-count="4">
+      <article style="flex:0 0 min(330px,86vw);scroll-snap-align:start;border-right:2px solid #4A1F0D;padding:22px 20px 26px;display:flex;flex-direction:column;gap:14px">
+        <div style="position:relative;aspect-ratio:4/5;border:2px solid #4A1F0D;background:{{ p.swatch }};display:flex;align-items:center;justify-content:center;text-align:center;font-size:10px;letter-spacing:.16em;text-transform:uppercase;padding:12px">bag shot —<br>{{ p.name }}
+          <sc-if value="{{ p.tag }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:-2px;left:-2px;background:#E23F3D;color:#FFFDF2;font-size:10px;letter-spacing:.2em;padding:4px 9px">{{ p.tag }}</span></sc-if>
+        </div>
+        <h3 style="margin:0;font-size:13px;letter-spacing:.2em;text-transform:uppercase;font-weight:500">{{ p.name }}</h3>
+        <div style="display:flex;flex-direction:column;gap:5px">
+          <sc-for list="{{ p.sizes }}" as="s" hint-placeholder-count="3">
+            <button onClick="{{ s.select }}" style="display:flex;justify-content:space-between;padding:7px 10px;border:2px solid #4A1F0D;background:{{ s.bg }};color:{{ s.fg }};font:inherit;font-size:11px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer"><span>{{ s.label }}</span><span>{{ s.price }}</span></button>
+          </sc-for>
+        </div>
+        <div style="display:flex;gap:8px;align-items:stretch">
+          <div style="display:flex;border:2px solid #4A1F0D">
+            <button onClick="{{ p.dec }}" style="border:0;background:transparent;font:inherit;font-size:14px;width:30px;color:#4A1F0D;cursor:pointer">–</button>
+            <span style="width:30px;display:flex;align-items:center;justify-content:center;font-size:12px;border-left:2px solid #4A1F0D;border-right:2px solid #4A1F0D">{{ p.qty }}</span>
+            <button onClick="{{ p.inc }}" style="border:0;background:transparent;font:inherit;font-size:14px;width:30px;color:#4A1F0D;cursor:pointer">+</button>
+          </div>
+          <button onClick="{{ p.add }}" style="flex:1;border:0;background:#9F4920;color:#FFFDF2;font:inherit;font-size:11px;letter-spacing:.24em;text-transform:uppercase;cursor:pointer;padding:10px" style-hover="background:#E23F3D">{{ p.cta }}</button>
+        </div>
+        <p style="margin:0;font-size:12px;line-height:1.6">{{ p.blurb }}</p>
+      </article>
+    </sc-for>
+  </div>
+</section>
+
+<section id="about" data-screen-label="About" style="display:grid;grid-template-columns:44px minmax(0,1fr);border-bottom:2px solid #4A1F0D;background:#F9F18F">
+  <div style="border-right:2px solid #4A1F0D;display:flex;justify-content:center;padding:26px 0"><span style="writing-mode:vertical-rl;font-size:10px;letter-spacing:.7em;text-transform:uppercase">In our minds</span></div>
+  <div style="padding:clamp(32px,5vw,72px) 20px;display:grid;gap:40px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));align-items:start">
+    <p style="margin:0;font-size:clamp(15px,1.7vw,23px);line-height:1.45;text-wrap:pretty">A cardinal is a small bird with a loud color, which is roughly our idea of a good cup. We buy from farms we can name, roast lighter than most, and ship the week it comes off the drum. Every bag passed through a dozen pairs of hands before yours. We try to be worth their trouble.</p>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+      <sc-for list="{{ gallery }}" as="g" hint-placeholder-count="6">
+        <div style="aspect-ratio:1;border:2px solid #4A1F0D;background:#F4C0D6;display:flex;align-items:center;justify-content:center;font-size:9px;letter-spacing:.14em;text-transform:uppercase;text-align:center;padding:6px">{{ g }}</div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<section id="world" data-screen-label="Reviews" style="display:grid;grid-template-columns:44px minmax(0,1fr);border-bottom:2px solid #4A1F0D;background:#A697C6">
+  <div style="border-right:2px solid #4A1F0D;display:flex;justify-content:center;padding:26px 0"><span style="writing-mode:vertical-rl;font-size:10px;letter-spacing:.7em;text-transform:uppercase">In our world</span></div>
+  <div class="rail" style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory">
+    <sc-for list="{{ feed }}" as="f" hint-placeholder-count="5">
+      <div style="flex:0 0 min(280px,78vw);scroll-snap-align:start;border-right:2px solid #4A1F0D;padding:24px 20px;display:flex;flex-direction:column;gap:12px;background:{{ f.bg }}">
+        <sc-if value="{{ f.isReview }}" hint-placeholder-val="{{ true }}">
+          <span style="font-size:13px;letter-spacing:.24em">★★★★★</span>
+          <p style="margin:0;font-size:13px;line-height:1.6">{{ f.text }}</p>
+          <cite style="font-style:normal;font-size:10px;letter-spacing:.2em;text-transform:uppercase;margin-top:auto">{{ f.who }}</cite>
+        </sc-if>
+        <sc-if value="{{ f.isPhoto }}" hint-placeholder-val="{{ false }}">
+          <div style="aspect-ratio:3/4;border:2px solid #4A1F0D;display:flex;align-items:center;justify-content:center;font-size:9px;letter-spacing:.14em;text-transform:uppercase;text-align:center;padding:8px">{{ f.text }}</div>
+        </sc-if>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<section data-screen-label="Seed to cup" style="border-bottom:2px solid #4A1F0D;overflow:hidden;padding:20px 0;background:#4A1F0D;color:#FFFDF2">
+  <div style="display:flex;width:max-content">{{ marquee }}</div>
+</section>
+
+<footer data-screen-label="Footer" style="padding:clamp(32px,5vw,64px) 20px 28px;display:grid;gap:28px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));font-size:12px;line-height:1.7">
+  <div><div style="font-size:10px;letter-spacing:.3em;text-transform:uppercase;margin-bottom:10px;color:#4A1F0D">Location</div>41 Commercial Street<br>Portland, Maine 04101<br>United States</div>
+  <div><div style="font-size:10px;letter-spacing:.3em;text-transform:uppercase;margin-bottom:10px;color:#4A1F0D">Contact</div>General:<br><a href="#">hello@cardinal.coffee</a><br>Wholesale:<br><a href="#">wholesale@cardinal.coffee</a></div>
+  <div><div style="font-size:10px;letter-spacing:.3em;text-transform:uppercase;margin-bottom:10px;color:#4A1F0D">Social</div><a href="#">@cardinal.coffee</a></div>
+  <div><div style="font-size:10px;letter-spacing:.3em;text-transform:uppercase;margin-bottom:10px;color:#4A1F0D">About</div><a href="#about">Who we are and what we do</a><br><a href="#">Wholesale</a><br><a href="#">My orders</a></div>
+  <div><div style="font-size:10px;letter-spacing:.3em;text-transform:uppercase;margin-bottom:10px;color:#4A1F0D">Copyright</div>© 2026<br>Cardinal Coffee, LLC<br><a href="#">Terms &amp; privacy</a></div>
+</footer>
+
+<sc-if value="{{ newsOpen }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;inset:0;background:rgba(74,31,13,.55);z-index:40;display:flex;align-items:center;justify-content:center;padding:20px">
+    <div style="background:#F9F18F;border:2px solid #4A1F0D;max-width:440px;width:100%;padding:28px 24px;display:flex;flex-direction:column;gap:16px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+        <h2 style="margin:0;font-size:13px;letter-spacing:.5em;text-transform:uppercase;font-weight:500">Newsletter</h2>
+        <button onClick="{{ closeNews }}" style="border:0;background:transparent;font:inherit;font-size:10px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;color:#4A1F0D">Close</button>
+      </div>
+      <p style="margin:0;font-size:13px;line-height:1.6">Roast-day alerts, new lots, and 15% off your first bag.</p>
+      <form onSubmit="{{ subscribe }}" style="display:flex;border:2px solid #4A1F0D">
+        <input value="{{ email }}" onChange="{{ setEmail }}" type="email" placeholder="you@somewhere.com" style="flex:1;min-width:0;border:0;background:#FFFDF2;padding:12px 14px;font:inherit;font-size:13px;color:#4A1F0D;outline:none">
+        <button type="submit" style="border:0;border-left:2px solid #4A1F0D;background:#9F4920;color:#FFFDF2;padding:12px 18px;font:inherit;font-size:11px;letter-spacing:.24em;text-transform:uppercase;cursor:pointer">{{ subLabel }}</button>
+      </form>
+    </div>
+  </div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900}}">
+class Component extends DCLogic {
+  state = { sel:{}, qty:{}, cart:0, email:'', subbed:false, newsOpen:false };
+  static P = [
+    { id:'kiamabara', name:'Kenya Kiamabara', tag:'New', swatch:'#E23F3D', sizes:[['12 oz',29],['2 lb',60],['5 lb',120]], blurb:'Blackcurrant, tomato leaf, and a long grapefruit finish. A washed SL28 that tastes like it was aimed at someone.' },
+    { id:'guji', name:'Ethiopia Guji', tag:'New', swatch:'#B278B1', sizes:[['12 oz',28],['2 lb',58],['5 lb',115]], blurb:'Blueberry jam and jasmine. Dried slowly on raised beds, roasted fast enough to keep the fruit loud.' },
+    { id:'huila', name:'Colombia Huila', tag:null, swatch:'#928D3B', sizes:[['12 oz',24],['2 lb',55],['5 lb',110]], blurb:'Red apple, caramel, cocoa. The everyday coffee that never quite behaves like one.' },
+    { id:'first-light', name:'First Light', tag:null, swatch:'#F28A49', sizes:[['12 oz',22],['2 lb',50],['5 lb',105]], blurb:'Our rotating breakfast lot. Milk chocolate and stone fruit, built for the slow Saturday.' },
+    { id:'undertow', name:'Undertow Espresso', tag:null, swatch:'#788C8C', sizes:[['12 oz',22],['2 lb',50],['5 lb',105]], blurb:'Brownie, roasted almond, and enough body to hold a cappuccino together.' },
+    { id:'trio', name:'The Starter Trio', tag:'Easy', swatch:'#D0EAF4', sizes:[['3 × 12 oz',61]], blurb:'Huila, First Light, and Undertow bundled. The right place to begin, at nine dollars off.' },
+  ];
+  bump(id, d) { this.setState(s => ({ qty: { ...s.qty, [id]: Math.max(1, (s.qty[id] ?? 1) + d) } })); }
+  renderVals() {
+    const { sel, qty, cart, email, subbed, newsOpen } = this.state;
+    const products = Component.P.map(p => {
+      const cur = sel[p.id] ?? 0, q = qty[p.id] ?? 1;
+      return { ...p, qty:q, cta:'Add',
+        inc:()=>this.bump(p.id,1), dec:()=>this.bump(p.id,-1),
+        add:()=>this.setState(s=>({cart:s.cart+q})),
+        sizes:p.sizes.map(([label,price],i)=>({label, price:'$'+price,
+          bg: i===cur ? '#4A1F0D' : 'transparent', fg: i===cur ? '#FFFDF2' : '#4A1F0D',
+          select:()=>this.setState(s=>({sel:{...s.sel,[p.id]:i}})) })) };
+    });
+    const steps = ['A seed goes in the ground, with just the right amount of shade','It is tended for years before it gives anything back','Flowers turn to fruit','Ripe cherries are picked by hand, one pass at a time','The seeds are fermented and freed from the fruit','Green coffee is dried, milled, and shipped to us','We roast it until it tastes like where it came from','You brew it, and the whole thing was worth it'];
+    const item = (t,k) => React.createElement('div',{key:k,style:{display:'flex',alignItems:'center',gap:14,padding:'0 22px',fontSize:12,letterSpacing:'.06em',whiteSpace:'nowrap'}},
+      React.createElement('span',{style:{width:44,height:44,border:'2px solid #FFFDF2',borderRadius:'50%',flex:'none',fontSize:8,letterSpacing:'.12em',textTransform:'uppercase',display:'flex',alignItems:'center',justifyContent:'center'}},'illo'),
+      React.createElement('span',null,t));
+    return { products, cartCount:cart, email, subbed, newsOpen,
+      marquee: React.createElement('div',{style:{display:'flex',animation:'mq 70s linear infinite'}},[...steps,...steps].map(item)),
+      subLabel: subbed ? 'Sent' : 'Send',
+      openNews:()=>this.setState({newsOpen:true}), closeNews:()=>this.setState({newsOpen:false}),
+      setEmail:e=>this.setState({email:e.target.value}),
+      subscribe:e=>{e.preventDefault(); if(email) this.setState({subbed:true});},
+      gallery:['roastery','farm visit','cupping table','roast gif','café cup','the crew'],
+      feed:[
+        {isReview:true,isPhoto:false,bg:'#F4C0D6',text:'The Guji tasted like actual blueberries. I did not believe the bag until the second cup.',who:'Marta, Brooklyn'},
+        {isReview:false,isPhoto:true,bg:'#D0EAF4',text:'customer photo'},
+        {isReview:true,isPhoto:false,bg:'#F9F18F',text:'Roasted Monday, on my counter Wednesday. Freshest coffee I have had outside a café.',who:'Dev, Austin'},
+        {isReview:false,isPhoto:true,bg:'#F28A49',text:'roastery photo'},
+        {isReview:true,isPhoto:false,bg:'#FFFDF2',text:'First Light is the only thing my household has ever agreed on.',who:'Sam, Portland'},
+        {isReview:false,isPhoto:true,bg:'#928D3B',text:'origin photo'},
+        {isReview:true,isPhoto:false,bg:'#F4C0D6',text:'Undertow pulls a clean shot on a cheap machine, which is a small miracle.',who:'Lena, Chicago'},
+      ] };
+  }
+}
+</script>
+</body>
+</html>
