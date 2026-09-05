@@ -1,0 +1,74 @@
+@import "tailwindcss";
+
+/* `static` so the font variables are emitted even though they are only
+   referenced from plain CSS below, not from a utility class. */
+@theme static {
+  /* Dizzy Gals palette — from the brand board */
+  --color-dizzy-orange: #ff6a00;
+  --color-cream: #f2efe6;
+  --color-strawberry: #ff8ba7;
+  --color-lemon: #ffd34d;
+  --color-burgundy: #57151f;
+
+  --font-display: var(--font-baloo), "Baloo 2", system-ui, sans-serif;
+  --font-body: var(--font-poppins), Helvetica, Arial, sans-serif;
+
+  --animate-marquee: marquee 60s linear infinite;
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+}
+
+/* Base layer, so `text-*` utilities still win over the default link colour. */
+@layer base {
+  html,
+  body {
+    margin: 0;
+    background: var(--color-cream);
+    color: var(--color-burgundy);
+    font-family: var(--font-body);
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a {
+    color: var(--color-burgundy);
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: var(--color-dizzy-orange);
+  }
+}
+
+@layer components {
+  /* Horizontal snap rails keep a visible, on-brand scrollbar. */
+  .rail {
+    scrollbar-color: var(--color-burgundy) transparent;
+  }
+
+  .rail::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  .rail::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .rail::-webkit-scrollbar-thumb {
+    background: var(--color-burgundy);
+    border-radius: 4px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none;
+  }
+}
