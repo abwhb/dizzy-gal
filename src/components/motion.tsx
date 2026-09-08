@@ -10,12 +10,14 @@ gsap.registerPlugin(useGSAP, ScrollTrigger, SplitText);
 /**
  * Page motion, driven by data attributes so sections stay plain markup:
  *
- *   data-hero-root            the hero section (parallax trigger)
+ *   data-hero-root            the hero section (parallax + pointer trigger)
  *   data-hero-content         the block that parallaxes away on scroll
- *   data-hero="pill|title|tagline|cta"   pieces of the intro timeline
+ *   data-hero="pill|title|tagline|cta|zzz|doodle|badge"
+ *                             pieces of the intro timeline
+ *   data-parallax="0.5"       follows the pointer, scaled by depth
  *   data-reveal[="pop"|"slide"]          scroll-in; siblings that enter
  *                                        together are staggered automatically
- *   data-float                gentle idle bob (the jar)
+ *   data-float                gentle idle bob
  *
  * Elements carrying data-hero / data-reveal start hidden via CSS once
  * <html class="js"> is set (layout.tsx), so nothing flashes before this runs
@@ -39,11 +41,11 @@ export function Motion() {
     // Split the lockup only once the display face is in, so glyphs don't
     // swap mid-flight. Work after the await is wrapped in contextSafe so it
     // is still reverted on unmount (and on Strict Mode's double-run).
-    let cancelled = false;
+    const controller = new AbortController();
     const run = contextSafe!(() => {
-      if (cancelled) return;
+      if (controller.signal.aborted) return;
       try {
-        setupHero();
+        setupHero(controller.signal);
       } catch (error) {
         console.error("motion: hero setup failed, showing everything", error);
         gsap.set("[data-hero]", { autoAlpha: 1 });
@@ -51,22 +53,24 @@ export function Motion() {
     });
     Promise.race([document.fonts.ready, new Promise((r) => setTimeout(r, 1500))]).then(run);
 
-    return () => {
-      cancelled = true;
-    };
+    return () => controller.abort();
   });
 
   return null;
 }
 
-function setupHero() {
+function setupHero(signal: AbortSignal) {
   const root = document.querySelector<HTMLElement>("[data-hero-root]");
   if (!root) return;
 
-  const pills = gsap.utils.toArray<HTMLElement>('[data-hero="pill"]', root);
+  const q = (sel: string) => gsap.utils.toArray<HTMLElement>(sel, root);
+  const pills = q('[data-hero="pill"]');
   const title = root.querySelector<HTMLElement>('[data-hero="title"]');
   const tagline = root.querySelector<HTMLElement>('[data-hero="tagline"]');
   const cta = root.querySelector<HTMLElement>('[data-hero="cta"]');
+  const zzz = root.querySelector<HTMLElement>('[data-hero="zzz"]');
+  const doodles = q('[data-hero="doodle"]');
+  const badge = root.querySelector<HTMLElement>('[data-hero="badge"]');
 
   // Lift the CSS pre-hide, then animate *from* hidden in the same tick.
   gsap.set("[data-hero]", { autoAlpha: 1 });
@@ -96,12 +100,43 @@ function setupHero() {
     );
   }
 
+  if (zzz) {
+    tl.from(
+      zzz,
+      { autoAlpha: 0, scale: 0.4, rotation: -40, duration: 0.6, ease: "back.out(2.2)" },
+      "-=0.35",
+    );
+  }
+
   if (words.length) {
-    tl.from(words, { y: 14, autoAlpha: 0, duration: 0.5, stagger: 0.045 }, "-=0.45");
+    tl.from(words, { y: 14, autoAlpha: 0, duration: 0.5, stagger: 0.045 }, "-=0.4");
   }
 
   if (cta) {
     tl.from(cta, { y: 16, autoAlpha: 0, scale: 0.9, duration: 0.5 }, "-=0.3");
+  }
+
+  if (doodles.length) {
+    tl.from(
+      doodles,
+      {
+        autoAlpha: 0,
+        scale: 0.3,
+        rotation: () => gsap.utils.random(-50, 50),
+        duration: 0.7,
+        ease: "back.out(1.8)",
+        stagger: { each: 0.07, from: "random" },
+      },
+      "-=0.6",
+    );
+  }
+
+  if (badge) {
+    tl.from(
+      badge,
+      { autoAlpha: 0, scale: 0, rotation: -120, duration: 0.8, ease: "back.out(1.6)" },
+      "-=0.5",
+    );
   }
 
   // The "!" keeps bobbing — the one bit of the lockup that never settles.
@@ -119,6 +154,23 @@ function setupHero() {
     });
   }
 
+  // Letters wobble when the pointer runs over them (not the bobbing "!").
+  chars.slice(0, -1).forEach((char) => {
+    char.addEventListener(
+      "pointerenter",
+      () => {
+        if (gsap.isTweening(char)) return;
+        gsap
+          .timeline()
+          .to(char, { rotation: gsap.utils.random(-14, 14), y: -8, duration: 0.14 })
+          .to(char, { rotation: 0, y: 0, duration: 0.7, ease: "elastic.out(1,.35)" });
+      },
+      { signal },
+    );
+  });
+
+  setupParallax(root, signal);
+
   // Lockup drifts up and fades as the hero scrolls away. This targets the
   // content wrapper, not the pieces above: a scrubbed tween records its
   // start values on first render, and the pieces are mid-entrance then.
@@ -131,6 +183,41 @@ function setupHero() {
       scrollTrigger: { trigger: root, start: "top top", end: "80% top", scrub: true },
     });
   }
+}
+
+/** Doodles drift with the pointer, deeper ones further. Pointer devices only. */
+function setupParallax(root: HTMLElement, signal: AbortSignal) {
+  if (window.matchMedia("(hover: none)").matches) return;
+  const items = gsap.utils.toArray<HTMLElement>("[data-parallax]", root).map((el) => ({
+    x: gsap.quickTo(el, "x", { duration: 0.9, ease: "power3" }),
+    y: gsap.quickTo(el, "y", { duration: 0.9, ease: "power3" }),
+    depth: Number(el.dataset.parallax) || 0.4,
+  }));
+  if (!items.length) return;
+
+  root.addEventListener(
+    "pointermove",
+    (event) => {
+      const r = root.getBoundingClientRect();
+      const nx = (event.clientX - r.left) / r.width - 0.5;
+      const ny = (event.clientY - r.top) / r.height - 0.5;
+      for (const item of items) {
+        item.x(nx * 90 * item.depth);
+        item.y(ny * 70 * item.depth);
+      }
+    },
+    { signal, passive: true },
+  );
+  root.addEventListener(
+    "pointerleave",
+    () => {
+      for (const item of items) {
+        item.x(0);
+        item.y(0);
+      }
+    },
+    { signal },
+  );
 }
 
 type Variant = "default" | "pop" | "slide";
@@ -197,12 +284,12 @@ function setupReveals() {
 function setupIdle() {
   gsap.utils.toArray<HTMLElement>("[data-float]").forEach((el, i) => {
     gsap.to(el, {
-      y: -8,
-      duration: 2.2,
+      y: () => gsap.utils.random(-6, -11),
+      duration: () => gsap.utils.random(1.8, 2.8),
       yoyo: true,
       repeat: -1,
       ease: "sine.inOut",
-      delay: i * 0.3,
+      delay: i * 0.23,
     });
   });
 }
