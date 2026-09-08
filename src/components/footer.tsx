@@ -1,4 +1,4 @@
-import { agency, commonsPage, footer, photoCredits } from "@/lib/content";
+import { agency, footer, photoCredits } from "@/lib/content";
 
 import { Mark } from "./ui";
 
@@ -64,8 +64,8 @@ export function Footer() {
         </summary>
         <ul className="grid gap-x-8 gap-y-1.5 pb-5 sm:grid-cols-2 lg:grid-cols-3">
           {photoCredits.map((credit) => (
-            <li key={credit.file}>
-              <a href={commonsPage(credit)} target="_blank" rel="noreferrer" className="hover:text-amber">
+            <li key={credit.src}>
+              <a href={credit.page} target="_blank" rel="noreferrer" className="hover:text-amber">
                 {credit.title}
               </a>
               , {credit.author} ·{" "}

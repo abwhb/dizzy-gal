@@ -13,110 +13,121 @@
 /* ------------------------------------------------------------------ */
 
 export type Credit = {
-  /** Exact Wikimedia Commons file name. */
-  file: string;
+  /** Path under `public/`, or a Commons URL while the local copy is pending. */
+  src: string;
   /** What the photo shows, for alt text and the credits list. */
   title: string;
   author: string;
   license: string;
   licenseUrl: string;
+  /** The Wikimedia Commons file page the photo was taken from. */
+  page: string;
 };
 
 /**
- * Freely licensed photographs from Wikimedia Commons, loaded directly by the
- * visitor's browser. Each entry's licence requires attribution, which the
- * footer renders from this list. Replace any entry with a file in `public/`
- * (set `src` on the matching content field) when the agency supplies its own
- * photography.
+ * Freely licensed photographs from Wikimedia Commons, downloaded, cropped to
+ * each slot's aspect ratio and stored in `public/photos/`. Every licence
+ * requires attribution, which the footer renders from this list. Replace any
+ * entry with the agency's own photo by swapping the file and, if the credit
+ * no longer applies, removing the entry's author and licence.
  */
 export const photos = {
-  haramPanorama: {
-    file: "Masjid al-Haram panorama.JPG",
-    title: "Masjid al-Haram, La Mecque",
-    author: "Bluemangoa2z",
-    license: "CC BY 3.0",
-    licenseUrl: "https://creativecommons.org/licenses/by/3.0/",
+  hero: {
+    src: "/photos/hero.jpg",
+    title: "Tawaf autour de la Kaaba pendant le Hajj",
+    author: "Adli Wahid",
+    license: "CC BY-SA 4.0",
+    licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
+    page: "https://commons.wikimedia.org/wiki/File:The_Kaaba_during_Hajj_-_edited.jpg",
   },
-  supplicatingPilgrim: {
-    file: "Supplicating Pilgrim at Masjid Al Haram. Mecca, Saudi Arabia.jpg",
-    title: "Pèlerin en prière au Masjid al-Haram",
-    author: "Ali Mansuri",
-    license: "CC BY-SA 2.5",
-    licenseUrl: "https://creativecommons.org/licenses/by-sa/2.5/",
+  omra: {
+    src: "/photos/cat-omra.jpg",
+    title: "La Kaaba, Masjid al-Haram",
+    author: "Richard Mortel",
+    license: "CC BY 2.0",
+    licenseUrl: "https://creativecommons.org/licenses/by/2.0/",
+    page: "https://commons.wikimedia.org/wiki/File:The_Ka%27ba,_Great_Mosque_of_Mecca,_Saudi_Arabia_(4).jpg",
   },
-  arafat: {
-    file: "Pilgrims cover Arafat's roads, plains and mountain - Flickr - Al Jazeera English.jpg",
-    title: "Pèlerins au mont Arafat",
-    author: "Omar Chatriwala / Al Jazeera English",
-    license: "CC BY-SA 2.0",
-    licenseUrl: "https://creativecommons.org/licenses/by-sa/2.0/",
+  hajj: {
+    src: "/photos/cat-hajj.jpg",
+    title: "Pèlerins au mont Arafat (Jabal ar-Rahmah)",
+    author: "Fahad Faisal",
+    license: "CC BY-SA 4.0",
+    licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
+    page: "https://commons.wikimedia.org/wiki/File:Jabal-e-Rehmat_(Mount_of_Mercy_Mount_Arafat).jpg",
   },
-  fes: {
-    file: "Medina of Fes, Marocco.jpg",
-    title: "Médina de Fès",
+  voyages: {
+    src: "/photos/cat-voyages.jpg",
+    title: "Lanternes du souk Haddadine, Marrakech",
     author: "Petar Milošević",
     license: "CC BY-SA 4.0",
     licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
+    page: "https://commons.wikimedia.org/wiki/File:Oriental_hanging_lanterns._Souk_Haddadine,_Marrakech_Medina,_Morocco.jpg",
   },
-  nabawi: {
-    file: "Al Masjid An-Nabawi.jpg",
-    title: "Masjid an-Nabawi, Médine",
-    author: "Ali Lajami",
-    license: "CC BY 2.0",
-    licenseUrl: "https://creativecommons.org/licenses/by/2.0/",
+  about: {
+    // Served from Commons until the local copy is downloaded (rate-limited at build time).
+    src: "https://commons.wikimedia.org/wiki/Special:FilePath/Al-Masjid%20al-Nabawi%20-%20panoramio%20%282%29.jpg?width=2038",
+    title: "Masjid an-Nabawi à l'heure dorée, Médine",
+    author: "Tevfik Teker",
+    license: "CC BY 3.0",
+    licenseUrl: "https://creativecommons.org/licenses/by/3.0/",
+    page: "https://commons.wikimedia.org/wiki/File:Al-Masjid_al-Nabawi_-_panoramio_(2).jpg",
   },
-  nabawiSunrise: {
-    file: "Sunrise at al-Masjid al-Nabawi.jpg",
-    title: "Lever du soleil sur Masjid an-Nabawi",
-    author: "ZxxZxxZ",
+  decembre: {
+    // Served from Commons until the local copy is downloaded (rate-limited at build time).
+    src: "https://commons.wikimedia.org/wiki/Special:FilePath/Green%20Dome%202.jpg?width=940",
+    title: "Le dôme vert de Masjid an-Nabawi",
+    author: "بلال الدويك",
     license: "CC BY-SA 3.0",
     licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/",
+    page: "https://commons.wikimedia.org/wiki/File:Green_Dome_2.jpg",
   },
-  clockTower: {
-    file: "Makkah Royal Clock Tower in 2012.jpg",
+  octobre: {
+    // Served from Commons until the local copy is downloaded (rate-limited at build time).
+    src: "https://commons.wikimedia.org/wiki/Special:FilePath/Makkah%20Royal%20Clock%20Tower%20in%202012.jpg?width=940",
     title: "Tour de l'horloge, La Mecque",
     author: "King Eliot",
     license: "CC BY-SA 4.0",
     licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
+    page: "https://commons.wikimedia.org/wiki/File:Makkah_Royal_Clock_Tower_in_2012.jpg",
   },
-  hagiaSophia: {
-    file: "Hagia Sophia Mars 2013.jpg",
+  istanbul: {
+    // Served from Commons until the local copy is downloaded (rate-limited at build time).
+    src: "https://commons.wikimedia.org/wiki/Special:FilePath/Hagia%20Sophia%20Mars%202013.jpg?width=1838",
     title: "Sainte-Sophie, Istanbul",
     author: "Arild Vågen",
     license: "CC BY-SA 3.0",
     licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/",
+    page: "https://commons.wikimedia.org/wiki/File:Hagia_Sophia_Mars_2013.jpg",
   },
-  haram2009: {
-    file: "Masjid al-Haram.JPG",
-    title: "Masjid al-Haram et la Kaaba",
-    author: "Zainichi Gaikokujin",
+  ramadan: {
+    // Served from Commons until the local copy is downloaded (rate-limited at build time).
+    src: "https://commons.wikimedia.org/wiki/Special:FilePath/Mecca.JPG?width=1640",
+    title: "Masjid al-Haram la nuit",
+    author: "Ariandra 03",
+    license: "CC BY-SA 3.0",
+    licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/",
+    page: "https://commons.wikimedia.org/wiki/File:Mecca.JPG",
+  },
+  process: {
+    // Served from Commons until the local copy is downloaded (rate-limited at build time).
+    src: "https://commons.wikimedia.org/wiki/Special:FilePath/Mina%20Overview.JPG?width=2040",
+    title: "La vallée de Mina et ses tentes",
+    author: "Mubeen Rahman",
     license: "CC BY 3.0",
     licenseUrl: "https://creativecommons.org/licenses/by/3.0/",
+    page: "https://commons.wikimedia.org/wiki/File:Mina_Overview.JPG",
   },
-  nabawiNight: {
-    file: "Madinah, Al haram at night (2512058060).jpg",
-    title: "Masjid an-Nabawi la nuit",
-    author: "marviikad",
-    license: "CC BY-SA 2.0",
-    licenseUrl: "https://creativecommons.org/licenses/by-sa/2.0/",
-  },
-  nabawiEvening: {
-    file: "Madina Haram at evening.jpg",
-    title: "Masjid an-Nabawi en soirée",
-    author: "Ahmed Medineli",
-    license: "Domaine public",
-    licenseUrl: "https://commons.wikimedia.org/wiki/File:Madina_Haram_at_evening.jpg",
+  panorama: {
+    // Served from Commons until the local copy is downloaded (rate-limited at build time).
+    src: "https://commons.wikimedia.org/wiki/Special:FilePath/Masjid%20e%20Nabawi%20Courtyard%20Umbrellas.jpg?width=2440",
+    title: "Parasols de la cour de Masjid an-Nabawi",
+    author: "King Eliot",
+    license: "CC BY-SA 4.0",
+    licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
+    page: "https://commons.wikimedia.org/wiki/File:Masjid_e_Nabawi_Courtyard_Umbrellas.jpg",
   },
 } satisfies Record<string, Credit>;
-
-/** Direct image URL for a Commons file, resized server-side by Wikimedia. */
-export function commonsUrl(credit: Credit, width = 1800) {
-  return `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(credit.file)}?width=${width}`;
-}
-
-export function commonsPage(credit: Credit) {
-  return `https://commons.wikimedia.org/wiki/File:${encodeURIComponent(credit.file.replace(/ /g, "_"))}`;
-}
 
 export const photoCredits: Credit[] = Object.values(photos);
 
@@ -163,8 +174,8 @@ export const hero = {
   word: "Pèlerinage",
   lead: "En toute sérénité. Hajj, Omra et voyages organisés depuis Montréal, en un seul endroit.",
   cta: { label: "Voir les départs", href: "#departs" },
-  imageLabel: photos.haramPanorama.title,
-  image: commonsUrl(photos.haramPanorama, 2400) as string | undefined,
+  imageLabel: photos.hero.title,
+  image: photos.hero.src,
 };
 
 export const statement = {
@@ -184,29 +195,29 @@ export const categories: Category[] = [
   {
     title: "Omra en groupe",
     count: "/ 12+ départs par an",
-    imageLabel: photos.supplicatingPilgrim.title,
-    image: commonsUrl(photos.supplicatingPilgrim, 1200),
+    imageLabel: photos.omra.title,
+    image: photos.omra.src,
     href: "#departs",
   },
   {
     title: "Hajj Québec 2026",
     count: "/ départ de Montréal",
-    imageLabel: photos.arafat.title,
-    image: commonsUrl(photos.arafat, 1200),
+    imageLabel: photos.hajj.title,
+    image: photos.hajj.src,
     href: "#contact",
   },
   {
     title: "Voyages organisés",
     count: "/ 6+ destinations",
-    imageLabel: photos.fes.title,
-    image: commonsUrl(photos.fes, 1200),
+    imageLabel: photos.voyages.title,
+    image: photos.voyages.src,
     href: "#carte",
   },
 ];
 
 export const about = {
-  imageLabel: photos.nabawi.title,
-  image: commonsUrl(photos.nabawi, 1600) as string | undefined,
+  imageLabel: photos.about.title,
+  image: photos.about.src,
   text: "Voyages Cortoba est une agence spécialisée dans le tourisme religieux et éthique. Nous organisons le pèlerinage de bout en bout : vols, hôtels 4 étoiles, visas, visites religieuses et un accompagnement francophone, technique et spirituel, du départ de Montréal jusqu'au retour.",
   stats: [
     { value: "20+", label: "années au service des pèlerins" },
@@ -242,8 +253,8 @@ export const departures: Departure[] = [
     duration: "10 jours",
     group: "Groupe accompagné",
     rating: { label: "Hôtels 4 étoiles près du Haram", stars: 4 },
-    imageLabel: photos.nabawiSunrise.title,
-    image: commonsUrl(photos.nabawiSunrise, 900),
+    imageLabel: photos.decembre.title,
+    image: photos.decembre.src,
   },
   {
     id: "octobre-confort",
@@ -254,8 +265,8 @@ export const departures: Departure[] = [
     duration: "10 à 12 jours",
     group: "Petit groupe accompagné",
     rating: { label: "Hôtels 4 étoiles à quelques pas du Haram", stars: 4 },
-    imageLabel: photos.clockTower.title,
-    image: commonsUrl(photos.clockTower, 900),
+    imageLabel: photos.octobre.title,
+    image: photos.octobre.src,
   },
   {
     id: "istanbul-combinee",
@@ -266,8 +277,8 @@ export const departures: Departure[] = [
     duration: "12 à 14 jours",
     group: "Groupe accompagné",
     rating: { label: "Hôtels 4 étoiles, foi et culture", stars: 4 },
-    imageLabel: photos.hagiaSophia.title,
-    image: commonsUrl(photos.hagiaSophia, 900),
+    imageLabel: photos.istanbul.title,
+    image: photos.istanbul.src,
   },
   {
     id: "ramadan-2027",
@@ -278,16 +289,16 @@ export const departures: Departure[] = [
     duration: "10 à 15 jours",
     group: "Groupe accompagné",
     rating: { label: "Hôtels 4 étoiles, guide et imam", stars: 4 },
-    imageLabel: photos.haram2009.title,
-    image: commonsUrl(photos.haram2009, 900),
+    imageLabel: photos.ramadan.title,
+    image: photos.ramadan.src,
   },
 ];
 
 export const departuresCta = { label: "Explorer le départ", href: "#contact" };
 
 export const process = {
-  imageLabel: photos.nabawiNight.title,
-  image: commonsUrl(photos.nabawiNight, 2000) as string | undefined,
+  imageLabel: photos.process.title,
+  image: photos.process.src,
   text: "Un seul interlocuteur du choix du départ jusqu'au retour. Confirmation rapide et conseiller dédié pour les demandes sur mesure.",
   steps: [
     { number: "01", title: "Choisir un départ" },
@@ -333,8 +344,8 @@ export const team = {
 };
 
 export const panorama = {
-  imageLabel: photos.nabawiEvening.title,
-  image: commonsUrl(photos.nabawiEvening, 2400) as string | undefined,
+  imageLabel: photos.panorama.title,
+  image: photos.panorama.src,
 };
 
 export const footer = {
