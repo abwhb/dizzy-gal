@@ -13,7 +13,7 @@
 /* ------------------------------------------------------------------ */
 
 export type Credit = {
-  /** Path under `public/`, or a Commons URL while the local copy is pending. */
+  /** Path under `public/`. */
   src: string;
   /** What the photo shows, for alt text and the credits list. */
   title: string;
@@ -65,8 +65,7 @@ export const photos = {
     page: "https://commons.wikimedia.org/wiki/File:Oriental_hanging_lanterns._Souk_Haddadine,_Marrakech_Medina,_Morocco.jpg",
   },
   about: {
-    // Served from Commons until the local copy is downloaded (rate-limited at build time).
-    src: "https://commons.wikimedia.org/wiki/Special:FilePath/Al-Masjid%20al-Nabawi%20-%20panoramio%20%282%29.jpg?width=2038",
+    src: "/photos/about.jpg",
     title: "Masjid an-Nabawi à l'heure dorée, Médine",
     author: "Tevfik Teker",
     license: "CC BY 3.0",
@@ -74,8 +73,7 @@ export const photos = {
     page: "https://commons.wikimedia.org/wiki/File:Al-Masjid_al-Nabawi_-_panoramio_(2).jpg",
   },
   decembre: {
-    // Served from Commons until the local copy is downloaded (rate-limited at build time).
-    src: "https://commons.wikimedia.org/wiki/Special:FilePath/Green%20Dome%202.jpg?width=940",
+    src: "/photos/dep-decembre.jpg",
     title: "Le dôme vert de Masjid an-Nabawi",
     author: "بلال الدويك",
     license: "CC BY-SA 3.0",
@@ -83,8 +81,7 @@ export const photos = {
     page: "https://commons.wikimedia.org/wiki/File:Green_Dome_2.jpg",
   },
   octobre: {
-    // Served from Commons until the local copy is downloaded (rate-limited at build time).
-    src: "https://commons.wikimedia.org/wiki/Special:FilePath/Makkah%20Royal%20Clock%20Tower%20in%202012.jpg?width=940",
+    src: "/photos/dep-octobre.jpg",
     title: "Tour de l'horloge, La Mecque",
     author: "King Eliot",
     license: "CC BY-SA 4.0",
@@ -92,8 +89,7 @@ export const photos = {
     page: "https://commons.wikimedia.org/wiki/File:Makkah_Royal_Clock_Tower_in_2012.jpg",
   },
   istanbul: {
-    // Served from Commons until the local copy is downloaded (rate-limited at build time).
-    src: "https://commons.wikimedia.org/wiki/Special:FilePath/Hagia%20Sophia%20Mars%202013.jpg?width=1838",
+    src: "/photos/dep-istanbul.jpg",
     title: "Sainte-Sophie, Istanbul",
     author: "Arild Vågen",
     license: "CC BY-SA 3.0",
@@ -101,8 +97,7 @@ export const photos = {
     page: "https://commons.wikimedia.org/wiki/File:Hagia_Sophia_Mars_2013.jpg",
   },
   ramadan: {
-    // Served from Commons until the local copy is downloaded (rate-limited at build time).
-    src: "https://commons.wikimedia.org/wiki/Special:FilePath/Mecca.JPG?width=1640",
+    src: "/photos/dep-ramadan.jpg",
     title: "Masjid al-Haram la nuit",
     author: "Ariandra 03",
     license: "CC BY-SA 3.0",
@@ -110,8 +105,7 @@ export const photos = {
     page: "https://commons.wikimedia.org/wiki/File:Mecca.JPG",
   },
   process: {
-    // Served from Commons until the local copy is downloaded (rate-limited at build time).
-    src: "https://commons.wikimedia.org/wiki/Special:FilePath/Mina%20Overview.JPG?width=2040",
+    src: "/photos/process-bg.jpg",
     title: "La vallée de Mina et ses tentes",
     author: "Mubeen Rahman",
     license: "CC BY 3.0",
@@ -119,8 +113,7 @@ export const photos = {
     page: "https://commons.wikimedia.org/wiki/File:Mina_Overview.JPG",
   },
   panorama: {
-    // Served from Commons until the local copy is downloaded (rate-limited at build time).
-    src: "https://commons.wikimedia.org/wiki/Special:FilePath/Masjid%20e%20Nabawi%20Courtyard%20Umbrellas.jpg?width=2440",
+    src: "/photos/panorama.jpg",
     title: "Parasols de la cour de Masjid an-Nabawi",
     author: "King Eliot",
     license: "CC BY-SA 4.0",

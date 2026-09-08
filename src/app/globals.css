@@ -60,6 +60,24 @@
     color: rgba(255, 255, 255, 0.75);
   }
 
+  /* GSAP reveal targets start hidden only once JavaScript has marked the
+     document; see src/components/motion.tsx. */
+  .js [data-reveal],
+  .js [data-reveal-group] > *,
+  .js [data-hero-word],
+  .js [data-hero-copy] {
+    opacity: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .js [data-reveal],
+    .js [data-reveal-group] > *,
+    .js [data-hero-word],
+    .js [data-hero-copy] {
+      opacity: 1;
+    }
+  }
+
   /* Fades a full-bleed photo into the page ground, as Vita does under its hero. */
   .fade-bottom::after {
     content: "";

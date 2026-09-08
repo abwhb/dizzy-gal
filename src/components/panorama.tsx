@@ -4,7 +4,7 @@ import { Photo } from "./ui";
 
 export function Panorama() {
   return (
-    <section className="p-5 sm:p-6">
+    <section data-reveal className="p-5 sm:p-6">
       <Photo
         label={panorama.imageLabel}
         src={panorama.image}

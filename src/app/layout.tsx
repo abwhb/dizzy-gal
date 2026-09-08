@@ -31,7 +31,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     // The font variable lives on <html> so the `--font-*` theme tokens,
     // which resolve at :root, can reference it.
     <html lang="fr-CA" className={interTight.variable}>
-      <body>{children}</body>
+      <body>
+        {/* Marks the document as scripted before first paint so reveal targets
+            can start hidden; without JavaScript everything stays visible. */}
+        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
+        {children}
+      </body>
     </html>
   );
 }

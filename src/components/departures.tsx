@@ -5,7 +5,7 @@ import { CalendarIcon, Photo, PinIcon, Square, Stars, UsersIcon, button, formatP
 export function Departures() {
   return (
     <section id="departs" className="scroll-mt-14 border-b border-line">
-      <ul className="grid lg:grid-cols-2">
+      <ul data-reveal-group className="grid lg:grid-cols-2">
         {departures.map((departure, index) => (
           <li
             key={departure.id}

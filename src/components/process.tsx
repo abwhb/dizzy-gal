@@ -9,11 +9,14 @@ export function Process() {
       <div aria-hidden className="absolute inset-0 bg-gradient-to-b from-night/10 via-night/45 to-night" />
 
       <div className="relative grid min-h-[520px] items-end lg:grid-cols-[1.1fr_2fr]">
-        <p className="max-w-[300px] px-5 pt-40 pb-8 text-[15px] leading-[1.35] font-semibold tracking-[-.02em] sm:px-6 lg:pb-10">
+        <p
+          data-reveal
+          className="max-w-[300px] px-5 pt-40 pb-8 text-[15px] leading-[1.35] font-semibold tracking-[-.02em] sm:px-6 lg:pb-10"
+        >
           {process.text}
         </p>
 
-        <ol className="grid grid-cols-2 lg:grid-cols-4">
+        <ol data-reveal-group className="grid grid-cols-2 lg:grid-cols-4">
           {process.steps.map((step) => (
             <li
               key={step.number}

@@ -5,7 +5,7 @@ import { Photo } from "./ui";
 export function Categories() {
   return (
     <section id="categories" className="scroll-mt-14 border-b border-line">
-      <ul className="grid md:grid-cols-3">
+      <ul data-reveal-group className="grid md:grid-cols-3">
         {categories.map((category, index) => (
           <li
             key={category.title}

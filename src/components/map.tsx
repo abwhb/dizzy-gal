@@ -52,6 +52,7 @@ export function DestinationMap() {
   return (
     <section id="carte" className="scroll-mt-14 border-b border-line bg-night">
       <svg
+        data-reveal
         viewBox={`0 0 ${W} ${H}`}
         role="img"
         aria-label="Carte des destinations desservies au départ de Montréal"

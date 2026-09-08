@@ -7,7 +7,7 @@ export function Team() {
 
   return (
     <section className="border-b border-line">
-      <div className="grid md:grid-cols-[1fr_1fr_2fr]">
+      <div data-reveal-group className="grid md:grid-cols-[1fr_1fr_2fr]">
         <Portrait member={first} className="border-b border-line md:border-r" />
         <Portrait member={second} className="border-b border-line md:border-r" />
 

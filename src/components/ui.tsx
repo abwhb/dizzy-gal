@@ -11,6 +11,7 @@ export function Photo({
   className = "",
   tone = "warm",
   fill = false,
+  parallax = false,
   sizes = "(max-width: 768px) 100vw, 50vw",
   priority = false,
 }: {
@@ -20,14 +21,18 @@ export function Photo({
   tone?: "warm" | "cool";
   /** Cover the nearest positioned ancestor instead of flowing in the layout. */
   fill?: boolean;
+  /** With `fill`: overscan vertically and let the motion layer drift it on scroll. */
+  parallax?: boolean;
   sizes?: string;
   priority?: boolean;
 }) {
+  const position = fill ? (parallax ? "absolute inset-x-0 -top-[8%] -bottom-[8%]" : "absolute inset-0") : "relative";
   return (
     <div
+      {...(parallax ? { "data-parallax": "" } : {})}
       // The duotone stays underneath a real photo so a slow or failed load
       // still shows the intended tone instead of a blank box.
-      className={`overflow-hidden ${fill ? "absolute inset-0" : "relative"} ${tone === "warm" ? "photo-slot" : "photo-slot--cool"} ${className}`}
+      className={`overflow-hidden ${position} ${tone === "warm" ? "photo-slot" : "photo-slot--cool"} ${className}`}
     >
       {src ? (
         <Image
