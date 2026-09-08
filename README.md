@@ -168,6 +168,11 @@ Defined in `src/app/globals.css`. The brand board specifies **Astrofat Extra Bol
 which isn't available as a web font — **Baloo 2 ExtraBold** stands in as the closest chunky-rounded
 match, with **Poppins** for body text.
 
+The favicon is a cream cake-jar outline on orange. `src/app/icon.svg` is the path-based source;
+`src/app/favicon.ico` contains 16, 32 and 48 px browser icons, and `src/app/apple-icon.png` is the
+180 px Apple touch icon. Next.js discovers all three automatically. Keep the raster exports
+in sync with the SVG when changing the mark.
+
 The line marks in `src/components/illustrations.tsx` — strawberry, lemon, whipped cream, cake,
 heart, the sleepy `zZz`, star, spoon, dizzy smiley and the jar — are inline SVG drawings in the
 brand board's style, kept as path data so the pattern can reuse them. They take `currentColor`,
