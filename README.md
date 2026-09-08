@@ -21,11 +21,17 @@ One scrolling page, composed in `src/app/page.tsx`:
 | Full-viewport orange hero, pill nav, scrolling strip | `src/components/hero.tsx`, `marquee.tsx` |
 | Sticky site nav with cart count | `src/components/site-header.tsx` |
 | Three-promise strip | `src/components/promise-strip.tsx` |
-| Pink Lemonade product feature | `src/components/shop.tsx` |
-| Brand story + photo grid | `src/components/story.tsx` |
+| Flavour carousel (one `ProductFeature` per flavour) | `src/components/flavour-carousel.tsx`, `product-feature.tsx` |
+| Brand story + sticker sheet | `src/components/story.tsx` |
+| Reviews | `src/components/reviews.tsx` |
 | Social-feel rail | `src/components/feed.tsx` |
-| Footer | `src/components/site-footer.tsx` |
-| Newsletter modal | `src/components/newsletter-modal.tsx` |
+| Footer, with the puddle | `src/components/site-footer.tsx` |
+| Newsletter modal (shares `newsletter-form.tsx`) | `src/components/newsletter-modal.tsx` |
+| The falling mascot | `src/components/mascot.tsx` |
+
+**Placeholder content.** The reviews and the third flavour (Lemon Cloud) are stand-ins so the
+sections can be seen — they render exactly like real content. Both are marked `placeholder: true`
+in `content.ts`. Replace them before launch.
 
 Cart count and newsletter open/closed state live in `src/components/site-provider.tsx`. Adding to
 the cart is client-side only — there is no checkout behind it yet.
@@ -52,6 +58,7 @@ importing anything:
 | `data-parallax-bg` | A background pattern drifts slower than the page |
 | `data-rise` | Slides up into place as the page bottom nears |
 | `data-pin-rail` | ≥1024px only: the section pins and vertical scroll becomes the rail's horizontal travel; touch keeps the native swipe |
+| `data-mascot` / `data-puddle` | The mascot tumbles down the right edge over the whole page and lands in the puddle, which splashes; the landing height is measured from the puddle's position at max scroll |
 | `data-float` | Idle bob (the jar, the doodles) |
 | `data-cart-badge` | Target for the fly-to-cart dot |
 
