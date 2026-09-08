@@ -8,8 +8,11 @@ export function Feed() {
   return (
     <>
       <PatternBand />
+      {/* On wide screens motion.tsx pins this and turns vertical scroll into
+          the rail's horizontal travel; on touch it stays a native swipe rail. */}
       <section
         id="feed"
+        data-pin-rail
         className="grid grid-cols-[46px_minmax(0,1fr)] border-b-[3px] border-burgundy bg-strawberry"
       >
         <SectionRail label="Social feel" />

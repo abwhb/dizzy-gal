@@ -153,6 +153,23 @@ export const feed: FeedCard[] = [
   },
 ];
 
+export const footer = {
+  headline: ["Bad day? Cake.", "Good day? Also cake."],
+  blurb: "Drops, restocks, and 15% off your first jar. Zero spam, some chaos.",
+  legal: "© 2026 Dizzy Gals",
+  bottomLinks: [
+    { label: "Terms", href: "#" },
+    { label: "Privacy", href: "#" },
+  ],
+};
+
+export const newsletter = {
+  blurb: "Bad day? Cake. Good day? Also cake. Sign up for drops, restocks, and 15% off your first jar.",
+  placeholder: "you@somewhere.com",
+  send: "Send",
+  sent: "Sent",
+};
+
 export const footerColumns: { heading: string; links: { label: string; href?: string }[] }[] = [
   {
     heading: "Our flavours",
@@ -176,9 +193,5 @@ export const footerColumns: { heading: string; links: { label: string; href?: st
       { label: "Shipping", href: "#" },
       { label: "My orders", href: "#" },
     ],
-  },
-  {
-    heading: "Copyright",
-    links: [{ label: "© 2026" }, { label: "Dizzy Gals" }, { label: "Terms & privacy", href: "#" }],
   },
 ];

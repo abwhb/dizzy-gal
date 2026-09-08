@@ -23,29 +23,38 @@ export function Story() {
       <Scallop color="#FFD34D" />
       <SectionRail label="Brand story" />
       <div className="grid grid-cols-[repeat(auto-fit,minmax(min(280px,100%),1fr))] items-start gap-8 px-5 pt-[clamp(44px,6vw,84px)] pb-[clamp(32px,5vw,72px)] sm:gap-10">
-        <div data-reveal>
-          <p className="text-[clamp(17px,2vw,26px)] leading-[1.4] font-medium text-pretty">
+        <div>
+          {/* Words brighten one by one as this scrolls through the viewport. */}
+          <p
+            data-split="words-scrub"
+            className="text-[clamp(17px,2vw,26px)] leading-[1.4] font-medium text-pretty"
+          >
             Dizzy Gals is for the <Underlined>hopelessly obsessed</Underlined> dessert lovers. We
             make cakes that hit different – bold flavours, creamy layers, and just the right
             amount of <span className="font-semibold text-dizzy-orange">chaos</span>.
           </p>
-          <p className="mt-6 font-display text-[clamp(26px,3.2vw,42px)] leading-[1.02] font-extrabold text-dizzy-orange">
+          <p
+            data-reveal
+            className="mt-6 font-display text-[clamp(26px,3.2vw,42px)] leading-[1.02] font-extrabold text-dizzy-orange"
+          >
             One bite and you&rsquo;ll get it.
             <br />
             Go on. Dig in.
           </p>
           <Illustration
             name="zzz"
+            data-draw
             strokeWidth={3}
             className="mt-5 w-12 text-burgundy"
             style={{ rotate: "-8deg" }}
           />
         </div>
 
-        {/* Sticker sheet: each tile is a drawn mark until a photo is dropped in. */}
-        <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
+        {/* Sticker sheet: tiles are dealt onto the grid as you scroll, and each
+            mark draws itself. A photo replaces any tile via gallery[].image. */}
+        <div data-deal className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
           {gallery.map((tile, index) => (
-            <div key={tile.label} data-reveal="pop">
+            <div key={tile.label} data-draw>
               <PhotoSlot
                 label={tile.label}
                 src={tile.image}
