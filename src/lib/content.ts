@@ -19,7 +19,8 @@ export type IllustrationName =
   | "spoon"
   | "smiley"
   | "jar"
-  | "chocolate";
+  | "chocolate"
+  | "coffee";
 
 export type Ingredient = {
   label: string;
@@ -125,23 +126,20 @@ export const products: Product[] = [
     dark: true,
   },
   {
-    // PLACEHOLDER — a third flavour to fill the carousel. Rename, re-describe
-    // or drop it before launch.
-    id: "lemon-cloud",
-    name: "Lemon Cloud",
-    tag: "Coming soon",
+    id: "tiramisu",
+    name: "Tiramisu",
+    tag: "New",
     description:
-      "Lemon curd, vanilla sponge, clouds of whipped cream. Light, sharp, gone in minutes.",
-    warning: "may cause uncontrollable sunshine",
+      "Espresso-soaked sponge, mascarpone cream, a proper dusting of cocoa. The classic, in a jar, slightly unhinged.",
+    warning: "may cause you to stay up all night",
     ingredients: [
-      { label: "Lemon", illustration: "lemon" },
-      { label: "Vanilla sponge", illustration: "cake" },
-      { label: "Whipped cream", illustration: "cream" },
+      { label: "Espresso", illustration: "coffee" },
+      { label: "Mascarpone", illustration: "cream" },
+      { label: "Cocoa", illustration: "chocolate" },
     ],
     cta: "go on. dig in.",
-    panel: "#FFD34D",
+    panel: "#FF6A00",
     bg: "#F2EFE6",
-    placeholder: true,
   },
 ];
 
