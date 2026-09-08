@@ -1,9 +1,12 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Baloo_2, Poppins } from "next/font/google";
 import Script from "next/script";
 
+import { JsonLd } from "@/components/json-ld";
 import { NewsletterModal } from "@/components/newsletter-modal";
 import { SiteProvider } from "@/components/site-provider";
+import { site } from "@/lib/content";
+import { organizationJsonLd, siteUrl, websiteJsonLd } from "@/lib/seo";
 
 import "./globals.css";
 
@@ -27,9 +30,47 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Dizzy Gals — Cake worth losing your head over",
-  description:
-    "Dizzy Gals is for the hopelessly obsessed dessert lovers. Bold flavours, creamy layers, and just the right amount of chaos. Go on. Dig in.",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: `${site.name} — Cake in a jar, delivered in DHA Lahore`,
+    template: `%s · ${site.name}`,
+  },
+  description: site.description,
+  keywords: site.keywords,
+  applicationName: site.name,
+  category: "food",
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    siteName: site.name,
+    locale: site.locale,
+    url: "/",
+    title: `${site.name} — ${site.tagline}`,
+    description: site.description,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${site.name} — ${site.tagline}`,
+    description: site.description,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  formatDetection: { telephone: false },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#FF6A00",
 };
 
 export default function RootLayout({
@@ -49,6 +90,7 @@ export default function RootLayout({
         <Script id="motion-flag" strategy="beforeInteractive">
           {`document.documentElement.classList.add("js")`}
         </Script>
+        <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
         <SiteProvider>
           {children}
           <NewsletterModal />

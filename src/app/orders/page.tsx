@@ -1,10 +1,9 @@
-import type { Metadata } from "next";
-
 import { OrdersList } from "@/components/orders-list";
 import { PageShell } from "@/components/page-shell";
 import { checkoutCopy } from "@/lib/content";
+import { privateMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = { title: "My orders — Dizzy Gals" };
+export const metadata = privateMetadata("My orders");
 
 export default function OrdersPage() {
   return (

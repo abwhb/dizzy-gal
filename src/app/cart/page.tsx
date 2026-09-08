@@ -1,10 +1,9 @@
-import type { Metadata } from "next";
-
 import { CartView } from "@/components/cart-view";
 import { PageShell } from "@/components/page-shell";
 import { checkoutCopy } from "@/lib/content";
+import { privateMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = { title: "Your jar — Dizzy Gals" };
+export const metadata = privateMetadata("Your jar");
 
 export default function CartPage() {
   return (
