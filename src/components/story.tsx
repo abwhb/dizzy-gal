@@ -57,10 +57,19 @@ export function Story() {
             <div key={tile.label} data-draw>
               <PhotoSlot
                 label={tile.label}
+                alt={tile.imageAlt}
                 src={tile.image}
                 className="group aspect-square rounded-xl border-[3px] border-burgundy text-burgundy transition-transform duration-300 hover:-translate-y-1 hover:-rotate-2"
                 style={{ background: tile.bg }}
-                sizes="(max-width: 640px) 45vw, 15vw"
+                sizes="(max-width: 639px) 42vw, (max-width: 685px) 29vw, 16vw"
+                overlay={
+                  <span
+                    className="absolute bottom-2.5 left-1/2 -translate-x-1/2 rounded-full border-2 border-burgundy bg-cream px-2.5 py-1 text-[9px] font-semibold tracking-[.12em] whitespace-nowrap text-burgundy uppercase"
+                    style={{ rotate: `${index % 2 ? -3 : 3}deg` }}
+                  >
+                    {tile.label}
+                  </span>
+                }
               >
                 <Illustration
                   name={tile.illustration}
@@ -68,12 +77,6 @@ export function Story() {
                   className="w-[54%] text-burgundy transition-transform duration-300 group-hover:scale-110"
                   style={{ rotate: `${index % 2 ? 6 : -6}deg` }}
                 />
-                <span
-                  className="absolute bottom-2.5 left-1/2 -translate-x-1/2 rounded-full border-2 border-burgundy bg-cream px-2.5 py-1 text-[9px] font-semibold tracking-[.12em] whitespace-nowrap text-burgundy uppercase"
-                  style={{ rotate: `${index % 2 ? -3 : 3}deg` }}
-                >
-                  {tile.label}
-                </span>
               </PhotoSlot>
             </div>
           ))}

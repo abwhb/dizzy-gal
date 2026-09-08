@@ -590,17 +590,30 @@ function setupPinnedRail() {
   const rail = section?.querySelector<HTMLElement>(".rail");
   if (!section || !rail) return;
 
-  const distance = () => rail.scrollWidth - rail.clientWidth;
+  // Layout offsets ignore the cards' entrance transforms. scrollWidth
+  // includes those transforms and would change after the pin is measured.
+  const distance = () => {
+    const first = rail.firstElementChild as HTMLElement | null;
+    const last = rail.lastElementChild as HTMLElement | null;
+    if (!first || !last) return 0;
+    return Math.max(0, last.offsetLeft + last.offsetWidth - first.offsetLeft - rail.clientWidth);
+  };
   if (distance() <= 0) return;
 
+  // A viewport change can follow a native swipe; avoid adding that scroll
+  // offset to the desktop transform when the pin takes over.
+  rail.scrollLeft = 0;
   gsap.set(rail, { overflowX: "visible" });
   gsap.set(section, { overflow: "hidden" });
-  gsap.to(rail, {
+  const tween = gsap.to(rail, {
     x: () => -distance(),
     ease: "none",
     scrollTrigger: {
       trigger: section,
       pin: true,
+      // The page is a flex column; reserve space so the footer cannot
+      // overlap the photos while this section is pinned.
+      pinSpacing: "margin",
       scrub: 0.6,
       start: "top top",
       end: () => `+=${distance()}`,
@@ -608,6 +621,32 @@ function setupPinnedRail() {
       anticipatePin: 1,
     },
   });
+
+  const stepRail = (event: Event) => {
+    const direction = (event as CustomEvent<{ direction?: number }>).detail?.direction;
+    const trigger = tween.scrollTrigger;
+    const travel = distance();
+    if ((direction !== -1 && direction !== 1) || !trigger || travel <= 0) return;
+
+    // Cancel the native fallback only while this pinned rail owns navigation.
+    event.preventDefault();
+    const current = trigger.progress * travel;
+    const cards = Array.from(rail.children) as HTMLElement[];
+    const origin = cards[0]?.offsetLeft ?? 0;
+    const stops = [0, ...cards.map((card) => Math.min(travel, card.offsetLeft - origin)), travel];
+    const target = direction === 1
+      ? stops.find((position) => position > current + 1) ?? travel
+      : stops.findLast((position) => position < current - 1) ?? 0;
+    if (Math.abs(target - current) < 1) return;
+
+    window.scrollTo({
+      top: trigger.start + (target / travel) * (trigger.end - trigger.start),
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+    });
+  };
+
+  section.addEventListener("dizzy:feed-step", stepRail);
+  return () => section.removeEventListener("dizzy:feed-step", stepRail);
 }
 
 // ─── Cart ───────────────────────────────────────────────────────────────────

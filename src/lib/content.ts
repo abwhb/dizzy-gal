@@ -58,6 +58,7 @@ export type GalleryTile = {
   illustration: IllustrationName;
   /** A real photo replaces the sticker at the same crop. */
   image?: string;
+  imageAlt?: string;
 };
 
 export type FeedCard =
@@ -75,6 +76,7 @@ export type FeedCard =
       bg: string;
       fg: string;
       image?: string;
+      imageAlt?: string;
     };
 
 export type Review = {
@@ -107,6 +109,7 @@ export const products: Product[] = [
     cta: "go on. dig in.",
     panel: "#FF8BA7",
     bg: "#FFD34D",
+    jarImage: "/images/shop-01-pink-lemonade.webp",
   },
   {
     id: "midnight-berry",
@@ -124,22 +127,24 @@ export const products: Product[] = [
     panel: "#57151F",
     bg: "#FF8BA7",
     dark: true,
+    jarImage: "/images/shop-02-midnight-berry.webp",
   },
   {
-    id: "tiramisu",
-    name: "Tiramisu",
+    id: "not-a-tiramisu",
+    name: "Not a Tiramisu",
     tag: "New",
     description:
-      "Espresso-soaked sponge, mascarpone cream, a proper dusting of cocoa. The classic, in a jar, slightly unhinged.",
-    warning: "may cause you to stay up all night",
+      "Coffee-soaked sponge, creamy layers, and a cocoa finish. A familiar obsession with a little Dizzy Gals twist.",
+    warning: "may cause one more spoonful",
     ingredients: [
-      { label: "Espresso", illustration: "coffee" },
-      { label: "Mascarpone", illustration: "cream" },
+      { label: "Coffee", illustration: "coffee" },
+      { label: "Cream", illustration: "cream" },
       { label: "Cocoa", illustration: "chocolate" },
     ],
     cta: "go on. dig in.",
     panel: "#FF6A00",
     bg: "#F2EFE6",
+    jarImage: "/images/shop-03-not-a-tiramisu.webp",
   },
 ];
 
@@ -163,12 +168,36 @@ export const marqueeLines: string[] = [
 export const marqueeGlyphs: IllustrationName[] = ["star", "zzz", "strawberry", "smiley"];
 
 export const gallery: GalleryTile[] = [
-  { label: "real strawberries", bg: "#FFD34D", illustration: "strawberry" },
-  { label: "cake, obviously", bg: "#FF8BA7", illustration: "cake" },
-  { label: "spoon required", bg: "#F2EFE6", illustration: "spoon" },
-  { label: "you look dizzy", bg: "#FF8BA7", illustration: "smiley" },
-  { label: "zero boring flavours", bg: "#F2EFE6", illustration: "star" },
-  { label: "zzz. food coma.", bg: "#FFD34D", illustration: "zzz" },
+  {
+    label: "real strawberries", bg: "#FFD34D", illustration: "strawberry",
+    image: "/images/story-01-real-strawberries.webp",
+    imageAlt: "Fresh whole and halved strawberries on a yellow background",
+  },
+  {
+    label: "cake, obviously", bg: "#FF8BA7", illustration: "cake",
+    image: "/images/story-02-cake-obviously.webp",
+    imageAlt: "Golden sponge cake layered with strawberries and cream on a pink background",
+  },
+  {
+    label: "spoon required", bg: "#F2EFE6", illustration: "spoon",
+    image: "/images/story-03-spoon-required.webp",
+    imageAlt: "A spoonful of sponge cake, strawberry compote and whipped cream",
+  },
+  {
+    label: "you look dizzy", bg: "#FF8BA7", illustration: "smiley",
+    image: "/images/story-04-you-look-dizzy.webp",
+    imageAlt: "A swirl of strawberry sauce and whipped cream on top of a cake jar",
+  },
+  {
+    label: "zero boring flavours", bg: "#F2EFE6", illustration: "star",
+    image: "/images/story-05-zero-boring-flavours.webp",
+    imageAlt: "Strawberry, chocolate and coffee-cream cake jars together",
+  },
+  {
+    label: "zzz. food coma.", bg: "#FFD34D", illustration: "zzz",
+    image: "/images/story-06-food-coma.webp",
+    imageAlt: "An almost-finished strawberry cake jar with a spoon and linen napkin",
+  },
 ];
 
 /**
@@ -234,7 +263,11 @@ export const feed: FeedCard[] = [
     small: "probably need cake.",
     doodle: "smiley",
   },
-  { kind: "photo", bg: "#FFD34D", fg: "#57151F", small: "spoon + jar photo" },
+  {
+    kind: "photo", bg: "#FFD34D", fg: "#57151F", small: "a little sunshine, by the spoonful.",
+    image: "/images/social-01-pink-lemonade-polaroid.webp",
+    imageAlt: "Polaroid-style photo of a woman enjoying strawberry cake from a jar at a café",
+  },
   {
     kind: "quote",
     bg: "#57151F",
@@ -243,7 +276,11 @@ export const feed: FeedCard[] = [
     small: "send cake.",
     doodle: "zzz",
   },
-  { kind: "photo", bg: "#FF6A00", fg: "#F2EFE6", small: "strawberry top-down" },
+  {
+    kind: "photo", bg: "#FF6A00", fg: "#F2EFE6", small: "good company. better cake.",
+    image: "/images/social-02-midnight-berry-polaroid.webp",
+    imageAlt: "Polaroid-style photo of two friends eating chocolate and strawberry cake from jars",
+  },
   {
     kind: "quote",
     bg: "#F2EFE6",
@@ -252,7 +289,11 @@ export const feed: FeedCard[] = [
     small: "a policy, not a slogan.",
     doodle: "star",
   },
-  { kind: "photo", bg: "#FF8BA7", fg: "#57151F", small: "packaging flat-lay" },
+  {
+    kind: "photo", bg: "#FF8BA7", fg: "#57151F", small: "one more bite. obviously.",
+    image: "/images/social-03-not-a-tiramisu-polaroid.webp",
+    imageAlt: "Polaroid-style photo of a woman eating coffee-and-cream cake from a jar on a pink sofa",
+  },
   {
     kind: "quote",
     bg: "#FFD34D",
