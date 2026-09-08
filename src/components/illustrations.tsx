@@ -51,6 +51,13 @@ export const PATHS: Record<IllustrationName, string[]> = {
     "M24 11v26M7 24h34",
     "M33 11c1 3 4 4 6 3",
   ],
+  // Espresso cup on a saucer, steam rising.
+  coffee: [
+    "M10 19h24v9a8 8 0 0 1-8 8H18a8 8 0 0 1-8-8v-9Z",
+    "M34 22h3a4 4 0 0 1 0 8h-3.5",
+    "M7 41h32",
+    "M17 13c0-2.5 2.5-2.5 2.5-5M24 13c0-2.5 2.5-2.5 2.5-5M31 13c0-2.5 2.5-2.5 2.5-5",
+  ],
   // Square jar with lid and three wavy layers — the product, drawn.
   jar: [
     "M11 8h26a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2H11a2 2 0 0 1-2-2v-1a2 2 0 0 1 2-2Z",

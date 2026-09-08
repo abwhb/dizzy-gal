@@ -29,9 +29,8 @@ One scrolling page, composed in `src/app/page.tsx`:
 | Newsletter modal (shares `newsletter-form.tsx`) | `src/components/newsletter-modal.tsx` |
 | The falling mascot | `src/components/mascot.tsx` |
 
-**Placeholder content.** The reviews and the third flavour (Lemon Cloud) are stand-ins so the
-sections can be seen — they render exactly like real content. Both are marked `placeholder: true`
-in `content.ts`. Replace them before launch.
+**Placeholder content.** The reviews are stand-ins so the section can be seen — they render exactly
+like real content and are marked `placeholder: true` in `content.ts`. Replace them before launch.
 
 Cart count and newsletter open/closed state live in `src/components/site-provider.tsx`. Adding to
 the cart is client-side only — there is no checkout behind it yet.
