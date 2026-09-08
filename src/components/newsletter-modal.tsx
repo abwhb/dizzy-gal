@@ -22,7 +22,7 @@ export function NewsletterModal() {
 
   return (
     <div
-      className="fixed inset-0 z-40 flex items-center justify-center bg-burgundy/60 p-5"
+      className="fixed inset-0 z-40 flex items-center justify-center bg-burgundy/60 p-5 motion-safe:animate-fade-in"
       onClick={closeNewsletter}
     >
       <div
@@ -30,7 +30,7 @@ export function NewsletterModal() {
         aria-modal="true"
         aria-labelledby="newsletter-heading"
         onClick={(event) => event.stopPropagation()}
-        className="flex w-full max-w-[440px] flex-col gap-4 rounded-[18px] border-[3px] border-burgundy bg-lemon px-6 py-7"
+        className="flex w-full max-w-[440px] flex-col gap-4 rounded-[18px] border-[3px] border-burgundy bg-lemon px-6 py-7 motion-safe:animate-modal-in"
       >
         <div className="flex items-start justify-between gap-3">
           <h2

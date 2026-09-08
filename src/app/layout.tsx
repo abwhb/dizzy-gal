@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Baloo_2, Poppins } from "next/font/google";
+import Script from "next/script";
 
 import { SiteProvider } from "@/components/site-provider";
 
@@ -38,8 +39,15 @@ export default function RootLayout({
   return (
     // The font variables live on <html> so that the `--font-display` /
     // `--font-body` theme tokens, which resolve at :root, can reference them.
-    <html lang="en" className={`${baloo.variable} ${poppins.variable}`}>
+    // suppressHydrationWarning: the motion flag script below adds a class to
+    // <html> before React hydrates.
+    <html lang="en" className={`${baloo.variable} ${poppins.variable}`} suppressHydrationWarning>
       <body>
+        {/* Flags that JS is running so globals.css may pre-hide the elements
+            GSAP animates in. Runs before paint; without JS nothing is hidden. */}
+        <Script id="motion-flag" strategy="beforeInteractive">
+          {`document.documentElement.classList.add("js")`}
+        </Script>
         <SiteProvider>{children}</SiteProvider>
       </body>
     </html>

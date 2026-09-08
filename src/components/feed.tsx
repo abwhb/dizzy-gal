@@ -9,10 +9,11 @@ export function Feed() {
       className="grid grid-cols-[46px_minmax(0,1fr)] border-b-[3px] border-burgundy bg-strawberry"
     >
       <SectionRail label="Social feel" />
-      <div className="rail flex snap-x snap-mandatory overflow-x-auto">
+      <div className="rail flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain">
         {feed.map((card, index) => (
           <div
             key={index}
+            data-reveal="slide"
             className="flex flex-[0_0_min(280px,78vw)] snap-start flex-col gap-3 border-r-[3px] border-burgundy px-5 py-6"
             style={{ background: card.bg, color: card.fg }}
           >

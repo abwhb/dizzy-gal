@@ -30,6 +30,27 @@ One scrolling page, composed in `src/app/page.tsx`:
 Cart count and newsletter open/closed state live in `src/components/site-provider.tsx`. Adding to
 the cart is client-side only — there is no checkout behind it yet.
 
+## Motion
+
+Entrances and scroll reveals are GSAP (`src/components/motion.tsx`, using ScrollTrigger and
+SplitText); continuous loops and hovers are CSS. Sections opt in with data attributes rather than
+importing anything:
+
+| Attribute | Effect |
+| --- | --- |
+| `data-hero="pill\|title\|tagline\|cta"` | Intro timeline — the lockup flies in letter by letter, the `!` keeps bobbing |
+| `data-hero-content` | Parallaxes up and fades as the hero scrolls away |
+| `data-reveal` / `"pop"` / `"slide"` | Scroll-in; siblings that enter together stagger automatically |
+| `data-float` | Idle bob (the jar) |
+| `data-cart-badge` | Target for the fly-to-cart dot |
+
+Elements with `data-hero` / `data-reveal` are pre-hidden by CSS only once JS has flagged `<html
+class="js">` (see `layout.tsx`), so nothing flashes before GSAP runs and nothing is lost without
+JS. `prefers-reduced-motion` disables all of it.
+
+One rule when adding hovers to anything GSAP animates: transition the `scale` property, never
+`transform` — a CSS transition on `transform` makes GSAP read its own start state as the end.
+
 ## Editing content
 
 Copy, products, gallery labels, marquee lines and footer links are all in `src/lib/content.ts`.
