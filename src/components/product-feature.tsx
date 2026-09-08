@@ -55,7 +55,7 @@ export function ProductFeature({ product }: { product: Product }) {
               src={product.jarImage}
               alt={`${product.name} cake in a jar`}
               fill
-              sizes="(max-width: 768px) 100vw, 330px"
+              sizes="(max-width: 425px) calc(100vw - 100px), 330px"
               className="object-cover"
             />
           ) : (
