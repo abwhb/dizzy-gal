@@ -22,28 +22,20 @@ const doodles: {
   depth: number;
   rotate: number;
 }[] = [
-  { name: "strawberry", className: "left-[5%] top-[12%] w-16 md:w-24", depth: 0.5, rotate: -14 },
-  { name: "cake", className: "right-[6%] top-[14%] w-16 md:w-28", depth: 0.35, rotate: 10 },
-  { name: "star", className: "left-[27%] top-[6%] w-7 md:w-11", depth: 0.75, rotate: 0 },
-  { name: "star", className: "right-[26%] top-[9%] w-5 md:w-8", depth: 0.9, rotate: 20 },
+  { name: "strawberry", className: "left-[6%] top-[14%] w-14 md:w-20", depth: 0.5, rotate: -14 },
+  { name: "cake", className: "right-[7%] top-[16%] w-14 md:w-24", depth: 0.35, rotate: 10 },
+  { name: "star", className: "left-[28%] top-[8%] w-6 md:w-9", depth: 0.75, rotate: 0 },
   {
     name: "spoon",
-    className: "left-[8%] bottom-[14%] hidden w-14 sm:block md:w-24",
+    className: "left-[9%] bottom-[16%] hidden w-12 sm:block md:w-20",
     depth: 0.45,
     rotate: 15,
   },
   {
     name: "smiley",
-    className: "right-[8%] top-[52%] hidden w-14 md:block md:w-20",
+    className: "right-[9%] top-[54%] hidden w-12 md:block md:w-16",
     depth: 0.3,
     rotate: -8,
-  },
-  { name: "star", className: "left-[30%] bottom-[10%] w-6 md:w-9", depth: 0.8, rotate: 35 },
-  {
-    name: "heart",
-    className: "left-[16%] top-[46%] hidden w-8 lg:block md:w-10",
-    depth: 0.6,
-    rotate: -20,
   },
 ];
 
@@ -77,7 +69,7 @@ export function Hero() {
             key={i}
             data-hero="doodle"
             data-parallax={d.depth}
-            className={`pointer-events-none absolute text-cream ${d.className}`}
+            className={`pointer-events-none absolute text-cream/90 ${d.className}`}
           >
             <span data-float className="block" style={{ rotate: `${d.rotate}deg` }}>
               <Illustration name={d.name} strokeWidth={2.2} className="w-full" />
@@ -123,7 +115,7 @@ export function Hero() {
 
         <div
           data-hero="badge"
-          className="absolute right-4 bottom-3 w-[104px] sm:right-6 sm:bottom-5 sm:w-[136px] md:w-[156px]"
+          className="absolute right-4 bottom-3 w-[92px] sm:right-6 sm:bottom-5 sm:w-[120px] md:w-[136px]"
         >
           <SpinBadge text={hero.badge} className="w-full drop-shadow-[0_6px_0_rgba(87,21,31,.25)]" />
         </div>

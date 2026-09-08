@@ -1,18 +1,14 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import { useSite } from "@/components/site-provider";
+import { siteNav } from "@/lib/content";
 
 const focusRing =
   "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-burgundy";
 const navLink = `py-1 transition-colors hover:text-dizzy-orange ${focusRing}`;
-const navigation = [
-  { label: "Shop", href: "#shop", detail: "Find your flavour" },
-  { label: "Story", href: "#story", detail: "A little cake, a little chaos" },
-  { label: "Reviews", href: "#reviews", detail: "Dizzy people say" },
-  { label: "Feed", href: "#feed", detail: "Cake is better with company" },
-];
 
 export function SiteHeader() {
   const { cartCount, openNewsletter } = useSite();
@@ -54,21 +50,21 @@ export function SiteHeader() {
 
   return (
     <header data-header className="sticky top-0 z-20 flex items-center justify-between gap-3 border-b-[3px] border-burgundy bg-cream px-4 py-2.5 sm:gap-4 sm:px-5 sm:py-3">
-      <a
-        href="#top"
+      <Link
+        href="/"
         className={`font-display text-[22px] leading-none font-extrabold tracking-[-.02em] whitespace-nowrap text-dizzy-orange transition-transform hover:scale-[1.03] hover:text-dizzy-orange sm:text-[26px] ${focusRing}`}
       >
         DIZZY GALS!
-      </a>
+      </Link>
       <nav
         ref={desktopNav}
         aria-label="Main navigation"
         className="ml-auto hidden items-center justify-end gap-5 text-[11px] font-semibold tracking-[.18em] uppercase md:flex"
       >
-        {navigation.map((item) => (
-          <a key={item.href} href={item.href} className={navLink}>
+        {siteNav.map((item) => (
+          <Link key={item.href} href={item.href} className={navLink}>
             {item.label}
-          </a>
+          </Link>
         ))}
         <button
           type="button"
@@ -80,7 +76,10 @@ export function SiteHeader() {
       </nav>
 
       <div className="ml-auto flex shrink-0 items-center gap-2 md:ml-0 md:gap-0">
-        <span className="flex items-center gap-[7px] py-1 text-[11px] font-semibold tracking-[.18em] uppercase">
+        <Link
+          href="/cart"
+          className={`flex items-center gap-[7px] py-1 text-[11px] font-semibold tracking-[.18em] uppercase transition-colors hover:text-dizzy-orange ${focusRing}`}
+        >
           <span className="sr-only sm:not-sr-only">Cart</span>
           <svg
             viewBox="0 0 24 24"
@@ -102,7 +101,7 @@ export function SiteHeader() {
           >
             {cartCount}
           </span>
-        </span>
+        </Link>
         <button
           type="button"
           aria-label="Open navigation menu"
@@ -185,8 +184,8 @@ export function SiteHeader() {
           </div>
 
           <nav aria-label="Mobile navigation" className="px-5">
-            {navigation.map((item, index) => (
-              <a
+            {siteNav.map((item, index) => (
+              <Link
                 key={item.href}
                 href={item.href}
                 onClick={closeMenu}
@@ -214,7 +213,7 @@ export function SiteHeader() {
                     <path d="M5 12h14m-6-6 6 6-6 6" />
                   </svg>
                 </span>
-              </a>
+              </Link>
             ))}
           </nav>
 

@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { Scallop } from "@/components/decor";
 import { Illustration } from "@/components/illustrations";
 import { Puddle } from "@/components/mascot";
@@ -47,9 +49,13 @@ export function SiteFooter() {
               {column.links.map((link) =>
                 link.href ? (
                   <span key={link.label} className="block">
-                    <a href={link.href}>
-                      <Breakable text={link.label} />
-                    </a>
+                    {link.href.startsWith("/") ? (
+                      <Link href={link.href}>{link.label}</Link>
+                    ) : (
+                      <a href={link.href}>
+                        <Breakable text={link.label} />
+                      </a>
+                    )}
                   </span>
                 ) : (
                   <span key={link.label} className="block">
@@ -66,9 +72,9 @@ export function SiteFooter() {
         <span>{footer.legal}</span>
         <span className="flex flex-wrap items-center gap-x-6 gap-y-2">
           {footer.bottomLinks.map((link) => (
-            <a key={link.label} href={link.href}>
+            <Link key={link.label} href={link.href}>
               {link.label}
-            </a>
+            </Link>
           ))}
           <a href="#top" className="flex items-center gap-2">
             Back to top
