@@ -72,7 +72,7 @@ export function OrderConfirmation({ id }: { id: string }) {
           </ol>
 
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link href="/#shop" className={pillPrimary}>
+            <Link href="/shop" className={pillPrimary}>
               Back to the jars
             </Link>
             <Link href="/orders" className={pillSecondary}>

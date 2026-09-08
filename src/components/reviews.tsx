@@ -28,13 +28,14 @@ function Stars({ rating }: { rating: number }) {
   );
 }
 
-export function Reviews() {
+/** `scallop` is the colour of whatever sits above: the story on the home page, the title band on /reviews. */
+export function Reviews({ scallop = "#F2EFE6" }: { scallop?: string }) {
   return (
     <section
       id="reviews"
       className="relative grid grid-cols-[46px_minmax(0,1fr)] border-b-[3px] border-burgundy bg-lemon"
     >
-      <Scallop color="#F2EFE6" />
+      <Scallop color={scallop} />
       <SectionRail label="Reviews" />
       <div className="px-5 pt-[clamp(48px,6vw,84px)] pb-[clamp(36px,5vw,72px)]">
         <div className="flex flex-wrap items-end gap-3">

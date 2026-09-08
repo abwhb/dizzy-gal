@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { BackToTop } from "@/components/back-to-top";
 import { Scallop } from "@/components/decor";
 import { Illustration } from "@/components/illustrations";
 import { Puddle } from "@/components/mascot";
@@ -76,10 +77,10 @@ export function SiteFooter() {
               {link.label}
             </Link>
           ))}
-          <a href="#top" className="flex items-center gap-2">
+          <BackToTop className="flex items-center gap-2 text-[11px] font-semibold tracking-[.18em] uppercase">
             Back to top
             <Illustration name="star" strokeWidth={3.5} className="size-3.5 text-dizzy-orange" />
-          </a>
+          </BackToTop>
         </span>
       </div>
 

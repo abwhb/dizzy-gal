@@ -22,7 +22,7 @@ export function CartView() {
         <Illustration name="jar" strokeWidth={1.6} className="w-28 text-dizzy-orange" />
         <p className="mt-6 font-display text-3xl font-extrabold">{checkoutCopy.cartEmpty}</p>
         <p className="mt-1 text-sm font-medium">{checkoutCopy.cartEmptyHint}</p>
-        <Link href="/#shop" className={`${pillPrimary} mt-8`}>
+        <Link href="/shop" className={`${pillPrimary} mt-8`}>
           go on. dig in.
         </Link>
       </PageBody>
@@ -123,7 +123,7 @@ export function CartView() {
         <Link href="/checkout" className={`${pillPrimary} mt-5 w-full`}>
           Checkout
         </Link>
-        <Link href="/#shop" className={`${pillSecondary} mt-3 w-full`}>
+        <Link href="/shop" className={`${pillSecondary} mt-3 w-full`}>
           Keep shopping
         </Link>
         <p className="mt-4 text-[11px] leading-snug font-medium text-burgundy/70">

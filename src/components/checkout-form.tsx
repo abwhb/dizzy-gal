@@ -65,7 +65,7 @@ export function CheckoutForm() {
     return (
       <PageBody className="py-20 text-center">
         <p className="font-display text-3xl font-extrabold">{checkoutCopy.cartEmpty}</p>
-        <Link href="/#shop" className={`${pillPrimary} mt-8`}>
+        <Link href="/shop" className={`${pillPrimary} mt-8`}>
           go on. dig in.
         </Link>
       </PageBody>
