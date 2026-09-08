@@ -6,6 +6,7 @@ import { useMemo, useSyncExternalStore } from "react";
 import { Illustration } from "@/components/illustrations";
 import { PageBody, pillPrimary } from "@/components/page-shell";
 import { checkoutCopy } from "@/lib/content";
+import { formatDeliveryDay } from "@/lib/delivery";
 import { formatDate, money } from "@/lib/format";
 import { parseOrders, readOrdersRaw, subscribeOrders } from "@/lib/orders";
 
@@ -42,7 +43,8 @@ export function OrdersList() {
               <div className="min-w-0 flex-1">
                 <p className="font-display text-2xl leading-none font-extrabold">{order.id}</p>
                 <p className="mt-1.5 text-[12px] font-medium">
-                  {formatDate(order.createdAt)} · {order.lines.map((l) => `${l.qty} × ${l.name}`).join(", ")}
+                  Arriving {formatDeliveryDay(order.deliveryDate)} · placed {formatDate(order.createdAt)} ·{" "}
+                  {order.lines.map((l) => `${l.qty} × ${l.name}`).join(", ")}
                 </p>
               </div>
               <span className="rounded-full border-2 border-burgundy bg-lemon px-3 py-1 text-[10px] font-semibold tracking-[.18em] uppercase">

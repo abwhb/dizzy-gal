@@ -56,9 +56,14 @@ the cart and routes to the confirmation. **`/api/orders` is a stub** — it vali
 logs the id and returns `ok`. Wire the real intake there (email to the kitchen, a sheet row, a
 WhatsApp message, a Shopify draft order). Until then the kitchen does not hear about orders.
 
-**Placeholder settings.** `store` in `content.ts` holds the currency (`Rs`), per-jar prices, the
-delivery fee, the free-delivery threshold, the delivery cities and the order cutoff hour. All are
-guesses so the checkout works — set the real ones.
+**Delivery rules.** DHA Lahore only (`store.areas`, one entry per phase) and only on set days
+(`store.deliveryDays`, currently Friday and Sunday). Checkout offers the next open delivery days
+(`src/lib/delivery.ts`); a day closes at `store.cutoffHour` the day before. Every order carries
+its `deliveryDate` and `customer.area`. Open a new day or phase by adding it to the array.
+
+**Placeholder settings.** `store` in `content.ts` also holds the currency (`Rs`), per-jar prices,
+the delivery fee and the free-delivery threshold. Those are guesses so the checkout works — set
+the real ones.
 
 **One rule for client-only views.** Content that mounts after hydration (anything read from
 `localStorage`) must not carry `data-reveal` / `data-split` / `data-draw`: `<Motion/>` scans once

@@ -2,29 +2,30 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import { PageBody, pillPrimary } from "@/components/page-shell";
 import { useSite } from "@/components/site-provider";
 import { checkoutCopy, store } from "@/lib/content";
+import { upcomingDeliveryDates } from "@/lib/delivery";
 import { money } from "@/lib/format";
 import { linesFor, newOrderId, saveOrder, totalsFor, type Customer, type Order } from "@/lib/orders";
-
-const OTHER_CITY = "Somewhere else";
 
 const field =
   "w-full rounded-xl border-[3px] border-burgundy bg-cream px-4 py-3 text-sm font-medium text-burgundy outline-none placeholder:text-burgundy/40 focus:border-dizzy-orange";
 const label = "mb-1.5 block text-[10px] font-semibold tracking-[.2em] uppercase";
+const error = "mt-1 text-[11px] font-semibold text-dizzy-orange";
 
-type Errors = Partial<Record<keyof Customer, string>>;
+type Errors = Partial<Record<keyof Customer | "deliveryDate", string>>;
 
-function validate(c: Customer): Errors {
+function validate(c: Customer, deliveryDate: string): Errors {
   const errors: Errors = {};
   if (c.name.trim().length < 2) errors.name = "We need a name for the box.";
   if (c.phone.replace(/\D/g, "").length < 10) errors.phone = "A phone number we can actually call.";
   if (c.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c.email)) errors.email = "That email looks off.";
   if (c.address.trim().length < 8) errors.address = "A little more detail for the rider.";
-  if (!c.city) errors.city = "Pick a city.";
+  if (!c.area) errors.area = "Which phase?";
+  if (!deliveryDate) errors.deliveryDate = "Pick a day.";
   return errors;
 }
 
@@ -34,19 +35,29 @@ export function CheckoutForm() {
   const lines = linesFor(items);
   const totals = totalsFor(lines);
 
+  // Computed on the client only — the form doesn't render until the cart has
+  // hydrated, so the server never paints these dates.
+  const slots = useMemo(() => (hydrated ? upcomingDeliveryDates() : []), [hydrated]);
+
   const [customer, setCustomer] = useState<Customer>({
     name: "",
     phone: "",
     email: "",
     address: "",
-    city: store.deliveryAreas[0] ?? "",
+    area: store.areas[0] ?? "",
+    city: store.city,
     notes: "",
   });
+  const [deliveryDate, setDeliveryDate] = useState<string>("");
   const [errors, setErrors] = useState<Errors>({});
   const [submitting, setSubmitting] = useState(false);
 
-  const update = (key: keyof Customer) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
-    setCustomer((c) => ({ ...c, [key]: event.target.value }));
+  const chosenDate = deliveryDate || slots[0]?.iso || "";
+
+  const update =
+    (key: keyof Customer) =>
+    (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
+      setCustomer((c) => ({ ...c, [key]: event.target.value }));
 
   if (!hydrated) return <PageBody className="min-h-[40vh]" />;
 
@@ -63,7 +74,7 @@ export function CheckoutForm() {
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
-    const found = validate(customer);
+    const found = validate(customer, chosenDate);
     setErrors(found);
     if (Object.keys(found).length) return;
 
@@ -71,9 +82,14 @@ export function CheckoutForm() {
     const order: Order = {
       id: newOrderId(),
       createdAt: new Date().toISOString(),
+      deliveryDate: chosenDate,
       lines,
       ...totals,
-      customer: { ...customer, email: customer.email || undefined, notes: customer.notes || undefined },
+      customer: {
+        ...customer,
+        email: customer.email || undefined,
+        notes: customer.notes || undefined,
+      },
       payment: "cod",
       status: "placed",
     };
@@ -85,8 +101,8 @@ export function CheckoutForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(order),
       });
-    } catch (error) {
-      console.error("order intake failed; kept locally", error);
+    } catch (err) {
+      console.error("order intake failed; kept locally", err);
     }
 
     saveOrder(order);
@@ -97,6 +113,48 @@ export function CheckoutForm() {
   return (
     <PageBody className="grid gap-8 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] lg:gap-12">
       <form onSubmit={submit} noValidate className="flex flex-col gap-5">
+        {/* Delivery day */}
+        <fieldset className="rounded-2xl border-[3px] border-burgundy bg-lemon p-5">
+          <legend className="px-2 text-[10px] font-semibold tracking-[.2em] uppercase">
+            Delivery day
+          </legend>
+          <p className="font-display text-xl font-extrabold">{checkoutCopy.dayTitle}</p>
+          <p className="mt-1 text-sm font-medium">{checkoutCopy.dayBody}</p>
+          {slots.length ? (
+            <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {slots.map((slot) => {
+                const selected = slot.iso === chosenDate;
+                return (
+                  <label
+                    key={slot.iso}
+                    className={`flex cursor-pointer flex-col items-center rounded-xl border-[3px] border-burgundy px-3 py-3 text-center transition-[scale,background-color,color] duration-200 hover:scale-[1.03] ${
+                      selected ? "bg-burgundy text-cream" : "bg-cream text-burgundy"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="deliveryDate"
+                      value={slot.iso}
+                      checked={selected}
+                      onChange={() => setDeliveryDate(slot.iso)}
+                      className="sr-only"
+                    />
+                    <span className="font-display text-lg leading-none font-extrabold">
+                      {slot.weekday}
+                    </span>
+                    <span className="mt-1 text-[11px] font-semibold tracking-[.12em] uppercase">
+                      {slot.label.replace(`${slot.weekday} `, "")}
+                    </span>
+                  </label>
+                );
+              })}
+            </div>
+          ) : (
+            <p className={error}>No delivery days open right now — try again shortly.</p>
+          )}
+          {errors.deliveryDate && <p className={error}>{errors.deliveryDate}</p>}
+        </fieldset>
+
         <h2 className="font-display text-2xl font-extrabold">Where&rsquo;s it going?</h2>
 
         <div className="grid gap-5 sm:grid-cols-2">
@@ -105,7 +163,7 @@ export function CheckoutForm() {
               Name
             </label>
             <input id="name" className={field} value={customer.name} onChange={update("name")} autoComplete="name" />
-            {errors.name && <p className="mt-1 text-[11px] font-semibold text-dizzy-orange">{errors.name}</p>}
+            {errors.name && <p className={error}>{errors.name}</p>}
           </div>
           <div>
             <label htmlFor="phone" className={label}>
@@ -121,16 +179,29 @@ export function CheckoutForm() {
               autoComplete="tel"
               placeholder="03xx xxxxxxx"
             />
-            {errors.phone && <p className="mt-1 text-[11px] font-semibold text-dizzy-orange">{errors.phone}</p>}
+            {errors.phone && <p className={error}>{errors.phone}</p>}
           </div>
         </div>
 
-        <div>
-          <label htmlFor="email" className={label}>
-            Email <span className="text-burgundy/50">(optional)</span>
-          </label>
-          <input id="email" type="email" className={field} value={customer.email} onChange={update("email")} autoComplete="email" />
-          {errors.email && <p className="mt-1 text-[11px] font-semibold text-dizzy-orange">{errors.email}</p>}
+        <div className="grid gap-5 sm:grid-cols-2">
+          <div>
+            <label htmlFor="area" className={label}>
+              Area
+            </label>
+            <select id="area" className={field} value={customer.area} onChange={update("area")}>
+              {store.areas.map((area) => (
+                <option key={area}>{area}</option>
+              ))}
+            </select>
+            {errors.area && <p className={error}>{errors.area}</p>}
+          </div>
+          <div>
+            <label htmlFor="city" className={label}>
+              City
+            </label>
+            <input id="city" className={`${field} bg-burgundy/5`} value={customer.city} readOnly />
+            <p className="mt-1 text-[11px] font-medium">{checkoutCopy.areaNote}</p>
+          </div>
         </div>
 
         <div>
@@ -144,26 +215,18 @@ export function CheckoutForm() {
             value={customer.address}
             onChange={update("address")}
             autoComplete="street-address"
-            placeholder="House, street, area — and anything the rider should know"
+            placeholder="House, street, block — and anything the rider should know"
           />
-          {errors.address && <p className="mt-1 text-[11px] font-semibold text-dizzy-orange">{errors.address}</p>}
+          {errors.address && <p className={error}>{errors.address}</p>}
         </div>
 
         <div className="grid gap-5 sm:grid-cols-2">
           <div>
-            <label htmlFor="city" className={label}>
-              City
+            <label htmlFor="email" className={label}>
+              Email <span className="text-burgundy/50">(optional)</span>
             </label>
-            <select id="city" className={field} value={customer.city} onChange={update("city")}>
-              {store.deliveryAreas.map((city) => (
-                <option key={city}>{city}</option>
-              ))}
-              <option>{OTHER_CITY}</option>
-            </select>
-            {customer.city === OTHER_CITY && (
-              <p className="mt-1 text-[11px] font-medium">We&rsquo;ll call to see if we can reach you.</p>
-            )}
-            {errors.city && <p className="mt-1 text-[11px] font-semibold text-dizzy-orange">{errors.city}</p>}
+            <input id="email" type="email" className={field} value={customer.email} onChange={update("email")} autoComplete="email" />
+            {errors.email && <p className={error}>{errors.email}</p>}
           </div>
           <div>
             <label htmlFor="notes" className={label}>
@@ -184,7 +247,7 @@ export function CheckoutForm() {
           </label>
         </fieldset>
 
-        <button type="submit" disabled={submitting} className={`${pillPrimary} self-start`}>
+        <button type="submit" disabled={submitting || !slots.length} className={`${pillPrimary} self-start`}>
           {submitting ? "placing…" : checkoutCopy.placeOrder}
         </button>
       </form>
@@ -206,6 +269,12 @@ export function CheckoutForm() {
             <dt>Delivery</dt>
             <dd>{totals.delivery === 0 ? "Free" : money(totals.delivery)}</dd>
           </div>
+          {chosenDate ? (
+            <div className="flex justify-between">
+              <dt>Arriving</dt>
+              <dd>{slots.find((s) => s.iso === chosenDate)?.label}</dd>
+            </div>
+          ) : null}
           <div className="flex justify-between font-display text-xl font-extrabold">
             <dt>To pay the rider</dt>
             <dd>{money(totals.total)}</dd>

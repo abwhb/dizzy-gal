@@ -94,16 +94,21 @@ export const hero = {
 };
 
 /**
- * Store settings. PLACEHOLDER values — currency, prices, the delivery fee and
- * the delivery areas are guesses to make the checkout work. Set the real ones.
+ * Store settings. Delivery is DHA Lahore only, on set days of the week; the
+ * customer picks a day at checkout. Currency, prices and the delivery fee
+ * are still PLACEHOLDER guesses — set the real ones.
  */
 export const store = {
   currency: "Rs",
   deliveryFee: 250,
   /** Orders of this many jars or more ship free (the marquee promises it). */
   freeDeliveryFrom: 6,
-  deliveryAreas: ["Lahore", "Islamabad", "Karachi"],
-  /** Order before this hour (24h) for next-day delivery. */
+  city: "Lahore",
+  /** Delivery areas, all inside DHA Lahore. Add phases here as they open. */
+  areas: Array.from({ length: 9 }, (_, i) => `DHA Phase ${i + 1}`),
+  /** Days of the week we deliver. Add "Wednesday" etc. here to open a day. */
+  deliveryDays: ["Friday", "Sunday"],
+  /** Orders for a delivery day close at this hour (24h) the day before. */
   cutoffHour: 14,
   placeholder: true,
 };
@@ -178,6 +183,7 @@ export const promises: PromiseItem[] = [
 
 export const marqueeLines: string[] = [
   "Orders of 6 jars or more ship free",
+  "Delivering DHA Lahore, Fridays and Sundays",
   "You look dizzy. Probably need cake.",
   "One more bite won’t hurt. Promise.",
   "Currently spiralling. Send cake.",
@@ -345,13 +351,14 @@ export const shippingPage: { title: string; intro: string; sections: PageSection
     {
       heading: "Where we deliver",
       body: [
-        `Right now we deliver in ${store.deliveryAreas.join(", ")}. If your city isn't on the list, pick "somewhere else" at checkout and we'll call you to see what we can do.`,
+        `DHA ${store.city} only, for now — ${store.areas[0]} through ${store.areas[store.areas.length - 1]}. Not in DHA? Join the newsletter and you'll be the first to know when we spread.`,
       ],
     },
     {
       heading: "When it arrives",
       body: [
-        `Order before ${store.cutoffHour > 12 ? store.cutoffHour - 12 : store.cutoffHour}pm and your jars are baked, chilled and with you the next day. Order after that and they arrive the day after. We call to confirm before anything leaves the kitchen.`,
+        `We deliver ${store.deliveryDays.length} days a week: ${store.deliveryDays.join(" and ")}. Pick your day at checkout. Orders for a day close at ${store.cutoffHour > 12 ? store.cutoffHour - 12 : store.cutoffHour}pm the day before, so the jars are baked the morning they travel.`,
+        "We call to confirm before anything goes in the oven.",
       ],
     },
     {
@@ -382,7 +389,7 @@ export const termsPage: { title: string; intro: string; sections: PageSection[] 
     {
       heading: "Orders",
       body: [
-        "An order is confirmed when we call you and you say yes. We reserve the right to cancel an order we can't reach you to confirm, or that we can't deliver to.",
+        `Every order is for a delivery day you choose at checkout (currently ${store.deliveryDays.join(" or ")}), to an address inside DHA ${store.city}. An order is confirmed when we call you and you say yes. We reserve the right to cancel an order we can't reach you to confirm, or that we can't deliver to.`,
         "Prices are in " +
           store.currency +
           " and include everything except delivery, which is shown separately at checkout.",
@@ -460,6 +467,9 @@ export const checkoutCopy = {
   checkoutTitle: "Checkout",
   paymentTitle: "Cash on delivery",
   paymentBody: "Pay the rider when your jars arrive. It's the only option right now, and honestly it's the nicest one.",
+  dayTitle: "Which day?",
+  dayBody: `We deliver on ${store.deliveryDays.join(" and ")}. Pick one.`,
+  areaNote: `DHA ${store.city} only, for now.`,
   placeOrder: "place my order",
   confirmedTitle: "You're in.",
   confirmedBody: "We'll call to confirm, then it's straight into the oven.",

@@ -15,6 +15,8 @@ export type Customer = {
   phone: string;
   email?: string;
   address: string;
+  /** e.g. "DHA Phase 6" */
+  area: string;
   city: string;
   notes?: string;
 };
@@ -22,6 +24,8 @@ export type Customer = {
 export type Order = {
   id: string;
   createdAt: string;
+  /** Chosen delivery day, local YYYY-MM-DD. */
+  deliveryDate: string;
   lines: OrderLine[];
   jars: number;
   subtotal: number;

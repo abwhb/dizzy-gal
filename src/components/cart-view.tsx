@@ -126,8 +126,9 @@ export function CartView() {
         <Link href="/#shop" className={`${pillSecondary} mt-3 w-full`}>
           Keep shopping
         </Link>
-        <p className="mt-4 text-[11px] font-medium text-burgundy/70">
-          Cash on delivery. Pay when it arrives.
+        <p className="mt-4 text-[11px] leading-snug font-medium text-burgundy/70">
+          Cash on delivery, {store.deliveryDays.map((d) => `${d}s`).join(" and ")}, DHA {store.city} only.
+          Pick your day at checkout.
         </p>
       </aside>
     </PageBody>

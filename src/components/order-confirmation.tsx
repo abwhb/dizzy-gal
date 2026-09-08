@@ -6,6 +6,7 @@ import { useMemo, useSyncExternalStore } from "react";
 import { Illustration } from "@/components/illustrations";
 import { PageBody, pillPrimary, pillSecondary } from "@/components/page-shell";
 import { checkoutCopy, store } from "@/lib/content";
+import { formatDeliveryDay } from "@/lib/delivery";
 import { formatDate, money } from "@/lib/format";
 import { parseOrders, readOrdersRaw, subscribeOrders } from "@/lib/orders";
 
@@ -33,10 +34,11 @@ export function OrderConfirmation({ id }: { id: string }) {
     );
   }
 
+  const day = formatDeliveryDay(order.deliveryDate);
   const steps = [
     { title: "We call you", body: "A quick call to confirm the order and the address. Usually within the hour." },
-    { title: "Into the oven", body: "Baked fresh, layered, chilled. Nothing sits on a shelf." },
-    { title: "Rider arrives", body: `Pay ${money(order.total)} in cash at the door. Then dig in.` },
+    { title: "Into the oven", body: `Baked the morning of ${day.split(" ")[0]}, layered, chilled. Nothing sits on a shelf.` },
+    { title: `${day}`, body: `The rider arrives. Pay ${money(order.total)} in cash at the door. Then dig in.` },
   ];
 
   return (
@@ -96,6 +98,10 @@ export function OrderConfirmation({ id }: { id: string }) {
               <dt>Delivery</dt>
               <dd>{order.delivery === 0 ? "Free" : money(order.delivery)}</dd>
             </div>
+            <div className="flex justify-between">
+              <dt>Arriving</dt>
+              <dd>{day}</dd>
+            </div>
             <div className="flex justify-between font-display text-xl font-extrabold">
               <dt>Cash on delivery</dt>
               <dd>{money(order.total)}</dd>
@@ -106,7 +112,9 @@ export function OrderConfirmation({ id }: { id: string }) {
             <p className="mt-1">{order.customer.name}</p>
             <p>{order.customer.phone}</p>
             <p className="whitespace-pre-line">{order.customer.address}</p>
-            <p>{order.customer.city}</p>
+            <p>
+              {order.customer.area}, {order.customer.city}
+            </p>
             {order.customer.notes ? <p className="mt-2 italic">“{order.customer.notes}”</p> : null}
           </div>
           <p className="mt-4 text-[11px] font-medium text-burgundy/70">

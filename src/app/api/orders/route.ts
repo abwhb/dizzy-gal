@@ -14,8 +14,20 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: "Invalid JSON" }, { status: 400 });
   }
 
-  const order = body as { id?: string; lines?: unknown[]; customer?: { phone?: string } };
-  if (!order?.id || !Array.isArray(order.lines) || !order.lines.length || !order.customer?.phone) {
+  const order = body as {
+    id?: string;
+    deliveryDate?: string;
+    lines?: unknown[];
+    customer?: { phone?: string; area?: string };
+  };
+  if (
+    !order?.id ||
+    !/^\d{4}-\d{2}-\d{2}$/.test(order.deliveryDate ?? "") ||
+    !Array.isArray(order.lines) ||
+    !order.lines.length ||
+    !order.customer?.phone ||
+    !order.customer?.area
+  ) {
     return NextResponse.json({ ok: false, error: "Incomplete order" }, { status: 422 });
   }
 
