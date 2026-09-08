@@ -25,10 +25,22 @@ export function Photo({
 }) {
   return (
     <div
-      className={`overflow-hidden ${fill ? "absolute inset-0" : "relative"} ${src ? "" : tone === "warm" ? "photo-slot" : "photo-slot--cool"} ${className}`}
+      // The duotone stays underneath a real photo so a slow or failed load
+      // still shows the intended tone instead of a blank box.
+      className={`overflow-hidden ${fill ? "absolute inset-0" : "relative"} ${tone === "warm" ? "photo-slot" : "photo-slot--cool"} ${className}`}
     >
       {src ? (
-        <Image src={src} alt={label} fill sizes={sizes} priority={priority} className="object-cover" />
+        <Image
+          src={src}
+          alt={label}
+          fill
+          sizes={sizes}
+          priority={priority}
+          // Remote (Commons) photos are already resized by their host and are
+          // loaded straight by the browser; local files go through the optimizer.
+          unoptimized={src.startsWith("http")}
+          className="object-cover"
+        />
       ) : (
         <span className="absolute bottom-3 left-3 rounded-sm border border-white/20 bg-night/40 px-2 py-1 text-[10px] font-semibold tracking-[.08em] uppercase backdrop-blur-sm">
           {label}

@@ -1,4 +1,4 @@
-import { agency, footer } from "@/lib/content";
+import { agency, commonsPage, footer, photoCredits } from "@/lib/content";
 
 import { Mark } from "./ui";
 
@@ -54,6 +54,28 @@ export function Footer() {
           </ul>
         </address>
       </div>
+
+      <details className="group border-t border-line px-5 text-[11px] font-medium text-mist sm:px-6">
+        <summary className="flex cursor-pointer list-none items-center justify-between py-4 [&::-webkit-details-marker]:hidden">
+          <span>Crédits photo · Wikimedia Commons</span>
+          <span aria-hidden className="transition-transform group-open:rotate-45">
+            +
+          </span>
+        </summary>
+        <ul className="grid gap-x-8 gap-y-1.5 pb-5 sm:grid-cols-2 lg:grid-cols-3">
+          {photoCredits.map((credit) => (
+            <li key={credit.file}>
+              <a href={commonsPage(credit)} target="_blank" rel="noreferrer" className="hover:text-amber">
+                {credit.title}
+              </a>
+              , {credit.author} ·{" "}
+              <a href={credit.licenseUrl} target="_blank" rel="noreferrer" className="hover:text-amber">
+                {credit.license}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </details>
 
       <div className="flex flex-col gap-1 border-t border-line px-5 py-4 text-[11px] font-medium text-mist sm:flex-row sm:justify-between sm:px-6">
         <p>

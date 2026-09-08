@@ -71,9 +71,14 @@ Defined in `src/app/globals.css`. All type is **Inter Tight** (500, 600, 700) vi
 
 ## Photography
 
-The Vita look depends on photography, and none was available, so every photo position renders as a
-warm or cool duotone slot with a caption naming the intended shot. To drop a real image in, put the
-file in `public/` and set the matching field in `src/lib/content.ts`:
+Every photo position except the team portraits is filled with a freely licensed photograph from
+Wikimedia Commons (CC BY, CC BY-SA or public domain), listed with author and licence in `photos` at
+the top of `src/lib/content.ts`. The browser loads them straight from Commons via
+`Special:FilePath` at the requested width, and the footer renders the required attribution from
+the same list. Any entry can be swapped for the agency's own photo: put the file in `public/` and
+set the matching field to its path, then drop the entry from `photos` so the credit disappears too.
+
+The fields, in page order:
 
 - `hero.image` — full-bleed hero
 - `categories[].image` — the three category tiles
