@@ -19,6 +19,8 @@
      reveals are GSAP (components/motion.tsx). */
   --animate-marquee: marquee 60s linear infinite;
   --animate-wiggle: wiggle 5s ease-in-out infinite;
+  --animate-spin-slow: spin-slow 18s linear infinite;
+  --animate-drift: drift 48s linear infinite;
   --animate-fade-in: fade-in 0.3s ease-out both;
   --animate-modal-in: modal-in 0.4s var(--ease-out-soft) both;
 
@@ -28,6 +30,20 @@
     }
     to {
       transform: translateX(-50%);
+    }
+  }
+
+  /* Round sticker text ring. */
+  @keyframes spin-slow {
+    to {
+      rotate: 360deg;
+    }
+  }
+
+  /* Pattern band creeps sideways by exactly one tile, so it loops. */
+  @keyframes drift {
+    to {
+      background-position-x: 320px;
     }
   }
 
@@ -135,7 +151,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee,
-  .animate-wiggle {
+  .animate-wiggle,
+  .animate-drift {
     animation: none;
   }
 }

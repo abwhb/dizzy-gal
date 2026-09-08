@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
+import { PatternBand, Scallop } from "@/components/decor";
 import { Illustration } from "@/components/illustrations";
 import { flyToCart } from "@/components/motion";
 import { SectionRail } from "@/components/section-rail";
@@ -13,8 +14,9 @@ export function Shop() {
   return (
     <section
       id="shop"
-      className="grid grid-cols-[46px_minmax(0,1fr)] border-b-[3px] border-burgundy bg-lemon"
+      className="relative grid grid-cols-[46px_minmax(0,1fr)] border-b-[3px] border-burgundy bg-lemon"
     >
+      <Scallop color="#F2EFE6" />
       <SectionRail label="Our cakes in a jar" />
       <div>
         {products.map((product) => (
@@ -48,8 +50,10 @@ function ProductFeature({ product }: { product: Product }) {
     <article className="grid grid-cols-[repeat(auto-fit,minmax(min(300px,100%),1fr))] items-stretch">
       <div
         data-reveal
-        className="relative flex min-h-[clamp(340px,46vw,560px)] items-center justify-center border-r-[3px] border-burgundy bg-strawberry p-5 sm:p-8"
+        className="relative flex min-h-[clamp(340px,46vw,560px)] items-center justify-center overflow-hidden border-r-[3px] border-burgundy bg-strawberry p-6 pt-12 sm:p-8 sm:pt-14"
       >
+        <PatternBand overlay stroke="rgba(87,21,31,.16)" />
+
         <div
           data-float
           className="relative aspect-3/4 w-full max-w-[330px] overflow-hidden rounded-[18px] border-[3px] border-burgundy bg-cream"
@@ -64,14 +68,17 @@ function ProductFeature({ product }: { product: Product }) {
               priority
             />
           ) : (
-            <span className="absolute inset-3 flex items-center justify-center rounded-[10px] border-2 border-dashed border-burgundy/35 px-4 text-center text-[10px] font-semibold tracking-[.16em] text-burgundy/60 uppercase">
-              Drop the {product.name} jar shot
-            </span>
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-dizzy-orange">
+              <Illustration name="jar" strokeWidth={1.6} className="w-[68%]" />
+              <span className="text-[9px] font-semibold tracking-[.22em] text-burgundy/55 uppercase">
+                jar shot coming soon
+              </span>
+            </div>
           )}
         </div>
 
         {product.tag ? (
-          <span className="absolute top-3.5 left-3.5 rounded-full border-2 border-burgundy bg-burgundy px-[14px] py-[7px] text-[11px] font-semibold tracking-[.18em] text-cream uppercase sm:top-[22px] sm:left-[22px]">
+          <span className="absolute top-9 left-3.5 rounded-full border-2 border-burgundy bg-burgundy px-[14px] py-[7px] text-[11px] font-semibold tracking-[.18em] text-cream uppercase sm:top-11 sm:left-[22px]">
             {product.tag}
           </span>
         ) : null}
@@ -84,7 +91,7 @@ function ProductFeature({ product }: { product: Product }) {
 
       <div
         data-reveal
-        className="flex flex-col justify-center gap-[18px] px-[clamp(20px,3vw,44px)] py-[clamp(28px,4vw,56px)]"
+        className="flex flex-col justify-center gap-[18px] px-[clamp(20px,3vw,44px)] py-[clamp(28px,4vw,56px)] pt-[clamp(40px,5vw,64px)]"
       >
         <h3 className="font-display text-[clamp(38px,5.6vw,76px)] leading-[.9] font-extrabold tracking-[-.03em] text-burgundy uppercase">
           {product.name}
@@ -117,7 +124,7 @@ function ProductFeature({ product }: { product: Product }) {
           type="button"
           onClick={handleAdd}
           aria-live="polite"
-          className={`cursor-pointer self-start rounded-full px-8 py-[15px] text-sm font-semibold tracking-[.16em] text-cream uppercase transition-[transform,background-color] duration-200 hover:scale-[1.04] active:scale-[.97] ${
+          className={`cursor-pointer self-start rounded-full px-8 py-[15px] text-sm font-semibold tracking-[.16em] text-cream uppercase transition-[scale,background-color] duration-200 hover:scale-[1.04] active:scale-[.97] ${
             justAdded ? "bg-dizzy-orange" : "bg-burgundy hover:bg-dizzy-orange"
           }`}
         >

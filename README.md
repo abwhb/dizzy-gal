@@ -38,11 +38,28 @@ importing anything:
 
 | Attribute | Effect |
 | --- | --- |
-| `data-hero="pill\|title\|tagline\|cta"` | Intro timeline — the lockup flies in letter by letter, the `!` keeps bobbing |
+| `data-hero="pill\|title\|tagline\|cta\|zzz\|doodle\|badge"` | Intro timeline — the lockup flies in letter by letter and wobbles under the pointer, the `!` keeps bobbing, doodles and the sticker pop in after |
 | `data-hero-content` | Parallaxes up and fades as the hero scrolls away |
+| `data-parallax="0.5"` | Follows the pointer, scaled by depth (hero doodles) |
 | `data-reveal` / `"pop"` / `"slide"` | Scroll-in; siblings that enter together stagger automatically |
-| `data-float` | Idle bob (the jar) |
+| `data-float` | Idle bob (the jar, the doodles) |
 | `data-cart-badge` | Target for the fly-to-cart dot |
+
+## Brand furniture
+
+`src/components/decor.tsx` holds the pieces that make the page read as one hand, all built from
+the same line marks as the illustrations:
+
+- **`PatternBand`** — the brand board's doodle pattern as a tiled SVG data URL; a full-width
+  drifting band between sections, or an `overlay` texture on a panel.
+- **`Scallop`** — a row of half-discs in the colour of the section above, hanging over the edge
+  like icing. Drop it as the first child of any `relative` section.
+- **`SpinBadge`** — the round "made to make you dizzy" sticker with text on a slowly spinning
+  ring.
+- **`Squiggle`** (in `illustrations.tsx`) — the wavy underline the board draws under flavour names.
+
+The brand-story gallery is a sticker sheet of the drawn marks until photos exist; setting
+`gallery[].image` swaps a photo into the same tile.
 
 Elements with `data-hero` / `data-reveal` are pre-hidden by CSS only once JS has flagged `<html
 class="js">` (see `layout.tsx`), so nothing flashes before GSAP runs and nothing is lost without
@@ -71,9 +88,10 @@ Defined in `src/app/globals.css`. The brand board specifies **Astrofat Extra Bol
 which isn't available as a web font — **Baloo 2 ExtraBold** stands in as the closest chunky-rounded
 match, with **Poppins** for body text.
 
-The strawberry, lemon, whipped-cream, cake and heart marks in `src/components/illustrations.tsx`
-are inline SVG line drawings in the brand board's style. They take `currentColor`, so each usage
-sets its own colour.
+The line marks in `src/components/illustrations.tsx` — strawberry, lemon, whipped cream, cake,
+heart, the sleepy `zZz`, star, spoon, dizzy smiley and the jar — are inline SVG drawings in the
+brand board's style, kept as path data so the pattern can reuse them. They take `currentColor`,
+so each usage sets its own colour.
 
 ## Photography
 

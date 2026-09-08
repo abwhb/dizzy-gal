@@ -4,7 +4,17 @@
  * lives here.
  */
 
-export type IllustrationName = "strawberry" | "lemon" | "cream" | "cake" | "heart";
+export type IllustrationName =
+  | "strawberry"
+  | "lemon"
+  | "cream"
+  | "cake"
+  | "heart"
+  | "zzz"
+  | "star"
+  | "spoon"
+  | "smiley"
+  | "jar";
 
 export type Ingredient = {
   label: string;
@@ -31,6 +41,9 @@ export type PromiseItem = {
 export type GalleryTile = {
   label: string;
   bg: string;
+  /** Drawn sticker shown until a photo exists. */
+  illustration: IllustrationName;
+  /** A real photo replaces the sticker at the same crop. */
   image?: string;
 };
 
@@ -41,6 +54,7 @@ export type FeedCard =
       small: string;
       bg: string;
       fg: string;
+      doodle?: IllustrationName;
     }
   | {
       kind: "photo";
@@ -49,6 +63,12 @@ export type FeedCard =
       fg: string;
       image?: string;
     };
+
+export const hero = {
+  tagline: ["cake worth", "losing your head over."],
+  cta: "go on. dig in.",
+  badge: "MADE TO MAKE YOU DIZZY • GO ON. DIG IN • ",
+};
 
 export const products: Product[] = [
   {
@@ -83,19 +103,36 @@ export const marqueeLines: string[] = [
   "Zero boring flavours",
 ];
 
+/** Glyphs between marquee lines, cycled in order. */
+export const marqueeGlyphs: IllustrationName[] = ["star", "zzz", "strawberry", "smiley"];
+
 export const gallery: GalleryTile[] = [
-  { label: "jar close-up", bg: "#FFD34D" },
-  { label: "spoon dig-in shot", bg: "#FF8BA7" },
-  { label: "gift box", bg: "#F2EFE6" },
-  { label: "layers macro", bg: "#FF8BA7" },
-  { label: "tote bag", bg: "#F2EFE6" },
-  { label: "sticker set", bg: "#FFD34D" },
+  { label: "real strawberries", bg: "#FFD34D", illustration: "strawberry" },
+  { label: "cake, obviously", bg: "#FF8BA7", illustration: "cake" },
+  { label: "spoon required", bg: "#F2EFE6", illustration: "spoon" },
+  { label: "you look dizzy", bg: "#FF8BA7", illustration: "smiley" },
+  { label: "zero boring flavours", bg: "#F2EFE6", illustration: "star" },
+  { label: "zzz. food coma.", bg: "#FFD34D", illustration: "zzz" },
 ];
 
 export const feed: FeedCard[] = [
-  { kind: "quote", bg: "#FF8BA7", fg: "#57151F", big: "You look dizzy.", small: "probably need cake." },
+  {
+    kind: "quote",
+    bg: "#FF8BA7",
+    fg: "#57151F",
+    big: "You look dizzy.",
+    small: "probably need cake.",
+    doodle: "smiley",
+  },
   { kind: "photo", bg: "#FFD34D", fg: "#57151F", small: "spoon + jar photo" },
-  { kind: "quote", bg: "#57151F", fg: "#F2EFE6", big: "Currently spiralling.", small: "send cake." },
+  {
+    kind: "quote",
+    bg: "#57151F",
+    fg: "#F2EFE6",
+    big: "Currently spiralling.",
+    small: "send cake.",
+    doodle: "zzz",
+  },
   { kind: "photo", bg: "#FF6A00", fg: "#F2EFE6", small: "strawberry top-down" },
   {
     kind: "quote",
@@ -103,9 +140,17 @@ export const feed: FeedCard[] = [
     fg: "#57151F",
     big: "Bad day? Cake. Good day? Also cake.",
     small: "a policy, not a slogan.",
+    doodle: "star",
   },
   { kind: "photo", bg: "#FF8BA7", fg: "#57151F", small: "packaging flat-lay" },
-  { kind: "quote", bg: "#FFD34D", fg: "#57151F", big: "One more bite won’t hurt.", small: "promise." },
+  {
+    kind: "quote",
+    bg: "#FFD34D",
+    fg: "#57151F",
+    big: "One more bite won’t hurt.",
+    small: "promise.",
+    doodle: "spoon",
+  },
 ];
 
 export const footerColumns: { heading: string; links: { label: string; href?: string }[] }[] = [
