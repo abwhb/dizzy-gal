@@ -1,9 +1,11 @@
 # Voyages Cortoba — landing page
 
 Landing page for [Voyages Cortoba](https://www.voyagescortoba.com), a Laval, Québec travel agency
-specialising in Hajj and Omra pilgrimages, ethical tourism and ticketing. The layout takes its cues
-from the Vita Travel template: an editorial serif headline, a booking-style search bar under the hero,
-program cards, a destinations grid, testimonials and a checkout-like contact form.
+specialising in Hajj and Omra pilgrimages, ethical tourism and ticketing. The page follows the
+[Vita Travels](https://vita-travel.webflow.io/) design language section for section: a near-black
+teal ground, one heavy tight grotesque, a hairline-bordered grid of cells, a giant single-word hero
+over a full-bleed photo, white pill and dark block buttons ending in a small square, amber stars and
+map points, and almost no corner radius.
 
 Built with Next.js 16 (App Router), React 19 and Tailwind CSS v4. Copy is in Canadian French.
 
@@ -18,69 +20,67 @@ npm run lint
 
 ## What's on the page
 
-One scrolling page, composed in `src/app/page.tsx`:
+One scrolling page, composed in `src/app/page.tsx`, in the same order as the Vita home page:
 
-| Section | Component |
-| --- | --- |
-| Sticky header with mobile menu | `src/components/header.tsx` |
-| Hero, search bar, trust strip | `src/components/hero.tsx` |
-| Three service pillars | `src/components/services.tsx` |
-| Omra departures with prices | `src/components/departures.tsx` |
-| Hajj Québec 2026 feature | `src/components/hajj.tsx` |
-| Destinations grid | `src/components/destinations.tsx` |
-| Four-step process | `src/components/steps.tsx` |
-| About + key figures | `src/components/about.tsx` |
-| Testimonials + airline partners | `src/components/testimonials.tsx` |
-| FAQ accordion | `src/components/faq.tsx` |
-| Contact details + enquiry form | `src/components/contact.tsx` |
-| Footer | `src/components/footer.tsx` |
+| Vita section | Cortoba section | Component |
+| --- | --- | --- |
+| Bordered nav with "Explore" cell | Nav with "Explorer" cell | `src/components/header.tsx` |
+| "Travel" over a mountain photo | "Pèlerinage" over the Haram | `src/components/hero.tsx` |
+| "More than 100 countries. See for yourself" | "Plus de 20 ans… Voyez par vous-même" | `src/components/statement.tsx` |
+| Three retreat types with country counts | Omra, Hajj, voyages organisés with counts | `src/components/categories.tsx` |
+| Photo, editorial paragraph, big stats, trusted-by logos | Same, with airline wordmarks | `src/components/about.tsx` |
+| Two-column retreat cards with icon meta rows | Omra departure cards with prices | `src/components/departures.tsx` |
+| Four steps over a foggy photo | Four steps from choice to departure | `src/components/process.tsx` |
+| Dark map with amber points | Destinations from Montréal | `src/components/map.tsx` |
+| "The 200+ faces behind Vita Travel" | "Les visages derrière Voyages Cortoba" | `src/components/team.tsx` |
+| Panoramic photo band | Same | `src/components/panorama.tsx` |
+| Logo, oversized "+" links, contact | Same, plus legal line | `src/components/footer.tsx` |
 
-Shared primitives (container, kicker, buttons, photo slot, icons) live in `src/components/ui.tsx`.
+Shared primitives (photo slot, logo mark, buttons, icons, price formatting) live in
+`src/components/ui.tsx`.
 
 ## Editing content
 
-All copy and data is in `src/lib/content.ts`: navigation, hero, departures and prices, Hajj
-inclusions, destinations, FAQ, contact details and footer links. Adding a departure is a matter of
-appending to `departures`; the section renders whatever is in that array. A departure with
-`price: null` shows "Tarif à venir" instead of a price.
+All copy and data is in `src/lib/content.ts`: navigation, hero, categories, departures and prices,
+process steps, map points, team roles and contact details. A departure with `price: null` shows
+"tarif à venir" instead of a price. Map points are latitude/longitude pairs; the map projects them
+itself.
 
 ### Before publishing
 
-- **Testimonials are placeholders.** The three entries in `testimonials` are explicitly marked as
-  such and must be replaced with real, authorised client quotes.
+- **Team names are placeholders.** The four entries in `team.members` carry real roles but the
+  name reads "Nom à compléter" until the agency supplies names and portraits.
 - **Prices.** Only the December 2026 Omra price was public at the time of writing. Confirm every
   figure and date with the agency.
-- **Contact form.** There is no backend yet; submitting opens the visitor's mail client with the
-  request pre-filled and addressed to the agency. Wire it to a form service or API route when ready.
+- **Partner wordmarks** are plain text; replace with logo files when the agency provides them.
 
-## Brand
+## Design tokens
 
-| Token | Value |
-| --- | --- |
-| `ink` | `#14211B` |
-| `green` | `#0F3D2E` |
-| `forest` | `#1B5A44` |
-| `mint` | `#E3EEE7` |
-| `sand` | `#F5F0E7` |
-| `paper` | `#FFFDF8` |
-| `line` | `#DCD3C4` |
-| `muted` | `#6B6A62` |
-| `gold` | `#C9A24A` |
+| Token | Value | Use |
+| --- | --- | --- |
+| `night` | `#0A1A20` | page ground |
+| `night-2` | `#0E2129` | hover ground |
+| `teal` | `#16303A` | block buttons |
+| `line` | `#1E333B` | hairline grid borders |
+| `mist` | `#96A6AB` | muted text |
+| `amber` | `#F2A93B` | stars, map points, hover |
 
-Defined in `src/app/globals.css`. Headlines use **Playfair Display**, body text **DM Sans**, both
-loaded through `next/font/google`.
+Defined in `src/app/globals.css`. All type is **Inter Tight** (500, 600, 700) via
+`next/font/google`, set with negative letter-spacing; display sizes go up to
+`clamp(76px, 17vw, 232px)` in the hero.
 
 ## Photography
 
-No photography was available, so every photo position renders as a duotone slot with a caption
-naming the intended shot. To drop a real image in, put the file in `public/` and set the matching
-field in `src/lib/content.ts`:
+The Vita look depends on photography, and none was available, so every photo position renders as a
+warm or cool duotone slot with a caption naming the intended shot. To drop a real image in, put the
+file in `public/` and set the matching field in `src/lib/content.ts`:
 
-- `hero.image.src` — the hero portrait
-- `services[].image` — the three service cards
+- `hero.image` — full-bleed hero
+- `categories[].image` — the three category tiles
+- `about.image` — the large about photo
 - `departures[].image` — each departure card
-- `hajj.image` — the Hajj feature
-- `destinations[].image` — the destination tiles
-- `about.image` — the team photo
+- `process.image` — the background behind the four steps
+- `panorama.image` — the wide band above the footer
 
-Each one swaps a `next/image` into the same box at the same crop; nothing else needs to change.
+Team portraits are wired the same way once names exist. Each swap puts a `next/image` into the same
+box at the same crop; nothing else needs to change.

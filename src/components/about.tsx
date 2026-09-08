@@ -1,54 +1,47 @@
-import { about, stats } from "@/lib/content";
+import { about } from "@/lib/content";
 
-import { Container, Kicker, Photo, SectionTitle } from "./ui";
+import { Photo } from "./ui";
 
 export function About() {
   return (
-    <section id="a-propos" className="scroll-mt-20 border-y border-line bg-paper py-[clamp(64px,9vw,120px)]">
-      <Container>
-        <div className="grid items-start gap-12 lg:grid-cols-[1.05fr_.95fr] lg:gap-16">
-          <div>
-            <Kicker className="text-green">{about.kicker}</Kicker>
-            <SectionTitle className="mt-4">{about.title}</SectionTitle>
-            <div className="mt-6 flex flex-col gap-4 text-[16px] leading-[1.75] text-ink/75">
-              {about.paragraphs.map((paragraph) => (
-                <p key={paragraph}>{paragraph}</p>
-              ))}
-            </div>
-
-            <dl className="mt-8 grid grid-cols-2 gap-x-8 gap-y-5 border-t border-line pt-7 sm:grid-cols-4">
-              {about.facts.map((fact) => (
-                <div key={fact.label}>
-                  <dt className="text-[10px] font-semibold tracking-[.2em] text-muted uppercase">{fact.label}</dt>
-                  <dd className="mt-1 text-[15px] font-semibold">{fact.value}</dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-
-          <div className="lg:pt-10">
-            <Photo
-              label={about.imageLabel}
-              src={about.image}
-              tone="light"
-              sizes="(max-width: 1024px) 100vw, 45vw"
-              className="aspect-[5/4] rounded-[28px]"
-            />
-          </div>
+    <section className="border-b border-line">
+      <div className="grid lg:grid-cols-2">
+        <div className="border-b border-line p-5 sm:p-6 lg:border-r lg:border-b-0">
+          <Photo
+            label={about.imageLabel}
+            src={about.image}
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            className="aspect-[4/3] rounded-[3px] lg:aspect-square"
+          />
         </div>
 
-        <ul className="mt-16 grid gap-8 border-t border-line pt-10 sm:grid-cols-2 lg:grid-cols-4">
-          {stats.map((stat) => (
-            <li key={stat.label}>
-              <p className="font-display text-[52px] leading-none text-green">
-                {stat.value}
-                <span className="ml-1 text-[28px] text-gold">{stat.suffix}</span>
-              </p>
-              <p className="mt-3 max-w-[220px] text-[14px] leading-[1.6] text-ink/70">{stat.label}</p>
-            </li>
-          ))}
-        </ul>
-      </Container>
+        <div className="flex flex-col p-5 sm:p-6">
+          <p className="max-w-[520px] text-[17px] leading-[1.35] font-semibold tracking-[-.02em] text-balance sm:text-[19px]">
+            {about.text}
+          </p>
+
+          <dl className="mt-12 grid grid-cols-2 gap-6 sm:mt-16">
+            {about.stats.map((stat) => (
+              <div key={stat.label}>
+                <dt className="sr-only">{stat.label}</dt>
+                <dd className="text-[40px] leading-none font-semibold tracking-[-.04em] sm:text-[48px]">{stat.value}</dd>
+                <p className="mt-3 max-w-[180px] text-[13px] leading-[1.3] font-medium text-white/85">{stat.label}</p>
+              </div>
+            ))}
+          </dl>
+
+          <div className="mt-auto flex flex-col gap-5 pt-16 sm:flex-row sm:items-center sm:justify-between lg:pt-24">
+            <p className="max-w-[240px] text-[12px] leading-[1.4] font-medium text-mist">{about.trusted}</p>
+            <ul className="flex flex-wrap items-center gap-x-8 gap-y-2">
+              {about.partners.map((partner) => (
+                <li key={partner} className="text-[13px] font-bold tracking-[-.02em] text-white/70">
+                  {partner}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
     </section>
   );
 }

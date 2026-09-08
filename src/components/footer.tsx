@@ -1,86 +1,66 @@
-import { agency, footerColumns } from "@/lib/content";
+import { agency, footer } from "@/lib/content";
 
-import { Container, StarMark } from "./ui";
+import { Mark } from "./ui";
 
 export function Footer() {
   return (
-    <footer className="bg-ink text-sand">
-      <Container className="py-14">
-        <div className="grid gap-10 lg:grid-cols-[1.4fr_repeat(3,1fr)]">
-          <div>
-            <a href="#top" className="flex items-center gap-2.5">
-              <StarMark className="h-5 w-5 text-gold" />
-              <span className="font-display text-[24px] leading-none">
-                Voyages <span className="italic">Cortoba</span>
-              </span>
-            </a>
-            <p className="mt-4 max-w-[340px] text-[14px] leading-[1.7] text-sand/65">
-              Agence de voyages spécialisée dans le Hajj, la Omra et le tourisme éthique. Départs de Montréal,
-              accompagnement francophone.
-            </p>
-            <ul className="mt-6 flex flex-col gap-1.5 text-[14px]">
-              <li>
-                <a href={agency.phone.href} className="hover:text-gold">
-                  {agency.phone.label}
-                </a>
-                <span className="text-sand/40"> · </span>
-                <a href={agency.tollFree.href} className="hover:text-gold">
-                  {agency.tollFree.label}
-                </a>
-              </li>
-              <li>
-                <a href={agency.email.href} className="hover:text-gold">
-                  {agency.email.label}
-                </a>
-              </li>
-              <li className="text-sand/65">
-                {agency.address.street}, {agency.address.city}
-              </li>
-              <li className="text-sand/65">{agency.hours}</li>
-            </ul>
-            <ul className="mt-6 flex gap-3">
-              {agency.social.map((item) => (
-                <li key={item.label}>
-                  <a
-                    href={item.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex rounded-full border border-sand/25 px-4 py-1.5 text-[12px] font-semibold tracking-[.1em] uppercase transition-colors hover:border-gold hover:text-gold"
-                  >
-                    {item.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
+    <footer id="contact" className="scroll-mt-14 border-t border-line">
+      <div className="grid gap-10 px-5 pt-10 pb-24 sm:px-6 md:grid-cols-[1fr_1fr_1fr] lg:pb-40">
+        <a href="#top" className="flex items-start gap-2 text-[14px] font-bold tracking-[-.02em]">
+          <Mark className="mt-0.5 h-3.5 w-3.5" />
+          {agency.name}
+        </a>
 
-          {footerColumns.map((column) => (
-            <div key={column.heading}>
-              <p className="text-[11px] font-semibold tracking-[.22em] text-gold uppercase">{column.heading}</p>
-              <ul className="mt-4 flex flex-col gap-2.5 text-[14px]">
-                {column.links.map((link) => (
-                  <li key={link.label}>
-                    <a
-                      href={link.href}
-                      className="text-sand/80 transition-colors hover:text-gold"
-                      {...(link.href.startsWith("http") ? { target: "_blank", rel: "noreferrer" } : {})}
-                    >
-                      {link.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
+        <nav aria-label="Pied de page">
+          <ul>
+            {footer.links.map((item) => (
+              <li key={item.label}>
+                <a
+                  href={item.href}
+                  className="group inline-flex items-baseline text-[clamp(28px,3vw,34px)] leading-[1.15] font-semibold tracking-[-.04em]"
+                >
+                  <span className="mr-1 text-mist transition-colors group-hover:text-amber">+</span>
+                  {item.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
 
-        <div className="mt-12 flex flex-col gap-3 border-t border-sand/15 pt-6 text-[12px] leading-[1.6] text-sand/50 sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            © {new Date().getFullYear()} {agency.name} · {agency.legalName}
-          </p>
-          <p>{agency.permit}</p>
-        </div>
-      </Container>
+        <address className="flex flex-col gap-2 text-[12px] font-semibold not-italic">
+          <a href={agency.phone.href} className="hover:text-amber">
+            {agency.phone.label}
+          </a>
+          <a href={agency.tollFree.href} className="hover:text-amber">
+            {agency.tollFree.label}
+          </a>
+          <a href={agency.email.href} className="hover:text-amber">
+            {agency.email.label}
+          </a>
+          <a href={agency.address.mapsUrl} target="_blank" rel="noreferrer" className="mt-3 text-white/80 hover:text-amber">
+            {agency.address.street}
+            <br />
+            {agency.address.city}
+          </a>
+          <p className="text-white/80">{agency.hours}</p>
+          <ul className="mt-3 flex gap-4">
+            {agency.social.map((item) => (
+              <li key={item.label}>
+                <a href={item.href} target="_blank" rel="noreferrer" className="text-mist hover:text-amber">
+                  {item.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </address>
+      </div>
+
+      <div className="flex flex-col gap-1 border-t border-line px-5 py-4 text-[11px] font-medium text-mist sm:flex-row sm:justify-between sm:px-6">
+        <p>
+          © {new Date().getFullYear()} {agency.name} · {agency.legalName}
+        </p>
+        <p>{agency.permit}</p>
+      </div>
     </footer>
   );
 }

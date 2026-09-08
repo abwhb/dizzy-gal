@@ -1,25 +1,14 @@
 import type { Metadata } from "next";
-import { DM_Sans, Playfair_Display } from "next/font/google";
+import { Inter_Tight } from "next/font/google";
 
 import { agency } from "@/lib/content";
 
 import "./globals.css";
 
-/**
- * Editorial serif for headlines, a quiet grotesque for everything else —
- * the magazine-meets-booking feel the landing page is modelled on.
- */
-const playfair = Playfair_Display({
+/** One tight grotesque for everything, set heavy, as in the Vita design. */
+const interTight = Inter_Tight({
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  style: ["normal", "italic"],
-  variable: "--font-serif",
-  display: "swap",
-});
-
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["500", "600", "700"],
   variable: "--font-sans",
   display: "swap",
 });
@@ -39,9 +28,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    // The font variables live on <html> so the `--font-display` / `--font-body`
-    // theme tokens, which resolve at :root, can reference them.
-    <html lang="fr-CA" className={`${playfair.variable} ${dmSans.variable}`}>
+    // The font variable lives on <html> so the `--font-*` theme tokens,
+    // which resolve at :root, can reference it.
+    <html lang="fr-CA" className={interTight.variable}>
       <body>{children}</body>
     </html>
   );

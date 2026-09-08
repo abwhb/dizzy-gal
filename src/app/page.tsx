@@ -1,31 +1,29 @@
 import { About } from "@/components/about";
-import { Contact } from "@/components/contact";
+import { Categories } from "@/components/categories";
 import { Departures } from "@/components/departures";
-import { Destinations } from "@/components/destinations";
-import { Faq } from "@/components/faq";
 import { Footer } from "@/components/footer";
-import { Hajj } from "@/components/hajj";
 import { Header } from "@/components/header";
 import { Hero } from "@/components/hero";
-import { Services } from "@/components/services";
-import { Steps } from "@/components/steps";
-import { Testimonials } from "@/components/testimonials";
+import { DestinationMap } from "@/components/map";
+import { Panorama } from "@/components/panorama";
+import { Process } from "@/components/process";
+import { Statement } from "@/components/statement";
+import { Team } from "@/components/team";
 
-export default function CortobaPage() {
+export default function Page() {
   return (
     <>
       <Header />
       <main>
         <Hero />
-        <Services />
-        <Departures />
-        <Hajj />
-        <Destinations />
-        <Steps />
+        <Statement />
+        <Categories />
         <About />
-        <Testimonials />
-        <Faq />
-        <Contact />
+        <Departures />
+        <Process />
+        <DestinationMap />
+        <Team />
+        <Panorama />
       </main>
       <Footer />
     </>
