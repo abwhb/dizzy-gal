@@ -41,9 +41,23 @@ importing anything:
 | `data-hero="pill\|title\|tagline\|cta\|zzz\|doodle\|badge"` | Intro timeline — the lockup flies in letter by letter and wobbles under the pointer, the `!` keeps bobbing, doodles and the sticker pop in after |
 | `data-hero-content` | Parallaxes up and fades as the hero scrolls away |
 | `data-parallax="0.5"` | Follows the pointer, scaled by depth (hero doodles) |
+| `data-header` | Sticky nav slips away on scroll-down, returns on scroll-up (and whenever something is added to the cart) |
+| `data-marquee` | The strip runs on GSAP so its speed follows scroll velocity — faster on a fast scroll, backwards on the way up |
 | `data-reveal` / `"pop"` / `"slide"` | Scroll-in; siblings that enter together stagger automatically |
+| `data-split="chars"` (+ `data-wobble`) | Letters rise out of a mask as it scrolls in; optionally wobble under the pointer |
+| `data-split="words-scrub"` | Words brighten one by one, tied to scroll position |
+| `data-draw` | Every path inside draws itself in (DrawSVG) |
+| `data-deal` | Children are dealt onto the grid from scattered positions, tied to scroll |
+| `data-scallop` | Icing edges drip down as they arrive |
+| `data-parallax-bg` | A background pattern drifts slower than the page |
+| `data-rise` | Slides up into place as the page bottom nears |
+| `data-pin-rail` | ≥1024px only: the section pins and vertical scroll becomes the rail's horizontal travel; touch keeps the native swipe |
 | `data-float` | Idle bob (the jar, the doodles) |
 | `data-cart-badge` | Target for the fly-to-cart dot |
+
+Two ScrollTrigger rules learned the hard way: never put a CSS `transition` on `transform` for anything GSAP animates (it reads its own start state as the end), and when a `from()` tween moves the element you're triggering on, trigger on an untransformed parent instead — otherwise the start point is measured mid-shift and can fall past the bottom of the page.
+
+The cursor is a lemon slice on pointer devices, and a slice of cake over anything clickable (`globals.css`, bottom). Text fields keep the I-beam.
 
 ## Brand furniture
 

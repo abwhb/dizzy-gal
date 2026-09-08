@@ -8,7 +8,7 @@ export function SiteHeader() {
   const { cartCount, openNewsletter } = useSite();
 
   return (
-    <header className="sticky top-0 z-20 flex items-center justify-between gap-3 border-b-[3px] border-burgundy bg-cream px-4 py-2.5 sm:gap-4 sm:px-5 sm:py-3">
+    <header data-header className="sticky top-0 z-20 flex items-center justify-between gap-3 border-b-[3px] border-burgundy bg-cream px-4 py-2.5 sm:gap-4 sm:px-5 sm:py-3">
       <a
         href="#top"
         className="font-display text-[22px] leading-none font-extrabold tracking-[-.02em] whitespace-nowrap text-dizzy-orange transition-transform hover:scale-[1.03] hover:text-dizzy-orange sm:text-[26px]"

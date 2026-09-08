@@ -48,15 +48,17 @@ export function PatternBand({
   stroke = "#F2EFE6",
   overlay = false,
   className = "",
+  ...rest
 }: {
   bg?: string;
   stroke?: string;
   overlay?: boolean;
   className?: string;
-}) {
+} & React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
       aria-hidden="true"
+      {...rest}
       className={`${
         overlay ? "pointer-events-none absolute inset-0" : "h-[86px] border-b-[3px] border-burgundy"
       } motion-safe:animate-drift ${className}`}
@@ -84,7 +86,8 @@ export function Scallop({ color, size = 40 }: { color: string; size?: number }) 
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none absolute inset-x-0 top-0 z-10"
+      data-scallop
+      className="pointer-events-none absolute inset-x-0 top-0 z-10 origin-top"
       style={{
         height: r + 1,
         backgroundImage: `radial-gradient(circle at 50% 0, ${color} 0 ${r - 3}px, #57151F ${r - 3}px ${r}px, transparent ${r + 0.5}px)`,

@@ -52,10 +52,11 @@ function ProductFeature({ product }: { product: Product }) {
         data-reveal
         className="relative flex min-h-[clamp(340px,46vw,560px)] items-center justify-center overflow-hidden border-r-[3px] border-burgundy bg-strawberry p-6 pt-12 sm:p-8 sm:pt-14"
       >
-        <PatternBand overlay stroke="rgba(87,21,31,.16)" />
+        <PatternBand overlay stroke="rgba(87,21,31,.16)" data-parallax-bg />
 
         <div
           data-float
+          data-draw
           className="relative aspect-3/4 w-full max-w-[330px] overflow-hidden rounded-[18px] border-[3px] border-burgundy bg-cream"
         >
           {product.jarImage ? (
@@ -93,7 +94,10 @@ function ProductFeature({ product }: { product: Product }) {
         data-reveal
         className="flex flex-col justify-center gap-[18px] px-[clamp(20px,3vw,44px)] py-[clamp(28px,4vw,56px)] pt-[clamp(40px,5vw,64px)]"
       >
-        <h3 className="font-display text-[clamp(38px,5.6vw,76px)] leading-[.9] font-extrabold tracking-[-.03em] text-burgundy uppercase">
+        <h3
+          data-split="chars"
+          className="font-display text-[clamp(38px,5.6vw,76px)] leading-[.9] font-extrabold tracking-[-.03em] text-burgundy uppercase"
+        >
           {product.name}
         </h3>
         <p className="max-w-[34ch] text-[clamp(15px,1.7vw,20px)] leading-[1.4] font-medium">
@@ -107,7 +111,10 @@ function ProductFeature({ product }: { product: Product }) {
               data-reveal="pop"
               className="group flex flex-col items-center gap-2"
             >
-              <span className="flex size-[76px] items-center justify-center rounded-full border-[3px] border-burgundy bg-cream text-dizzy-orange transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110 sm:size-[88px]">
+              <span
+                data-draw
+                className="flex size-[76px] items-center justify-center rounded-full border-[3px] border-burgundy bg-cream text-dizzy-orange transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110 sm:size-[88px]"
+              >
                 <Illustration
                   name={ingredient.illustration}
                   className="size-[46px] sm:size-[52px]"
