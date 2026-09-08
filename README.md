@@ -29,8 +29,10 @@ One scrolling page, composed in `src/app/page.tsx`:
 | Newsletter modal (shares `newsletter-form.tsx`) | `src/components/newsletter-modal.tsx` |
 | The falling mascot | `src/components/mascot.tsx` |
 
-**Placeholder content.** The reviews are stand-ins so the section can be seen — they render exactly
-like real content and are marked `placeholder: true` in `content.ts`. Replace them before launch.
+**Placeholder content.** The reviews are stand-ins so the section can be seen — they render
+exactly like real content and are marked `placeholder: true` in `content.ts`. Replace them
+before launch. The three flavours are Pink Lemonade, Midnight Berry, and Not a Tiramisu
+(coffee-soaked sponge, cream, and cocoa).
 
 ## Pages and checkout
 
@@ -68,6 +70,10 @@ the real ones.
 **One rule for client-only views.** Content that mounts after hydration (anything read from
 `localStorage`) must not carry `data-reveal` / `data-split` / `data-draw`: `<Motion/>` scans once
 on mount, and anything hidden by the CSS pre-hide that arrives later stays hidden.
+
+The mobile header opens a branded navigation panel with large links and a newsletter shortcut.
+The Social feel section has a hand-drawn arrow and previous/next controls alongside its native
+swipe rail; on desktop, those controls also move through the pinned scroll sequence.
 
 ## Motion
 
@@ -112,8 +118,8 @@ the same line marks as the illustrations:
   ring.
 - **`Squiggle`** (in `illustrations.tsx`) — the wavy underline the board draws under flavour names.
 
-The brand-story gallery is a sticker sheet of the drawn marks until photos exist; setting
-`gallery[].image` swaps a photo into the same tile.
+The brand-story gallery shows six food photographs with caption pills. Clearing a tile's
+`gallery[].image` restores its drawn illustration; the caption stays visible in either state.
 
 Elements with `data-hero` / `data-reveal` are pre-hidden by CSS only once JS has flagged `<html
 class="js">` (see `layout.tsx`), so nothing flashes before GSAP runs and nothing is lost without
@@ -149,15 +155,25 @@ so each usage sets its own colour.
 
 ## Photography
 
-There are no product photos in the handoff bundle, so every photo position renders as a labelled
-slot at the right aspect ratio. To drop a real image in, put the file in `public/` and set the
-matching field in `src/lib/content.ts`:
+Twelve generated concept images live in `public/images/` as WebP files (about 2 MB total).
+They retain the original dimensions: product and social portraits are 1086 × 1448 (3:4),
+and the story tiles are 1254 × 1254 (1:1). To replace an image, add the new file to `public/`
+and update its field in `src/lib/content.ts`:
 
 - `products[].jarImage` — the jar shot in the product panel
 - `gallery[].image` — the six brand-story tiles
 - `feed[].image` — the photo cards in the social rail
 
-Each one swaps a `next/image` into the same box at the same crop; nothing else needs to change.
+The product and story images fill their existing frames through `next/image`. Story captions
+remain overlaid on the photographs; `imageAlt` supplies a separate description for assistive
+technology. Social images include their own cream Polaroid borders and use `contain` to keep
+the entire print visible, with a slight alternating tilt and shadow.
+
+These assets were created with built-in image generation for this project. The jars illustrate
+the flavour descriptions and are not verified product or packaging photographs. People in the
+social images are fictional models, not customer testimonials. The original PNG collection
+and generation prompts are retained in the separate image handoff pack; only the lighter WebP
+copies are included in this repository.
 
 ## Design source
 
