@@ -35,6 +35,8 @@ export type Product = {
   warning: string;
   ingredients: Ingredient[];
   cta: string;
+  /** Price per jar, in `store.currency`. */
+  price: number;
   /** Left panel colour. */
   panel: string;
   /** Section colour while this flavour is showing. */
@@ -91,6 +93,28 @@ export const hero = {
   badge: "MADE TO MAKE YOU DIZZY • GO ON. DIG IN • ",
 };
 
+/**
+ * Store settings. PLACEHOLDER values — currency, prices, the delivery fee and
+ * the delivery areas are guesses to make the checkout work. Set the real ones.
+ */
+export const store = {
+  currency: "Rs",
+  deliveryFee: 250,
+  /** Orders of this many jars or more ship free (the marquee promises it). */
+  freeDeliveryFrom: 6,
+  deliveryAreas: ["Lahore", "Islamabad", "Karachi"],
+  /** Order before this hour (24h) for next-day delivery. */
+  cutoffHour: 14,
+  placeholder: true,
+};
+
+export const siteNav = [
+  { label: "Shop", href: "/#shop" },
+  { label: "Story", href: "/#story" },
+  { label: "Reviews", href: "/#reviews" },
+  { label: "Feed", href: "/#feed" },
+];
+
 export const products: Product[] = [
   {
     id: "pink-lemonade",
@@ -105,6 +129,7 @@ export const products: Product[] = [
       { label: "Whipped cream", illustration: "cream" },
     ],
     cta: "go on. dig in.",
+    price: 1200,
     panel: "#FF8BA7",
     bg: "#FFD34D",
   },
@@ -121,6 +146,7 @@ export const products: Product[] = [
       { label: "Ganache", illustration: "cream" },
     ],
     cta: "go on. dig in.",
+    price: 1350,
     panel: "#57151F",
     bg: "#FF8BA7",
     dark: true,
@@ -138,6 +164,7 @@ export const products: Product[] = [
       { label: "Cocoa", illustration: "chocolate" },
     ],
     cta: "go on. dig in.",
+    price: 1350,
     panel: "#FF6A00",
     bg: "#F2EFE6",
   },
@@ -268,8 +295,8 @@ export const footer = {
   blurb: "Drops, restocks, and 15% off your first jar. Zero spam, some chaos.",
   legal: "© 2026 Dizzy Gals",
   bottomLinks: [
-    { label: "Terms", href: "#" },
-    { label: "Privacy", href: "#" },
+    { label: "Terms", href: "/terms" },
+    { label: "Privacy", href: "/privacy" },
   ],
 };
 
@@ -283,7 +310,7 @@ export const newsletter = {
 export const footerColumns: { heading: string; links: { label: string; href?: string }[] }[] = [
   {
     heading: "Our flavours",
-    links: products.map((p) => ({ label: p.name, href: "#shop" })),
+    links: products.map((p) => ({ label: p.name, href: "/#shop" })),
   },
   {
     heading: "Contact",
@@ -299,10 +326,144 @@ export const footerColumns: { heading: string; links: { label: string; href?: st
   {
     heading: "Info",
     links: [
-      { label: "About us", href: "#story" },
-      { label: "Reviews", href: "#reviews" },
-      { label: "Shipping", href: "#" },
-      { label: "My orders", href: "#" },
+      { label: "About us", href: "/#story" },
+      { label: "Reviews", href: "/#reviews" },
+      { label: "Shipping", href: "/shipping" },
+      { label: "My orders", href: "/orders" },
     ],
   },
 ];
+
+// ─── Pages ──────────────────────────────────────────────────────────────────
+
+export type PageSection = { heading: string; body: string[] };
+
+export const shippingPage: { title: string; intro: string; sections: PageSection[] } = {
+  title: "Shipping",
+  intro: "Cake in a jar travels well. Here's how it gets to you.",
+  sections: [
+    {
+      heading: "Where we deliver",
+      body: [
+        `Right now we deliver in ${store.deliveryAreas.join(", ")}. If your city isn't on the list, pick "somewhere else" at checkout and we'll call you to see what we can do.`,
+      ],
+    },
+    {
+      heading: "When it arrives",
+      body: [
+        `Order before ${store.cutoffHour > 12 ? store.cutoffHour - 12 : store.cutoffHour}pm and your jars are baked, chilled and with you the next day. Order after that and they arrive the day after. We call to confirm before anything leaves the kitchen.`,
+      ],
+    },
+    {
+      heading: "What it costs",
+      body: [
+        `Delivery is ${store.currency} ${store.deliveryFee} per order. Orders of ${store.freeDeliveryFrom} jars or more ship free — we did say so on the strip at the top.`,
+      ],
+    },
+    {
+      heading: "Paying",
+      body: [
+        "Cash on delivery only, for now. Pay the rider when the jars arrive. Exact change is love, but we'll manage.",
+      ],
+    },
+    {
+      heading: "Once it's yours",
+      body: [
+        "Keep it in the fridge. Eat within three days — it will not make it that long, but that's the rule. It does not freeze well; don't.",
+      ],
+    },
+  ],
+};
+
+export const termsPage: { title: string; intro: string; sections: PageSection[] } = {
+  title: "Terms",
+  intro: "The short version: we make cake, you pay for cake, everyone's happy. The slightly longer version:",
+  sections: [
+    {
+      heading: "Orders",
+      body: [
+        "An order is confirmed when we call you and you say yes. We reserve the right to cancel an order we can't reach you to confirm, or that we can't deliver to.",
+        "Prices are in " +
+          store.currency +
+          " and include everything except delivery, which is shown separately at checkout.",
+      ],
+    },
+    {
+      heading: "Payment",
+      body: [
+        "We take cash on delivery. Payment is due to the rider in full when your order arrives. Refusing a confirmed order at the door is not a great look, and may mean we can't take your next one.",
+      ],
+    },
+    {
+      heading: "Cancellations and problems",
+      body: [
+        "You can cancel free of charge any time before we confirm the order. After that the jars are already in the oven.",
+        "If something arrives damaged, wrong, or not up to scratch, message us the same day with a photo and we'll replace it or refund it. We're not monsters.",
+      ],
+    },
+    {
+      heading: "Allergens",
+      body: [
+        "Our cakes contain dairy, eggs and gluten, and are made in a kitchen that also handles nuts. If that's a problem for you, please don't risk it.",
+      ],
+    },
+    {
+      heading: "Everything else",
+      body: [
+        "The words, drawings and general vibe on this site are ours. Please don't lift them. Questions go to hello@dizzygals.com.",
+      ],
+    },
+  ],
+};
+
+export const privacyPage: { title: string; intro: string; sections: PageSection[] } = {
+  title: "Privacy",
+  intro: "We collect the minimum it takes to get cake to your door, and we don't sell any of it.",
+  sections: [
+    {
+      heading: "What we collect",
+      body: [
+        "When you order: your name, phone number, delivery address and anything you type in the notes. When you join the newsletter: your email address. That's it.",
+      ],
+    },
+    {
+      heading: "What we do with it",
+      body: [
+        "We use it to confirm, bake and deliver your order, and to contact you if something goes wrong with it. Newsletter emails come only if you signed up, and every one has an unsubscribe link.",
+      ],
+    },
+    {
+      heading: "Who sees it",
+      body: [
+        "Us, and the rider who brings your order. We don't sell, rent or trade your details with anyone.",
+      ],
+    },
+    {
+      heading: "On your device",
+      body: [
+        "Your cart and a record of orders placed from this browser are stored in the browser itself, so you can find them again. Clearing your browser data removes them. We don't use tracking cookies.",
+      ],
+    },
+    {
+      heading: "Your call",
+      body: [
+        "Want to know what we hold about you, or want it gone? Email hello@dizzygals.com and it's done.",
+      ],
+    },
+  ],
+};
+
+export const checkoutCopy = {
+  cartTitle: "Your jar",
+  cartEmpty: "Your jar is empty.",
+  cartEmptyHint: "Tragic. Easily fixed.",
+  checkoutTitle: "Checkout",
+  paymentTitle: "Cash on delivery",
+  paymentBody: "Pay the rider when your jars arrive. It's the only option right now, and honestly it's the nicest one.",
+  placeOrder: "place my order",
+  confirmedTitle: "You're in.",
+  confirmedBody: "We'll call to confirm, then it's straight into the oven.",
+  ordersTitle: "My orders",
+  ordersEmpty: "No orders on this device yet.",
+  ordersNote: "Orders are remembered on this browser only.",
+};

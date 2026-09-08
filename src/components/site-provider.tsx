@@ -1,10 +1,19 @@
 "use client";
 
-import { createContext, useCallback, useContext, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useMemo, useState, useSyncExternalStore } from "react";
+
+import { cart, getCartSnapshot, getServerCartSnapshot, subscribeCart } from "@/lib/cart-store";
+import type { CartItems } from "@/lib/orders";
 
 type SiteState = {
+  items: CartItems;
   cartCount: number;
-  addToCart: (quantity?: number) => void;
+  /** True once the cart has been read from this browser's storage. */
+  hydrated: boolean;
+  addToCart: (productId: string, quantity?: number) => void;
+  setQty: (productId: string, quantity: number) => void;
+  removeItem: (productId: string) => void;
+  clearCart: () => void;
   newsletterOpen: boolean;
   openNewsletter: () => void;
   closeNewsletter: () => void;
@@ -13,18 +22,32 @@ type SiteState = {
 const SiteContext = createContext<SiteState | null>(null);
 
 export function SiteProvider({ children }: { children: React.ReactNode }) {
-  const [cartCount, setCartCount] = useState(0);
+  const { items, hydrated } = useSyncExternalStore(
+    subscribeCart,
+    getCartSnapshot,
+    getServerCartSnapshot,
+  );
   const [newsletterOpen, setNewsletterOpen] = useState(false);
 
-  const addToCart = useCallback((quantity = 1) => {
-    setCartCount((count) => count + quantity);
-  }, []);
   const openNewsletter = useCallback(() => setNewsletterOpen(true), []);
   const closeNewsletter = useCallback(() => setNewsletterOpen(false), []);
 
-  const value = useMemo(
-    () => ({ cartCount, addToCart, newsletterOpen, openNewsletter, closeNewsletter }),
-    [cartCount, addToCart, newsletterOpen, openNewsletter, closeNewsletter],
+  const cartCount = useMemo(() => Object.values(items).reduce((n, q) => n + q, 0), [items]);
+
+  const value = useMemo<SiteState>(
+    () => ({
+      items,
+      cartCount,
+      hydrated,
+      addToCart: cart.add,
+      setQty: cart.setQty,
+      removeItem: cart.remove,
+      clearCart: cart.clear,
+      newsletterOpen,
+      openNewsletter,
+      closeNewsletter,
+    }),
+    [items, cartCount, hydrated, newsletterOpen, openNewsletter, closeNewsletter],
   );
 
   return <SiteContext.Provider value={value}>{children}</SiteContext.Provider>;

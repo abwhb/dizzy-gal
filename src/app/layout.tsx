@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Baloo_2, Poppins } from "next/font/google";
 import Script from "next/script";
 
+import { NewsletterModal } from "@/components/newsletter-modal";
 import { SiteProvider } from "@/components/site-provider";
 
 import "./globals.css";
@@ -48,7 +49,10 @@ export default function RootLayout({
         <Script id="motion-flag" strategy="beforeInteractive">
           {`document.documentElement.classList.add("js")`}
         </Script>
-        <SiteProvider>{children}</SiteProvider>
+        <SiteProvider>
+          {children}
+          <NewsletterModal />
+        </SiteProvider>
       </body>
     </html>
   );

@@ -32,8 +32,37 @@ One scrolling page, composed in `src/app/page.tsx`:
 **Placeholder content.** The reviews are stand-ins so the section can be seen — they render exactly
 like real content and are marked `placeholder: true` in `content.ts`. Replace them before launch.
 
-Cart count and newsletter open/closed state live in `src/components/site-provider.tsx`. Adding to
-the cart is client-side only — there is no checkout behind it yet.
+## Pages and checkout
+
+Every page other than the home page uses `src/components/page-shell.tsx` (header, orange title
+band, footer, its own `<Motion/>`).
+
+| Route | What it is |
+| --- | --- |
+| `/cart` | Line items with quantity steppers, delivery rule, total |
+| `/checkout` | Name / phone / address / city / notes, cash on delivery, place order |
+| `/order/[id]` | Confirmation: what happens next, summary, delivery address |
+| `/orders` | Orders placed from this browser |
+| `/shipping`, `/terms`, `/privacy` | Content from `content.ts` via `legal-page.tsx` |
+| anything else | Brand 404 |
+
+**How the cart works.** The cart is a tiny external store (`src/lib/cart-store.ts`) persisted in
+`localStorage`, read with `useSyncExternalStore` so the server and first paint agree (empty,
+`hydrated: false`) and the saved cart appears right after. `site-provider.tsx` exposes it.
+
+**How orders work.** Payment is cash on delivery only. Placing an order builds an `Order`
+(`src/lib/orders.ts`), POSTs it to `/api/orders`, saves it to the browser's `localStorage`, clears
+the cart and routes to the confirmation. **`/api/orders` is a stub** — it validates the shape,
+logs the id and returns `ok`. Wire the real intake there (email to the kitchen, a sheet row, a
+WhatsApp message, a Shopify draft order). Until then the kitchen does not hear about orders.
+
+**Placeholder settings.** `store` in `content.ts` holds the currency (`Rs`), per-jar prices, the
+delivery fee, the free-delivery threshold, the delivery cities and the order cutoff hour. All are
+guesses so the checkout works — set the real ones.
+
+**One rule for client-only views.** Content that mounts after hydration (anything read from
+`localStorage`) must not carry `data-reveal` / `data-split` / `data-draw`: `<Motion/>` scans once
+on mount, and anything hidden by the CSS pre-hide that arrives later stays hidden.
 
 ## Motion
 
