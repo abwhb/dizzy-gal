@@ -2,6 +2,10 @@
  * Site copy and data, lifted from the Dizzy Gals design and brand board.
  * Everything the page renders that a non-developer might want to change
  * lives here.
+ *
+ * Anything marked `placeholder: true` is stand-in content that must be
+ * replaced with the real thing before it ships — it renders like the real
+ * thing, so don't let it slip through.
  */
 
 export type IllustrationName =
@@ -14,7 +18,8 @@ export type IllustrationName =
   | "star"
   | "spoon"
   | "smiley"
-  | "jar";
+  | "jar"
+  | "chocolate";
 
 export type Ingredient = {
   label: string;
@@ -29,8 +34,15 @@ export type Product = {
   warning: string;
   ingredients: Ingredient[];
   cta: string;
+  /** Left panel colour. */
+  panel: string;
+  /** Section colour while this flavour is showing. */
+  bg: string;
+  /** Panel is dark: chrome on it switches to cream. */
+  dark?: boolean;
   /** Drop a photo in `public/` and point this at it to replace the slot. */
   jarImage?: string;
+  placeholder?: boolean;
 };
 
 export type PromiseItem = {
@@ -64,6 +76,14 @@ export type FeedCard =
       image?: string;
     };
 
+export type Review = {
+  quote: string;
+  name: string;
+  rating: 1 | 2 | 3 | 4 | 5;
+  bg: string;
+  placeholder?: boolean;
+};
+
 export const hero = {
   tagline: ["cake worth", "losing your head over."],
   cta: "go on. dig in.",
@@ -84,6 +104,44 @@ export const products: Product[] = [
       { label: "Whipped cream", illustration: "cream" },
     ],
     cta: "go on. dig in.",
+    panel: "#FF8BA7",
+    bg: "#FFD34D",
+  },
+  {
+    id: "midnight-berry",
+    name: "Midnight Berry",
+    tag: "New",
+    description:
+      "Dark chocolate ganache + strawberry purée on a cocoa sponge. Rich, intense, dangerous.",
+    warning: "may cause you to take a short 3 hour nap",
+    ingredients: [
+      { label: "Dark chocolate", illustration: "chocolate" },
+      { label: "Strawberry", illustration: "strawberry" },
+      { label: "Ganache", illustration: "cream" },
+    ],
+    cta: "go on. dig in.",
+    panel: "#57151F",
+    bg: "#FF8BA7",
+    dark: true,
+  },
+  {
+    // PLACEHOLDER — a third flavour to fill the carousel. Rename, re-describe
+    // or drop it before launch.
+    id: "lemon-cloud",
+    name: "Lemon Cloud",
+    tag: "Coming soon",
+    description:
+      "Lemon curd, vanilla sponge, clouds of whipped cream. Light, sharp, gone in minutes.",
+    warning: "may cause uncontrollable sunshine",
+    ingredients: [
+      { label: "Lemon", illustration: "lemon" },
+      { label: "Vanilla sponge", illustration: "cake" },
+      { label: "Whipped cream", illustration: "cream" },
+    ],
+    cta: "go on. dig in.",
+    panel: "#FFD34D",
+    bg: "#F2EFE6",
+    placeholder: true,
   },
 ];
 
@@ -114,6 +172,60 @@ export const gallery: GalleryTile[] = [
   { label: "zero boring flavours", bg: "#F2EFE6", illustration: "star" },
   { label: "zzz. food coma.", bg: "#FFD34D", illustration: "zzz" },
 ];
+
+/**
+ * PLACEHOLDER reviews — written to show the section, not collected from
+ * customers. Replace every entry with a real quote before launch.
+ */
+export const reviews: Review[] = [
+  {
+    quote: "Ate the whole jar in the car park. No regrets, some crumbs.",
+    name: "Sana K.",
+    rating: 5,
+    bg: "#FF8BA7",
+    placeholder: true,
+  },
+  {
+    quote: "Pink Lemonade tastes like a summer I never actually had.",
+    name: "Ayesha R.",
+    rating: 5,
+    bg: "#F2EFE6",
+    placeholder: true,
+  },
+  {
+    quote: "Ordered six for a party. The party was two people.",
+    name: "Hamza T.",
+    rating: 5,
+    bg: "#FFD34D",
+    placeholder: true,
+  },
+  {
+    quote: "The warning label is not a joke. Food coma achieved by 3pm.",
+    name: "Zoya M.",
+    rating: 4,
+    bg: "#F2EFE6",
+    placeholder: true,
+  },
+  {
+    quote: "My spoon has never felt so useful.",
+    name: "Bilal A.",
+    rating: 5,
+    bg: "#FFD34D",
+    placeholder: true,
+  },
+  {
+    quote: "Would lose my head over this again. And again.",
+    name: "Mahnoor F.",
+    rating: 5,
+    bg: "#FF8BA7",
+    placeholder: true,
+  },
+];
+
+export const reviewsSection = {
+  heading: "Dizzy people say",
+  sticker: "verified dizzy",
+};
 
 export const feed: FeedCard[] = [
   {
@@ -173,7 +285,7 @@ export const newsletter = {
 export const footerColumns: { heading: string; links: { label: string; href?: string }[] }[] = [
   {
     heading: "Our flavours",
-    links: [{ label: "Pink Lemonade", href: "#shop" }, { label: "more flavours coming soon" }],
+    links: products.map((p) => ({ label: p.name, href: "#shop" })),
   },
   {
     heading: "Contact",
@@ -190,6 +302,7 @@ export const footerColumns: { heading: string; links: { label: string; href?: st
     heading: "Info",
     links: [
       { label: "About us", href: "#story" },
+      { label: "Reviews", href: "#reviews" },
       { label: "Shipping", href: "#" },
       { label: "My orders", href: "#" },
     ],

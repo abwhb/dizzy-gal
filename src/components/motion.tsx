@@ -39,6 +39,7 @@ export function Motion() {
   useGSAP((_context, contextSafe) => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       gsap.set(PREHIDDEN, { autoAlpha: 1 });
+      gsap.set("[data-mascot]", { display: "none" });
       return;
     }
 
@@ -55,6 +56,7 @@ export function Motion() {
       setupMarquee(signal);
       setupBgParallax();
       setupRise();
+      setupMascot();
       const mm = gsap.matchMedia();
       mm.add("(min-width: 1024px)", () => setupPinnedRail());
     } catch (error) {
@@ -503,6 +505,79 @@ function setupRise() {
       },
     });
   });
+}
+
+/**
+ * The mascot tumbles down the right edge over the whole page and lands in
+ * the puddle at the bottom, which splashes. Its landing height is measured
+ * from where the puddle sits at max scroll, so it always meets it.
+ */
+function setupMascot() {
+  const mascot = document.querySelector<HTMLElement>("[data-mascot]");
+  const puddle = document.querySelector<HTMLElement>("[data-puddle]");
+  if (!mascot || !puddle) return;
+  const hero = document.querySelector<HTMLElement>("[data-hero-root]");
+  const drops = puddle.querySelectorAll("[data-drop]");
+
+  gsap.set(mascot, { autoAlpha: 0 });
+  gsap.set(drops, { autoAlpha: 0 });
+
+  // Appears once the hero is mostly gone.
+  ScrollTrigger.create({
+    start: () => (hero ? hero.offsetHeight * 0.55 : 200),
+    onEnter: () => gsap.to(mascot, { autoAlpha: 1, duration: 0.4 }),
+    onLeaveBack: () => gsap.to(mascot, { autoAlpha: 0, duration: 0.3 }),
+  });
+
+  const landingY = () => {
+    const r = puddle.getBoundingClientRect();
+    const puddleTopAtMax = r.top + window.scrollY - ScrollTrigger.maxScroll(window);
+    return puddleTopAtMax + r.height * 0.42 - mascot.offsetHeight;
+  };
+
+  let landed = false;
+  const splash = () => {
+    gsap
+      .timeline()
+      .to(puddle, {
+        scaleX: 1.18,
+        scaleY: 0.82,
+        duration: 0.16,
+        ease: "power2.out",
+      })
+      .to(puddle, { scaleX: 1, scaleY: 1, duration: 0.7, ease: "elastic.out(1,.4)" })
+      .fromTo(
+        drops,
+        { autoAlpha: 1, y: 0, scale: 0.5 },
+        { y: -30, scale: 1, autoAlpha: 0, duration: 0.6, stagger: 0.05, ease: "power2.out" },
+        0,
+      );
+  };
+
+  gsap.fromTo(
+    mascot,
+    { y: () => window.innerHeight * 0.14, rotation: -8 },
+    {
+      y: landingY,
+      rotation: 712,
+      ease: "none",
+      immediateRender: true,
+      scrollTrigger: {
+        start: 0,
+        end: () => ScrollTrigger.maxScroll(window),
+        scrub: 0.6,
+        invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          if (self.progress > 0.985 && !landed) {
+            landed = true;
+            splash();
+          } else if (self.progress < 0.9 && landed) {
+            landed = false;
+          }
+        },
+      },
+    },
+  );
 }
 
 /**

@@ -1,5 +1,6 @@
 import { Scallop } from "@/components/decor";
 import { Illustration } from "@/components/illustrations";
+import { Puddle } from "@/components/mascot";
 import { NewsletterForm } from "@/components/newsletter-form";
 import { footer, footerColumns } from "@/lib/content";
 
@@ -96,6 +97,8 @@ export function SiteFooter() {
             DIZZY GALS!
           </p>
         </div>
+        {/* Where the falling mascot lands. Centred under its fixed x position. */}
+        <Puddle className="absolute right-[calc(2vw-31px)] bottom-1 z-10 w-[110px] sm:right-[calc(5vw-44px)] sm:w-[168px] lg:right-[calc(5vw-50px)] lg:w-[192px]" />
       </div>
     </footer>
   );

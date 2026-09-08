@@ -45,6 +45,12 @@ export const PATHS: Record<IllustrationName, string[]> = {
     "M16 30c2.5 3.5 5.5 5 8 5s5.5-1.5 8-5",
     "M22 34.5c0 3.5 4 3.5 4 0",
   ],
+  // A bar of chocolate, one corner bitten.
+  chocolate: [
+    "M10 11h28a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H10a3 3 0 0 1-3-3V14a3 3 0 0 1 3-3Z",
+    "M24 11v26M7 24h34",
+    "M33 11c1 3 4 4 6 3",
+  ],
   // Square jar with lid and three wavy layers — the product, drawn.
   jar: [
     "M11 8h26a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2H11a2 2 0 0 1-2-2v-1a2 2 0 0 1 2-2Z",

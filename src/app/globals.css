@@ -159,6 +159,17 @@
   }
 }
 
+/* The falling mascot only exists when scripting drives it. */
+[data-mascot] {
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html.js [data-mascot] {
+    display: block;
+  }
+}
+
 /* Custom cursors on pointer devices: a lemon slice by default, a slice of
    cake over anything clickable. Unlayered so they beat the `cursor-pointer`
    utilities; text fields keep the I-beam. */

@@ -22,6 +22,9 @@ export function SiteHeader() {
         <a href="#story" className={navLink}>
           Story
         </a>
+        <a href="#reviews" className={navLink}>
+          Reviews
+        </a>
         <a href="#feed" className={navLink}>
           Feed
         </a>
