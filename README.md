@@ -75,6 +75,26 @@ The mobile header opens a branded navigation panel with large links and a newsle
 The Social feel section has a hand-drawn arrow and previous/next controls alongside its native
 swipe rail; on desktop, those controls also move through the pinned scroll sequence.
 
+## SEO
+
+Everything search engines and link previews see comes from `site` in `content.ts` (name, tagline,
+meta description, keywords, contact email, social URLs) and `src/lib/seo.ts`:
+
+- **Canonical origin.** `siteUrl` is `NEXT_PUBLIC_SITE_URL` if set, else Vercel's production URL,
+  else localhost. Set the env var when the real domain goes live; canonicals, the sitemap, the
+  robots file and structured data all follow it.
+- **Metadata.** `layout.tsx` sets the title template (`Page · Dizzy Gals`), Open Graph, Twitter
+  card and robots defaults. Indexable pages use `pageMetadata()`; cart, checkout and order pages
+  use `privateMetadata()` (`noindex`) and are also disallowed in `robots.ts`.
+- **Routes.** `/sitemap.xml`, `/robots.txt`, `/manifest.webmanifest` and `/opengraph-image` (a
+  generated 1200×630 card in the brand colours) are all app-router files under `src/app/`.
+- **Structured data.** `JsonLd` emits schema.org blocks: a `Bakery` (with DHA Lahore as the
+  served area) and `WebSite` on every page, an `ItemList` of `Product`s with offers on the home
+  page, and a `BreadcrumbList` on the content pages. There is deliberately **no**
+  `aggregateRating` while the reviews are placeholders — add one only from real reviews.
+- **Headings.** One `h1` per page (the hero lockup, or the title band); every home section has an
+  `h2` (the shop's is visually hidden); flavour names are `h3`s.
+
 ## Motion
 
 Entrances and scroll reveals are GSAP (`src/components/motion.tsx`, using ScrollTrigger and

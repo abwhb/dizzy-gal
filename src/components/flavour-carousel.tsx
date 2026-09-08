@@ -53,6 +53,7 @@ export function FlavourCarousel({ products }: { products: Product[] }) {
     >
       <Scallop color="#F2EFE6" />
       <SectionRail label="Our cakes in a jar" />
+      <h2 className="sr-only">Our cakes in a jar</h2>
 
       <div className="min-w-0">
         <div

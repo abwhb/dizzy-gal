@@ -89,6 +89,32 @@ export type Review = {
   placeholder?: boolean;
 };
 
+/**
+ * What search engines and link previews see. `description` is the home page's
+ * meta description; keep it under ~160 characters. Add the real Instagram /
+ * TikTok URLs to `social` and they flow into the structured data too.
+ */
+export const site = {
+  name: "Dizzy Gals",
+  tagline: "Cake worth losing your head over",
+  description:
+    "Cake in a jar from Dizzy Gals: Pink Lemonade, Midnight Berry and Not a Tiramisu, baked fresh in small batches and delivered across DHA Lahore on Fridays and Sundays. Cash on delivery.",
+  keywords: [
+    "cake in a jar",
+    "jar cakes Lahore",
+    "cake delivery DHA Lahore",
+    "dessert delivery Lahore",
+    "strawberry lemonade cake",
+    "tiramisu jar",
+    "chocolate strawberry cake jar",
+    "Dizzy Gals",
+  ],
+  email: "hello@dizzygals.com",
+  locale: "en_PK",
+  /** Public profile URLs, e.g. "https://www.instagram.com/dizzygals". */
+  social: [] as string[],
+};
+
 export const hero = {
   tagline: ["cake worth", "losing your head over."],
   cta: "go on. dig in.",
