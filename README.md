@@ -1,7 +1,11 @@
-# Dizzy Gals
+# Voyages Cortoba — landing page
 
-Marketing site for Dizzy Gals — *cake worth losing your head over*. Built with Next.js 16 (App
-Router), React 19 and Tailwind CSS v4.
+Landing page for [Voyages Cortoba](https://www.voyagescortoba.com), a Laval, Québec travel agency
+specialising in Hajj and Omra pilgrimages, ethical tourism and ticketing. The layout takes its cues
+from the Vita Travel template: an editorial serif headline, a booking-style search bar under the hero,
+program cards, a destinations grid, testimonials and a checkout-like contact form.
+
+Built with Next.js 16 (App Router), React 19 and Tailwind CSS v4. Copy is in Canadian French.
 
 ## Running it
 
@@ -18,62 +22,65 @@ One scrolling page, composed in `src/app/page.tsx`:
 
 | Section | Component |
 | --- | --- |
-| Full-viewport orange hero, pill nav, scrolling strip | `src/components/hero.tsx`, `marquee.tsx` |
-| Sticky site nav with cart count | `src/components/site-header.tsx` |
-| Three-promise strip | `src/components/promise-strip.tsx` |
-| Pink Lemonade product feature | `src/components/shop.tsx` |
-| Brand story + photo grid | `src/components/story.tsx` |
-| Social-feel rail | `src/components/feed.tsx` |
-| Footer | `src/components/site-footer.tsx` |
-| Newsletter modal | `src/components/newsletter-modal.tsx` |
+| Sticky header with mobile menu | `src/components/header.tsx` |
+| Hero, search bar, trust strip | `src/components/hero.tsx` |
+| Three service pillars | `src/components/services.tsx` |
+| Omra departures with prices | `src/components/departures.tsx` |
+| Hajj Québec 2026 feature | `src/components/hajj.tsx` |
+| Destinations grid | `src/components/destinations.tsx` |
+| Four-step process | `src/components/steps.tsx` |
+| About + key figures | `src/components/about.tsx` |
+| Testimonials + airline partners | `src/components/testimonials.tsx` |
+| FAQ accordion | `src/components/faq.tsx` |
+| Contact details + enquiry form | `src/components/contact.tsx` |
+| Footer | `src/components/footer.tsx` |
 
-Cart count and newsletter open/closed state live in `src/components/site-provider.tsx`. Adding to
-the cart is client-side only — there is no checkout behind it yet.
+Shared primitives (container, kicker, buttons, photo slot, icons) live in `src/components/ui.tsx`.
 
 ## Editing content
 
-Copy, products, gallery labels, marquee lines and footer links are all in `src/lib/content.ts`.
-Adding a second flavour is a matter of appending to `products`; the shop section renders whatever
-is in that array.
+All copy and data is in `src/lib/content.ts`: navigation, hero, departures and prices, Hajj
+inclusions, destinations, FAQ, contact details and footer links. Adding a departure is a matter of
+appending to `departures`; the section renders whatever is in that array. A departure with
+`price: null` shows "Tarif à venir" instead of a price.
+
+### Before publishing
+
+- **Testimonials are placeholders.** The three entries in `testimonials` are explicitly marked as
+  such and must be replaced with real, authorised client quotes.
+- **Prices.** Only the December 2026 Omra price was public at the time of writing. Confirm every
+  figure and date with the agency.
+- **Contact form.** There is no backend yet; submitting opens the visitor's mail client with the
+  request pre-filled and addressed to the agency. Wire it to a form service or API route when ready.
 
 ## Brand
 
 | Token | Value |
 | --- | --- |
-| `dizzy-orange` | `#FF6A00` |
-| `cream` | `#F2EFE6` |
-| `strawberry` | `#FF8BA7` |
-| `lemon` | `#FFD34D` |
-| `burgundy` | `#57151F` |
+| `ink` | `#14211B` |
+| `green` | `#0F3D2E` |
+| `forest` | `#1B5A44` |
+| `mint` | `#E3EEE7` |
+| `sand` | `#F5F0E7` |
+| `paper` | `#FFFDF8` |
+| `line` | `#DCD3C4` |
+| `muted` | `#6B6A62` |
+| `gold` | `#C9A24A` |
 
-Defined in `src/app/globals.css`. The brand board specifies **Astrofat Extra Bold** for headings,
-which isn't available as a web font — **Baloo 2 ExtraBold** stands in as the closest chunky-rounded
-match, with **Poppins** for body text.
-
-The strawberry, lemon, whipped-cream, cake and heart marks in `src/components/illustrations.tsx`
-are inline SVG line drawings in the brand board's style. They take `currentColor`, so each usage
-sets its own colour.
+Defined in `src/app/globals.css`. Headlines use **Playfair Display**, body text **DM Sans**, both
+loaded through `next/font/google`.
 
 ## Photography
 
-There are no product photos in the handoff bundle, so every photo position renders as a labelled
-slot at the right aspect ratio. To drop a real image in, put the file in `public/` and set the
-matching field in `src/lib/content.ts`:
+No photography was available, so every photo position renders as a duotone slot with a caption
+naming the intended shot. To drop a real image in, put the file in `public/` and set the matching
+field in `src/lib/content.ts`:
 
-- `products[].jarImage` — the jar shot in the product panel
-- `gallery[].image` — the six brand-story tiles
-- `feed[].image` — the photo cards in the social rail
+- `hero.image.src` — the hero portrait
+- `services[].image` — the three service cards
+- `departures[].image` — each departure card
+- `hajj.image` — the Hajj feature
+- `destinations[].image` — the destination tiles
+- `about.image` — the team photo
 
 Each one swaps a `next/image` into the same box at the same crop; nothing else needs to change.
-
-## Design source
-
-This site implements a Claude Design handoff. The original prototype, brand board and the
-conversation that produced them are preserved in `project/` and `chats/`:
-
-- `project/Dizzy Gals.dc.html` — the design this site is built from
-- `project/uploads/pasted-*.png` — the Dizzy Gals brand board
-- `chats/chat1.md` — the design conversation
-- `project/HANDOFF.md` — the original handoff instructions
-
-Those files are reference material and are excluded from linting; they are not part of the build.

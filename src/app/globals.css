@@ -3,58 +3,52 @@
 /* `static` so the font variables are emitted even though they are only
    referenced from plain CSS below, not from a utility class. */
 @theme static {
-  /* Dizzy Gals palette — from the brand board */
-  --color-dizzy-orange: #ff6a00;
-  --color-cream: #f2efe6;
-  --color-strawberry: #ff8ba7;
-  --color-lemon: #ffd34d;
-  --color-burgundy: #57151f;
+  /* Voyages Cortoba palette — sand, deep green, gold */
+  --color-ink: #14211b;
+  --color-green: #0f3d2e;
+  --color-forest: #1b5a44;
+  --color-mint: #e3eee7;
+  --color-sand: #f5f0e7;
+  --color-paper: #fffdf8;
+  --color-line: #dcd3c4;
+  --color-muted: #6b6a62;
+  --color-gold: #c9a24a;
 
-  --font-display: var(--font-baloo), "Baloo 2", system-ui, sans-serif;
-  --font-body: var(--font-poppins), Helvetica, Arial, sans-serif;
-
-  --animate-marquee: marquee 60s linear infinite;
-
-  @keyframes marquee {
-    from {
-      transform: translateX(0);
-    }
-    to {
-      transform: translateX(-50%);
-    }
-  }
+  --font-display: var(--font-serif), "Playfair Display", Georgia, serif;
+  --font-body: var(--font-sans), "DM Sans", system-ui, sans-serif;
 }
 
-/* Base layer, so `text-*` utilities still win over the default link colour. */
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   html,
   body {
     margin: 0;
-    background: var(--color-cream);
-    color: var(--color-burgundy);
+    background: var(--color-sand);
+    color: var(--color-ink);
     font-family: var(--font-body);
     font-weight: 400;
     -webkit-font-smoothing: antialiased;
+    scrollbar-color: var(--color-green) transparent;
   }
 
   a {
-    color: var(--color-burgundy);
+    color: inherit;
     text-decoration: none;
   }
 
-  a:hover {
-    color: var(--color-dizzy-orange);
+  ::selection {
+    background: var(--color-gold);
+    color: var(--color-ink);
   }
 }
 
 @layer components {
   /* Horizontal snap rails keep a visible, on-brand scrollbar. */
-  .rail {
-    scrollbar-color: var(--color-burgundy) transparent;
-  }
-
   .rail::-webkit-scrollbar {
-    height: 8px;
+    height: 6px;
   }
 
   .rail::-webkit-scrollbar-track {
@@ -62,13 +56,29 @@
   }
 
   .rail::-webkit-scrollbar-thumb {
-    background: var(--color-burgundy);
-    border-radius: 4px;
+    background: var(--color-green);
+    border-radius: 3px;
+  }
+
+  /* Photo slots use a soft duotone until a real photograph is dropped in. */
+  .photo-slot {
+    background:
+      radial-gradient(120% 90% at 20% 0%, rgba(201, 162, 74, 0.35), transparent 60%),
+      radial-gradient(100% 80% at 90% 100%, rgba(27, 90, 68, 0.55), transparent 65%),
+      linear-gradient(160deg, #244f3f, #0f3d2e);
+    color: rgba(245, 240, 231, 0.8);
+  }
+
+  .photo-slot--light {
+    background:
+      radial-gradient(120% 90% at 20% 0%, rgba(201, 162, 74, 0.3), transparent 60%),
+      linear-gradient(160deg, #ece4d5, #d9cdb7);
+    color: #5a5648;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .animate-marquee {
-    animation: none;
+  html {
+    scroll-behavior: auto;
   }
 }

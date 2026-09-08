@@ -1,47 +1,48 @@
 import type { Metadata } from "next";
-import { Baloo_2, Poppins } from "next/font/google";
+import { DM_Sans, Playfair_Display } from "next/font/google";
 
-import { SiteProvider } from "@/components/site-provider";
+import { agency } from "@/lib/content";
 
 import "./globals.css";
 
 /**
- * The brand board specifies Astrofat Extra Bold for headings; it isn't
- * available as a web font, so Baloo 2 ExtraBold stands in as the closest
- * chunky-rounded match (the substitution the design was built on).
+ * Editorial serif for headlines, a quiet grotesque for everything else —
+ * the magazine-meets-booking feel the landing page is modelled on.
  */
-const baloo = Baloo_2({
+const playfair = Playfair_Display({
   subsets: ["latin"],
-  weight: ["700", "800"],
-  variable: "--font-baloo",
+  weight: ["400", "500", "600"],
+  style: ["normal", "italic"],
+  variable: "--font-serif",
   display: "swap",
 });
 
-const poppins = Poppins({
+const dmSans = DM_Sans({
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  variable: "--font-poppins",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-sans",
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Dizzy Gals — Cake worth losing your head over",
+  title: `${agency.name} — ${agency.tagline}`,
   description:
-    "Dizzy Gals is for the hopelessly obsessed dessert lovers. Bold flavours, creamy layers, and just the right amount of chaos. Go on. Dig in.",
+    "Agence de voyages spécialisée dans le Hajj et la Omra depuis Laval, Québec. Départs de Montréal, hôtels 4 étoiles, visas inclus et accompagnement francophone. Voyages organisés et billetterie.",
+  openGraph: {
+    title: `${agency.name} — ${agency.tagline}`,
+    description:
+      "Hajj, Omra et voyages organisés depuis Montréal. Hôtels 4 étoiles, visas inclus, guides et imams francophones.",
+    locale: "fr_CA",
+    type: "website",
+  },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    // The font variables live on <html> so that the `--font-display` /
-    // `--font-body` theme tokens, which resolve at :root, can reference them.
-    <html lang="en" className={`${baloo.variable} ${poppins.variable}`}>
-      <body>
-        <SiteProvider>{children}</SiteProvider>
-      </body>
+    // The font variables live on <html> so the `--font-display` / `--font-body`
+    // theme tokens, which resolve at :root, can reference them.
+    <html lang="fr-CA" className={`${playfair.variable} ${dmSans.variable}`}>
+      <body>{children}</body>
     </html>
   );
 }

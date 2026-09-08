@@ -1,23 +1,33 @@
-import { Feed } from "@/components/feed";
+import { About } from "@/components/about";
+import { Contact } from "@/components/contact";
+import { Departures } from "@/components/departures";
+import { Destinations } from "@/components/destinations";
+import { Faq } from "@/components/faq";
+import { Footer } from "@/components/footer";
+import { Hajj } from "@/components/hajj";
+import { Header } from "@/components/header";
 import { Hero } from "@/components/hero";
-import { NewsletterModal } from "@/components/newsletter-modal";
-import { PromiseStrip } from "@/components/promise-strip";
-import { Shop } from "@/components/shop";
-import { SiteFooter } from "@/components/site-footer";
-import { SiteHeader } from "@/components/site-header";
-import { Story } from "@/components/story";
+import { Services } from "@/components/services";
+import { Steps } from "@/components/steps";
+import { Testimonials } from "@/components/testimonials";
 
-export default function Home() {
+export default function CortobaPage() {
   return (
-    <div className="flex min-h-screen flex-col">
-      <Hero />
-      <SiteHeader />
-      <PromiseStrip />
-      <Shop />
-      <Story />
-      <Feed />
-      <SiteFooter />
-      <NewsletterModal />
-    </div>
+    <>
+      <Header />
+      <main>
+        <Hero />
+        <Services />
+        <Departures />
+        <Hajj />
+        <Destinations />
+        <Steps />
+        <About />
+        <Testimonials />
+        <Faq />
+        <Contact />
+      </main>
+      <Footer />
+    </>
   );
 }
