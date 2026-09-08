@@ -297,7 +297,14 @@ export const process = {
   ],
 };
 
-export type MapPoint = { name: string; lat: number; lng: number; hub?: boolean };
+export type MapPoint = {
+  name: string;
+  lat: number;
+  lng: number;
+  hub?: boolean;
+  /** Put the label under the point when a neighbour sits just above it. */
+  labelBelow?: boolean;
+};
 
 export const mapPoints: MapPoint[] = [
   { name: "Montréal", lat: 45.5, lng: -73.6, hub: true },
@@ -305,7 +312,7 @@ export const mapPoints: MapPoint[] = [
   { name: "Tunis", lat: 36.8, lng: 10.2 },
   { name: "Istanbul", lat: 41.0, lng: 29.0 },
   { name: "Médine", lat: 24.5, lng: 39.6 },
-  { name: "La Mecque", lat: 21.4, lng: 39.8 },
+  { name: "La Mecque", lat: 21.4, lng: 39.8, labelBelow: true },
   { name: "Dubaï", lat: 25.2, lng: 55.3 },
   { name: "Kuala Lumpur", lat: 3.1, lng: 101.7 },
 ];
