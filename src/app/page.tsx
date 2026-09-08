@@ -1,5 +1,6 @@
 import { Feed } from "@/components/feed";
 import { Hero } from "@/components/hero";
+import { Motion } from "@/components/motion";
 import { NewsletterModal } from "@/components/newsletter-modal";
 import { PromiseStrip } from "@/components/promise-strip";
 import { Shop } from "@/components/shop";
@@ -18,6 +19,7 @@ export default function Home() {
       <Feed />
       <SiteFooter />
       <NewsletterModal />
+      <Motion />
     </div>
   );
 }

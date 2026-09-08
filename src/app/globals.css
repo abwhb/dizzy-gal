@@ -13,7 +13,14 @@
   --font-display: var(--font-baloo), "Baloo 2", system-ui, sans-serif;
   --font-body: var(--font-poppins), Helvetica, Arial, sans-serif;
 
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Continuous loops and the modal live in CSS; entrances and scroll
+     reveals are GSAP (components/motion.tsx). */
   --animate-marquee: marquee 60s linear infinite;
+  --animate-wiggle: wiggle 5s ease-in-out infinite;
+  --animate-fade-in: fade-in 0.3s ease-out both;
+  --animate-modal-in: modal-in 0.4s var(--ease-out-soft) both;
 
   @keyframes marquee {
     from {
@@ -23,10 +30,54 @@
       transform: translateX(-50%);
     }
   }
+
+  /* The warning sticker rests at -10deg and drifts a few degrees. Animates
+     the `rotate` property (what Tailwind's -rotate-10 sets) rather than
+     `transform`, so the two don't stack. */
+  @keyframes wiggle {
+    0%,
+    100% {
+      rotate: -10deg;
+    }
+    50% {
+      rotate: -4deg;
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes modal-in {
+    from {
+      opacity: 0;
+      transform: translateY(20px) scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
 }
 
 /* Base layer, so `text-*` utilities still win over the default link colour. */
 @layer base {
+  html {
+    /* Anchor links stop below the sticky header instead of under it. */
+    scroll-padding-top: 64px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
   html,
   body {
     margin: 0;
@@ -35,6 +86,11 @@
     font-family: var(--font-body);
     font-weight: 400;
     -webkit-font-smoothing: antialiased;
+  }
+
+  a,
+  button {
+    -webkit-tap-highlight-color: transparent;
   }
 
   a {
@@ -65,10 +121,21 @@
     background: var(--color-burgundy);
     border-radius: 4px;
   }
+
+  /* Pre-hide for GSAP-driven elements. Only once JS has flagged <html>
+     (layout.tsx) and only when motion is allowed, so a page without JS or
+     with reduced motion renders everything as-is. GSAP lifts this inline. */
+  @media (prefers-reduced-motion: no-preference) {
+    html.js [data-hero],
+    html.js [data-reveal] {
+      visibility: hidden;
+    }
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .animate-marquee {
+  .animate-marquee,
+  .animate-wiggle {
     animation: none;
   }
 }
