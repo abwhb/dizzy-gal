@@ -41,6 +41,7 @@ band, footer, its own `<Motion/>`).
 
 | Route | What it is |
 | --- | --- |
+| `/shop`, `/story`, `/reviews`, `/feed` | The home sections at their own addresses (`shop-list.tsx` stacks every flavour; the others reuse the section components). The nav, footer and every "back to the jars" link point here, never at `/#hash` |
 | `/cart` | Line items with quantity steppers, delivery rule, total |
 | `/checkout` | Name / phone / address / city / notes, cash on delivery, place order |
 | `/order/[id]` | Confirmation: what happens next, summary, delivery address |

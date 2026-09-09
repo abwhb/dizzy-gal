@@ -22,7 +22,7 @@ export function OrdersList() {
         <Illustration name="zzz" strokeWidth={2.4} className="w-20 text-dizzy-orange" style={{ rotate: "-10deg" }} />
         <p className="mt-6 font-display text-3xl font-extrabold">{checkoutCopy.ordersEmpty}</p>
         <p className="mt-1 text-sm font-medium">{checkoutCopy.ordersNote}</p>
-        <Link href="/#shop" className={`${pillPrimary} mt-8`}>
+        <Link href="/shop" className={`${pillPrimary} mt-8`}>
           go on. dig in.
         </Link>
       </PageBody>

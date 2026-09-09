@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import { SpinBadge } from "@/components/decor";
 import { Illustration } from "@/components/illustrations";
 import { Marquee } from "@/components/marquee";
@@ -52,12 +54,12 @@ export function Hero() {
       className="relative flex min-h-svh flex-col overflow-hidden bg-dizzy-orange"
     >
       <div className="relative z-10 flex justify-between gap-4 p-4 sm:p-5">
-        <a href="#top" data-hero="pill" className={pill}>
+        <Link href="/" data-hero="pill" className={pill}>
           Home
-        </a>
-        <a href="#shop" data-hero="pill" className={pill}>
+        </Link>
+        <Link href="/shop" data-hero="pill" className={pill}>
           Shop
-        </a>
+        </Link>
       </div>
 
       <div

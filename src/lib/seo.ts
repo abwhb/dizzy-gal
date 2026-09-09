@@ -93,7 +93,7 @@ export function websiteJsonLd() {
 export function productJsonLd(product: Product) {
   return {
     "@type": "Product",
-    "@id": absoluteUrl(`/#${product.id}`),
+    "@id": absoluteUrl(`/shop#${product.id}`),
     name: `${product.name} cake in a jar`,
     description: product.description,
     ...(product.jarImage ? { image: absoluteUrl(product.jarImage) } : {}),
@@ -101,7 +101,7 @@ export function productJsonLd(product: Product) {
     category: "Cake",
     offers: {
       "@type": "Offer",
-      url: absoluteUrl("/#shop"),
+      url: absoluteUrl(`/shop#${product.id}`),
       price: product.price,
       priceCurrency: CURRENCY,
       availability: "https://schema.org/InStock",

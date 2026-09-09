@@ -142,11 +142,52 @@ export const store = {
 };
 
 export const siteNav = [
-  { label: "Shop", href: "/#shop", detail: "Find your flavour" },
-  { label: "Story", href: "/#story", detail: "A little cake, a little chaos" },
-  { label: "Reviews", href: "/#reviews", detail: "Dizzy people say" },
-  { label: "Feed", href: "/#feed", detail: "Cake is better with company" },
+  { label: "Shop", href: "/shop", detail: "Find your flavour" },
+  { label: "Story", href: "/story", detail: "A little cake, a little chaos" },
+  { label: "Reviews", href: "/reviews", detail: "Dizzy people say" },
+  { label: "Feed", href: "/feed", detail: "Cake is better with company" },
 ];
+
+/**
+ * Each home section also lives at its own address, so links and search
+ * results land on a real page rather than a hash on the home page. `title`
+ * is the browser/search title, `heading` the orange band on the page.
+ */
+export const sectionPages: Record<
+  "shop" | "story" | "reviews" | "feed",
+  { title: string; heading: string; kicker: string; doodle: IllustrationName; description: string }
+> = {
+  shop: {
+    title: "Shop cake in a jar",
+    heading: "The jars",
+    kicker: "Shop",
+    doodle: "jar",
+    description:
+      "Three cakes in a jar from Dizzy Gals: Pink Lemonade, Midnight Berry and Not a Tiramisu. Delivered across DHA Lahore on Fridays and Sundays, cash on delivery.",
+  },
+  story: {
+    title: "Our story",
+    heading: "Our story",
+    kicker: "Brand story",
+    doodle: "heart",
+    description:
+      "Dizzy Gals is for the hopelessly obsessed dessert lovers: bold flavours, creamy layers, real strawberries and small batches, made in Lahore.",
+  },
+  reviews: {
+    title: "Reviews",
+    heading: "Verified dizzy",
+    kicker: "Reviews",
+    doodle: "smiley",
+    description: "What people say after a jar of Dizzy Gals cake. Spoiler: they come back for another.",
+  },
+  feed: {
+    title: "The feed",
+    heading: "The feed",
+    kicker: "Social feel",
+    doodle: "star",
+    description: "Cake tastes better together. Moments, jars and one more bite from the Dizzy Gals feed.",
+  },
+};
 
 export const products: Product[] = [
   {
@@ -383,7 +424,7 @@ export const newsletter = {
 export const footerColumns: { heading: string; links: { label: string; href?: string }[] }[] = [
   {
     heading: "Our flavours",
-    links: products.map((p) => ({ label: p.name, href: "/#shop" })),
+    links: products.map((p) => ({ label: p.name, href: `/shop#${p.id}` })),
   },
   {
     heading: "Contact",
@@ -399,8 +440,8 @@ export const footerColumns: { heading: string; links: { label: string; href?: st
   {
     heading: "Info",
     links: [
-      { label: "About us", href: "/#story" },
-      { label: "Reviews", href: "/#reviews" },
+      { label: "About us", href: "/story" },
+      { label: "Reviews", href: "/reviews" },
       { label: "Shipping", href: "/shipping" },
       { label: "My orders", href: "/orders" },
     ],

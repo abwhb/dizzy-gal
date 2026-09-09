@@ -14,13 +14,14 @@ function Underlined({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function Story() {
+/** `scallop` is the colour of whatever sits above: the shop on the home page, the title band on /story. */
+export function Story({ scallop = "#FFD34D" }: { scallop?: string }) {
   return (
     <section
       id="story"
       className="relative grid grid-cols-[46px_minmax(0,1fr)] border-b-[3px] border-burgundy"
     >
-      <Scallop color="#FFD34D" />
+      <Scallop color={scallop} />
       <SectionRail label="Brand story" />
       <div className="grid grid-cols-[repeat(auto-fit,minmax(min(280px,100%),1fr))] items-start gap-8 px-5 pt-[clamp(44px,6vw,84px)] pb-[clamp(32px,5vw,72px)] sm:gap-10">
         <div>
