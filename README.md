@@ -118,7 +118,8 @@ importing anything:
 | `data-scallop` | Icing edges drip down as they arrive |
 | `data-parallax-bg` | A background pattern drifts slower than the page |
 | `data-rise` | Slides up into place as the page bottom nears |
-| `data-pin-rail` | ≥1024px only: the section pins and vertical scroll becomes the rail's horizontal travel; touch keeps the native swipe |
+| `data-pin-rail` | ≥1024px only: the section pins and vertical scroll becomes the rail's horizontal travel, snapping to card edges and leaning into a fast scroll; touch keeps the native swipe |
+| `data-card-art="photo\|doodle"`, `data-feed-bar`, `data-feed-count` | Inside the rail, at every width: photos tilt and dip as they leave the centre of the screen, quote doodles drift at their own rate, the bar under the header fills and the counter follows the card nearest the middle |
 | `data-mascot` / `data-puddle` | The mascot tumbles down the right edge over the whole page and lands in the puddle, which splashes; the landing height is measured from the puddle's position at max scroll |
 | `data-float` | Idle bob (the jar, the doodles) |
 | `data-cart-badge` | Target for the fly-to-cart dot |
