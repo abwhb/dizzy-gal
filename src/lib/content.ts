@@ -443,6 +443,7 @@ export const footerColumns: { heading: string; links: { label: string; href?: st
       { label: "About us", href: "/story" },
       { label: "Reviews", href: "/reviews" },
       { label: "Shipping", href: "/shipping" },
+      { label: "Wholesale", href: "/wholesale" },
       { label: "My orders", href: "/orders" },
     ],
   },
@@ -566,6 +567,36 @@ export const privacyPage: { title: string; intro: string; sections: PageSection[
       ],
     },
   ],
+};
+
+/**
+ * The wholesale enquiry page. The perks are the pitch; the terms in them
+ * (minimums, pricing) are PLACEHOLDER promises — confirm before launch.
+ */
+export const wholesalePage = {
+  title: "Wholesale",
+  heading: "Jars by the dozen",
+  kicker: "Cafés, offices, events",
+  doodle: "cake" as IllustrationName,
+  description:
+    "Stock Dizzy Gals cake in a jar at your café, treat the office, or sweeten an event. Trade pricing on 12 jars or more, delivered across DHA Lahore.",
+  intro:
+    "Cafés, offices, weddings, launches, Friday-afternoon morale. If it needs cake by the dozen, we bake it. Tell us a little about you and we'll call to sort the rest.",
+  perks: [
+    { label: "Trade pricing from 12 jars", illustration: "jar" as IllustrationName },
+    { label: "Mix any of our flavours", illustration: "strawberry" as IllustrationName },
+    { label: "Delivered across DHA Lahore", illustration: "spoon" as IllustrationName },
+    { label: "Custom stickers for events", illustration: "star" as IllustrationName },
+  ],
+  businessTypes: ["Café or restaurant", "Office", "Event or wedding", "Corporate gifting", "Something else"],
+  volumes: ["12–24 jars", "25–50 jars", "50+ jars", "Not sure yet"],
+  frequencies: ["One-off", "Weekly", "Monthly", "Whenever the craving hits"],
+  formTitle: "Tell us about you",
+  submit: "send it over",
+  sentTitle: "Got it.",
+  sentBody: "We'll call within a day to talk flavours, numbers and dates. Go put the kettle on.",
+  failedBody: "That didn't send. Email us instead and we'll pick it up straight away.",
+  placeholder: true,
 };
 
 export const checkoutCopy = {

@@ -4,17 +4,13 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
+import { error, field, label } from "@/components/form-styles";
 import { PageBody, pillPrimary } from "@/components/page-shell";
 import { useSite } from "@/components/site-provider";
 import { checkoutCopy, store } from "@/lib/content";
 import { upcomingDeliveryDates } from "@/lib/delivery";
 import { money } from "@/lib/format";
 import { linesFor, newOrderId, saveOrder, totalsFor, type Customer, type Order } from "@/lib/orders";
-
-const field =
-  "w-full rounded-xl border-[3px] border-burgundy bg-cream px-4 py-3 text-sm font-medium text-burgundy outline-none placeholder:text-burgundy/40 focus:border-dizzy-orange";
-const label = "mb-1.5 block text-[10px] font-semibold tracking-[.2em] uppercase";
-const error = "mt-1 text-[11px] font-semibold text-dizzy-orange";
 
 type Errors = Partial<Record<keyof Customer | "deliveryDate", string>>;
 

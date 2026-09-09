@@ -47,6 +47,7 @@ band, footer, its own `<Motion/>`).
 | `/order/[id]` | Confirmation: what happens next, summary, delivery address |
 | `/orders` | Orders placed from this browser |
 | `/shipping`, `/terms`, `/privacy` | Content from `content.ts` via `legal-page.tsx` |
+| `/wholesale` | Pitch plus an enquiry form (`wholesale-form.tsx`); POSTs to `/api/wholesale`, a stub like the orders one — wire it to wholesale@ or a sheet. The perks' terms are placeholders |
 | anything else | Brand 404 |
 
 **How the cart works.** The cart is a tiny external store (`src/lib/cart-store.ts`) persisted in
