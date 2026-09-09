@@ -522,9 +522,11 @@ function setupMascot() {
   gsap.set(mascot, { autoAlpha: 0 });
   gsap.set(drops, { autoAlpha: 0 });
 
-  // Appears once the hero is mostly gone.
+  // Appears only once the hero has left entirely: it shares the right edge
+  // with the hero's spinning sticker, and fading in any earlier put the two
+  // on top of each other on phones.
   ScrollTrigger.create({
-    start: () => (hero ? hero.offsetHeight * 0.55 : 200),
+    start: () => (hero ? hero.offsetHeight : 200),
     onEnter: () => gsap.to(mascot, { autoAlpha: 1, duration: 0.4 }),
     onLeaveBack: () => gsap.to(mascot, { autoAlpha: 0, duration: 0.3 }),
   });

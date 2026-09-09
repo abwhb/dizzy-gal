@@ -222,7 +222,7 @@ export const products: Product[] = [
     ],
     cta: "go on. dig in.",
     price: 1350,
-    panel: "#57151F",
+    panel: "#A63C55",
     bg: "#FF8BA7",
     dark: true,
     jarImage: "/images/shop-02-midnight-berry.webp",
