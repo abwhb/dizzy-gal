@@ -710,7 +710,9 @@ function setupPinnedRail() {
       // overlap the photos while this section is pinned.
       pinSpacing: "margin",
       scrub: 0.6,
-      start: "top top",
+      // Pinned mid-viewport rather than flush to the top, so the sticky
+      // header (which returns on any scroll-up) never covers the heading.
+      start: () => (section.offsetHeight < window.innerHeight ? "center center" : "top top"),
       // A little more scroll than travel, so the rail moves slower than the
       // page and there's time to take the cards in.
       end: () => `+=${distance() * 1.4}`,
