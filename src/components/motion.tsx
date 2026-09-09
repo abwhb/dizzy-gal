@@ -57,6 +57,7 @@ export function Motion() {
       setupBgParallax();
       setupRise();
       setupMascot();
+      setupRail(signal);
       const mm = gsap.matchMedia();
       mm.add("(min-width: 1024px)", () => setupPinnedRail());
     } catch (error) {
@@ -585,6 +586,81 @@ function setupMascot() {
  * horizontal travel. Registered inside gsap.matchMedia, so it reverts
  * cleanly when the viewport drops below the breakpoint.
  */
+type RailFx = { place: () => void; progress: (p: number) => void };
+let railFx: RailFx | null = null;
+
+/**
+ * Depth inside the social rail, shared by the native swipe and the desktop
+ * pin: photos tilt and dip as they leave the centre of the screen, the
+ * doodles on the quote cards drift at their own rate, the bar under the
+ * header fills and the counter follows the card nearest the middle.
+ */
+function setupRail(signal: AbortSignal) {
+  const section = document.querySelector<HTMLElement>("[data-pin-rail]");
+  const rail = section?.querySelector<HTMLElement>(".rail");
+  railFx = null;
+  if (!section || !rail) return;
+
+  const cards = Array.from(rail.children) as HTMLElement[];
+  const arts = cards.map((card) => {
+    const art = card.querySelector<HTMLElement>("[data-card-art]");
+    return art
+      ? {
+          kind: art.dataset.cardArt,
+          x: gsap.quickSetter(art, "x", "px"),
+          y: gsap.quickSetter(art, "y", "px"),
+          rot: gsap.quickSetter(art, "rotation", "deg"),
+        }
+      : null;
+  });
+  const bar = section.querySelector<HTMLElement>("[data-feed-bar]");
+  const barSetter = bar ? gsap.quickSetter(bar, "scaleX") : null;
+  const count = section.querySelector<HTMLElement>("[data-feed-count]");
+  const clamp = gsap.utils.clamp(-1, 1);
+
+  const place = () => {
+    const vw = window.innerWidth;
+    cards.forEach((card, i) => {
+      const art = arts[i];
+      if (!art) return;
+      const r = card.getBoundingClientRect();
+      const d = r.left + r.width / 2 - vw / 2;
+      // -1 at the left edge, 0 in the middle, 1 at the right edge.
+      const t = clamp(d / (vw * 0.6));
+      if (art.kind === "photo") {
+        art.rot(t * 4);
+        art.y(Math.abs(t) * 16);
+        art.x(t * -10);
+      } else {
+        art.x(t * -44);
+        art.rot(t * 12);
+      }
+    });
+  };
+  // 01 at the start of the rail, the last card's number at the end.
+  const progress = (p: number) => {
+    barSetter?.(p);
+    if (count) count.textContent = String(1 + Math.round(p * (cards.length - 1))).padStart(2, "0");
+  };
+
+  // The native swipe rail (touch, and any screen below the pin breakpoint).
+  // Under the desktop pin scrollLeft stays 0 and the pin drives this instead.
+  let frame = 0;
+  const onScroll = () => {
+    if (frame) return;
+    frame = requestAnimationFrame(() => {
+      frame = 0;
+      place();
+      const max = rail.scrollWidth - rail.clientWidth;
+      if (max > 0) progress(rail.scrollLeft / max);
+    });
+  };
+  rail.addEventListener("scroll", onScroll, { passive: true, signal });
+  window.addEventListener("resize", onScroll, { signal });
+  place();
+  railFx = { place, progress };
+}
+
 function setupPinnedRail() {
   const section = document.querySelector<HTMLElement>("[data-pin-rail]");
   const rail = section?.querySelector<HTMLElement>(".rail");
@@ -600,14 +676,33 @@ function setupPinnedRail() {
   };
   if (distance() <= 0) return;
 
+  const cards = Array.from(rail.children) as HTMLElement[];
+  // Where each card's left edge lines up with the rail's, as scroll progress.
+  const stops = () => {
+    const travel = distance();
+    const origin = cards[0]?.offsetLeft ?? 0;
+    return [0, ...cards.map((card) => Math.min(travel, card.offsetLeft - origin) / travel), 1];
+  };
+
+  // The strip leans into a fast scroll and eases back upright when it stops.
+  const lean = { skew: 0 };
+  const skewSetter = gsap.quickSetter(rail, "skewX", "deg");
+  const clampSkew = gsap.utils.clamp(-7, 7);
+
   // A viewport change can follow a native swipe; avoid adding that scroll
   // offset to the desktop transform when the pin takes over.
   rail.scrollLeft = 0;
-  gsap.set(rail, { overflowX: "visible" });
+  gsap.set(rail, { overflowX: "visible", transformOrigin: "center center" });
   gsap.set(section, { overflow: "hidden" });
   const tween = gsap.to(rail, {
     x: () => -distance(),
     ease: "none",
+    // The scrub lags the scroll, so card depth and the bar follow the
+    // tween's own frames rather than the raw scroll position.
+    onUpdate(this: gsap.core.Tween) {
+      railFx?.place();
+      railFx?.progress(this.progress());
+    },
     scrollTrigger: {
       trigger: section,
       pin: true,
@@ -616,9 +711,33 @@ function setupPinnedRail() {
       pinSpacing: "margin",
       scrub: 0.6,
       start: "top top",
-      end: () => `+=${distance()}`,
+      // A little more scroll than travel, so the rail moves slower than the
+      // page and there's time to take the cards in.
+      end: () => `+=${distance() * 1.4}`,
       invalidateOnRefresh: true,
       anticipatePin: 1,
+      // Settle on a card edge once the scroll comes to rest.
+      snap: {
+        snapTo: (value) => gsap.utils.snap(stops(), value),
+        duration: { min: 0.15, max: 0.45 },
+        delay: 0.05,
+        ease: "power2.inOut",
+        // Snap from where the scroll rests, not where a flick would have carried it.
+        inertia: false,
+      },
+      onUpdate: (self) => {
+        const skew = clampSkew(self.getVelocity() / -400);
+        if (Math.abs(skew) > Math.abs(lean.skew)) {
+          lean.skew = skew;
+          gsap.to(lean, {
+            skew: 0,
+            duration: 0.7,
+            ease: "power3",
+            overwrite: true,
+            onUpdate: () => skewSetter(lean.skew),
+          });
+        }
+      },
     },
   });
 
