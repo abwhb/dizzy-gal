@@ -418,7 +418,9 @@ export const newsletter = {
   blurb: "Bad day? Cake. Good day? Also cake. Sign up for drops, restocks, and 15% off your first jar.",
   placeholder: "you@somewhere.com",
   send: "Send",
+  sending: "Sending",
   sent: "Sent",
+  failed: "Try again",
 };
 
 export const footerColumns: { heading: string; links: { label: string; href?: string }[] }[] = [
