@@ -16,10 +16,14 @@ function Underlined({ children }: { children: React.ReactNode }) {
 
 /** `scallop` is the colour of whatever sits above: the shop on the home page, the title band on /story. */
 export function Story({ scallop = "#FFD34D" }: { scallop?: string }) {
+  // overflow-x-clip: the sticker tiles are dealt in from up to 140px off to
+  // either side (data-deal), which would otherwise widen the page and let
+  // phones scroll sideways mid-animation. `clip` keeps the scallop's vertical
+  // overflow visible and creates no scroll container.
   return (
     <section
       id="story"
-      className="relative grid grid-cols-[46px_minmax(0,1fr)] border-b-[3px] border-burgundy"
+      className="relative grid grid-cols-[46px_minmax(0,1fr)] overflow-x-clip border-b-[3px] border-burgundy"
     >
       <Scallop color={scallop} />
       <SectionRail label="Brand story" />
