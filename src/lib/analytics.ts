@@ -1,6 +1,5 @@
 import { track } from "@vercel/analytics";
 
-import { products } from "@/lib/content";
 import type { Order } from "@/lib/orders";
 
 /**
@@ -11,9 +10,8 @@ import type { Order } from "@/lib/orders";
  * (string / number / boolean / null) — Vercel drops anything else.
  */
 export const analytics = {
-  addToCart(productId: string, quantity = 1) {
-    const product = products.find((p) => p.id === productId);
-    track("add_to_cart", { product: productId, name: product?.name ?? productId, quantity });
+  addToCart(productId: string, name: string, quantity = 1) {
+    track("add_to_cart", { product: productId, name, quantity });
   },
   orderPlaced(order: Order) {
     track("order_placed", {

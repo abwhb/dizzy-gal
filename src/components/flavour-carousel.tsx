@@ -7,7 +7,7 @@ import { useCallback, useRef, useState } from "react";
 import { Scallop } from "@/components/decor";
 import { ProductFeature } from "@/components/product-feature";
 import { SectionRail } from "@/components/section-rail";
-import type { Product } from "@/lib/content";
+import type { ShopProduct } from "@/lib/products";
 
 const SWIPE = 48;
 
@@ -15,7 +15,7 @@ const SWIPE = 48;
  * The shop section: one flavour at a time, the section recolouring to match.
  * Tabs, arrows, arrow keys, and a swipe on touch all move it.
  */
-export function FlavourCarousel({ products }: { products: Product[] }) {
+export function FlavourCarousel({ products }: { products: ShopProduct[] }) {
   const [index, setIndex] = useState(0);
   const track = useRef<HTMLDivElement>(null);
   const pointerStart = useRef<number | null>(null);

@@ -11,9 +11,10 @@ import { analytics } from "@/lib/analytics";
 import { checkoutCopy, store } from "@/lib/content";
 import { upcomingDeliveryDates } from "@/lib/delivery";
 import { money } from "@/lib/format";
-import { linesFor, newOrderId, saveOrder, totalsFor, type Customer, type Order } from "@/lib/orders";
+import { linesFor, saveOrder, totalsFor, type CheckoutRequest, type Customer, type Order } from "@/lib/orders";
+import type { ShopProduct } from "@/lib/products";
 
-type Errors = Partial<Record<keyof Customer | "deliveryDate", string>>;
+type Errors = Partial<Record<keyof Customer | "deliveryDate" | "form", string>>;
 
 function validate(c: Customer, deliveryDate: string): Errors {
   const errors: Errors = {};
@@ -26,10 +27,10 @@ function validate(c: Customer, deliveryDate: string): Errors {
   return errors;
 }
 
-export function CheckoutForm() {
+export function CheckoutForm({ products }: { products: ShopProduct[] }) {
   const router = useRouter();
   const { items, hydrated, clearCart } = useSite();
-  const lines = linesFor(items);
+  const lines = linesFor(items, products);
   const totals = totalsFor(lines);
 
   // Computed on the client only — the form doesn't render until the cart has
@@ -76,30 +77,36 @@ export function CheckoutForm() {
     if (Object.keys(found).length) return;
 
     setSubmitting(true);
-    const order: Order = {
-      id: newOrderId(),
-      createdAt: new Date().toISOString(),
+    // The server prices the cart from the database and takes the stock; the
+    // order it returns is what the browser remembers.
+    const request: CheckoutRequest = {
+      items: Object.fromEntries(lines.map((line) => [line.productId, line.qty])),
       deliveryDate: chosenDate,
-      lines,
-      ...totals,
       customer: {
         ...customer,
         email: customer.email || undefined,
         notes: customer.notes || undefined,
       },
-      payment: "cod",
-      status: "placed",
     };
 
-    // Tell the server; the browser keeps its own copy either way.
+    let order: Order;
     try {
-      await fetch("/api/orders", {
+      const res = await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(order),
+        body: JSON.stringify(request),
       });
-    } catch (err) {
-      console.error("order intake failed; kept locally", err);
+      const body = (await res.json()) as { order?: Order; error?: { message?: string } };
+      if (!res.ok || !body.order) {
+        setErrors({ form: body.error?.message ?? "That didn't go through. Try again in a moment." });
+        setSubmitting(false);
+        return;
+      }
+      order = body.order;
+    } catch {
+      setErrors({ form: "Couldn't reach the kitchen. Check your connection and try again." });
+      setSubmitting(false);
+      return;
     }
 
     saveOrder(order);
@@ -244,6 +251,12 @@ export function CheckoutForm() {
             </span>
           </label>
         </fieldset>
+
+        {errors.form && (
+          <p role="alert" className={error}>
+            {errors.form}
+          </p>
+        )}
 
         <button type="submit" disabled={submitting || !slots.length} className={`${pillPrimary} self-start`}>
           {submitting ? "placing…" : checkoutCopy.placeOrder}

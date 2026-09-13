@@ -1,0 +1,135 @@
+// Dizzy Gals data model.
+//
+// Prisma 7: the connection URL lives in `prisma.config.ts`, not here, and the
+// client is generated into `src/generated/prisma` (git-ignored, rebuilt by
+// `prisma generate` on install).
+//
+// Money is whole rupees (`store.currency` in src/lib/content.ts), never
+// fractions; there is no per-row currency.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// A cake in a jar. Seeded from `products` in `src/lib/content.ts`; once
+/// seeded the row is the source of truth and is edited in /admin.
+model Product {
+  id          String   @id @default(cuid())
+  /// Public id, used in URLs (`/shop#pink-lemonade`) and in carts.
+  slug        String   @unique
+  name        String
+  tag         String?
+  description String
+  warning     String?
+  /// `{ label, illustration }[]` — see `illustrationNames` in `src/lib/content.ts`.
+  ingredients Json     @default("[]")
+  cta         String
+  imageUrl    String?
+  /// Price per jar, whole rupees.
+  price       Int
+  /// Left panel colour in the shop.
+  panel       String   @default("#FF8BA7")
+  /// Section colour while this flavour is showing.
+  bg          String   @default("#FFD34D")
+  /// Panel is dark: chrome on it switches to cream.
+  dark        Boolean  @default(false)
+  stock       Int      @default(0)
+  active      Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  orderItems OrderItem[]
+
+  @@index([active, sortOrder])
+}
+
+model NewsletterSubscriber {
+  id             String    @id @default(cuid())
+  email          String    @unique
+  /// Which form: "modal", "footer" or "site".
+  source         String?
+  createdAt      DateTime  @default(now())
+  unsubscribedAt DateTime?
+}
+
+enum OrderStatus {
+  /// Placed on the site, kitchen hasn't called yet.
+  PLACED
+  /// Confirmed by phone; going in the oven.
+  CONFIRMED
+  /// Delivered and paid (cash at the door).
+  DELIVERED
+  CANCELLED
+}
+
+/// A cash-on-delivery order for a chosen delivery day inside DHA Lahore.
+model Order {
+  id           String      @id @default(cuid())
+  /// Public order number shown to the customer, e.g. "DG-K3P9QA7".
+  code         String      @unique
+  status       OrderStatus @default(PLACED)
+  /// Chosen delivery day, local YYYY-MM-DD.
+  deliveryDate String
+  name         String
+  phone        String
+  email        String?
+  address      String
+  /// e.g. "DHA Phase 6"
+  area         String
+  city         String
+  notes        String?
+  /// Total jars across all lines.
+  jars         Int
+  subtotal     Int
+  delivery     Int
+  total        Int
+  payment      String      @default("cod")
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  items OrderItem[]
+
+  @@index([status, deliveryDate])
+  @@index([phone])
+  @@index([createdAt])
+}
+
+/// Line items snapshot the product name and price at the time of ordering.
+model OrderItem {
+  id        String @id @default(cuid())
+  orderId   String
+  productId String
+  name      String
+  price     Int
+  qty       Int
+
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+}
+
+/// A wholesale enquiry from /wholesale.
+model WholesaleEnquiry {
+  id        String   @id @default(cuid())
+  business  String
+  contact   String
+  phone     String
+  email     String?
+  type      String?
+  area      String?
+  volume    String?
+  frequency String?
+  flavours  String[] @default([])
+  message   String?
+  /// Whether the team email went out (for chasing when Resend was down).
+  emailed   Boolean  @default(false)
+  handled   Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([handled, createdAt])
+}

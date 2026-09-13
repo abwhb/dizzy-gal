@@ -9,12 +9,18 @@ import { Shop } from "@/components/shop";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { Story } from "@/components/story";
+import { listProducts } from "@/lib/products";
 import { productListJsonLd } from "@/lib/seo";
 
-export default function Home() {
+// Products come from the database on every request, so a price or stock
+// change in /admin shows up straight away.
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  const products = await listProducts();
   return (
     <div className="flex min-h-screen flex-col">
-      <JsonLd data={productListJsonLd()} />
+      <JsonLd data={productListJsonLd(products)} />
       <Hero />
       <SiteHeader />
       <main>

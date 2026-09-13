@@ -1,6 +1,9 @@
 import { FlavourCarousel } from "@/components/flavour-carousel";
-import { products } from "@/lib/content";
+import { listProducts } from "@/lib/products";
 
-export function Shop() {
+/** The home page shop section, one flavour at a time, from the database. */
+export async function Shop() {
+  const products = await listProducts();
+  if (products.length === 0) return null;
   return <FlavourCarousel products={products} />;
 }

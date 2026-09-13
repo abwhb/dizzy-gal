@@ -4,6 +4,7 @@ import { Resend } from "resend";
 
 import { site, store } from "@/lib/content";
 import { formatDeliveryDay } from "@/lib/delivery";
+import { ordersNotifyEmail, resendApiKey, wholesaleNotifyEmail } from "@/lib/env";
 import { money } from "@/lib/format";
 import type { Order } from "@/lib/orders";
 import { siteUrl } from "@/lib/seo";
@@ -15,10 +16,10 @@ import { siteUrl } from "@/lib/seo";
  * place.
  *
  * Config (all optional — without an API key every send is a logged no-op so
- * local dev and previews never email anyone):
- *   RESEND_API_KEY          the Resend key
- *   ORDERS_NOTIFY_EMAIL     where new orders go (default hello@dizzygals.com)
- *   WHOLESALE_NOTIFY_EMAIL  where enquiries go (default wholesale@dizzygals.com)
+ * local dev and previews never email anyone), read via src/lib/env.ts:
+ *   dizzy_gals_RESEND_API_KEY (or dizzy_gals_RESEND)   the Resend key
+ *   dizzy_gals_ORDERS_NOTIFY_EMAIL     where new orders go (default hello@dizzygals.com)
+ *   dizzy_gals_WHOLESALE_NOTIFY_EMAIL  where enquiries go (default wholesale@dizzygals.com)
  */
 
 const SENDING_DOMAIN = "mail.dizzygals.com";
@@ -31,12 +32,12 @@ const from = {
 };
 
 const notify = {
-  orders: process.env.ORDERS_NOTIFY_EMAIL || site.email,
-  wholesale: process.env.WHOLESALE_NOTIFY_EMAIL || WHOLESALE_EMAIL,
+  orders: () => ordersNotifyEmail() || site.email,
+  wholesale: () => wholesaleNotifyEmail() || WHOLESALE_EMAIL,
 };
 
 function apiKey(): string | undefined {
-  return process.env.RESEND_API_KEY || process.env.dizzy_gals_RESEND;
+  return resendApiKey();
 }
 
 export function isEmailConfigured(): boolean {
@@ -161,7 +162,7 @@ function customerBlock(order: Order): string {
 export async function sendOrderEmails(order: Order): Promise<{ kitchen: boolean; customer: boolean | null }> {
   const api = resend();
   if (!api) {
-    console.warn(`[email] no RESEND_API_KEY; order ${order.id} not emailed`);
+    console.warn(`[email] no dizzy_gals_RESEND_API_KEY; order ${order.id} not emailed`);
     return { kitchen: false, customer: null };
   }
 
@@ -170,7 +171,7 @@ export async function sendOrderEmails(order: Order): Promise<{ kitchen: boolean;
 
   const kitchen = api.emails.send({
     from: from.orders,
-    to: notify.orders,
+    to: notify.orders(),
     replyTo: order.customer.email || undefined,
     subject: `New order ${order.id} · ${jars} for ${day} · ${money(order.total)}`,
     tags: [{ name: "type", value: "order_kitchen" }],
@@ -252,7 +253,7 @@ export type WholesaleEnquiryEmail = {
 export async function sendWholesaleEmails(enquiry: WholesaleEnquiryEmail): Promise<{ team: boolean; enquirer: boolean | null }> {
   const api = resend();
   if (!api) {
-    console.warn(`[email] no RESEND_API_KEY; wholesale enquiry from ${enquiry.business} not emailed`);
+    console.warn(`[email] no dizzy_gals_RESEND_API_KEY; wholesale enquiry from ${enquiry.business} not emailed`);
     return { team: false, enquirer: null };
   }
 
@@ -260,7 +261,7 @@ export async function sendWholesaleEmails(enquiry: WholesaleEnquiryEmail): Promi
 
   const team = api.emails.send({
     from: from.wholesale,
-    to: notify.wholesale,
+    to: notify.wholesale(),
     replyTo: enquiry.email || undefined,
     subject: `Wholesale enquiry · ${enquiry.business} · ${enquiry.volume ?? "volume not set"}`,
     tags: [{ name: "type", value: "wholesale_team" }],
@@ -346,7 +347,7 @@ export async function sendWholesaleEmails(enquiry: WholesaleEnquiryEmail): Promi
 export async function subscribeToNewsletter(email: string, source: string): Promise<{ contact: boolean; welcome: boolean }> {
   const api = resend();
   if (!api) {
-    console.warn(`[email] no RESEND_API_KEY; newsletter signup not recorded`);
+    console.warn(`[email] no dizzy_gals_RESEND_API_KEY; newsletter welcome not sent`);
     return { contact: false, welcome: false };
   }
 

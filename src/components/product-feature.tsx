@@ -7,11 +7,11 @@ import { PatternBand } from "@/components/decor";
 import { Illustration } from "@/components/illustrations";
 import { flyToCart } from "@/components/motion";
 import { useSite } from "@/components/site-provider";
-import type { Product } from "@/lib/content";
 import { money } from "@/lib/format";
+import type { ShopProduct } from "@/lib/products";
 
 /** One flavour: the jar panel on the left, the story and add button on the right. */
-export function ProductFeature({ product }: { product: Product }) {
+export function ProductFeature({ product }: { product: ShopProduct }) {
   const { addToCart } = useSite();
   const [justAdded, setJustAdded] = useState(false);
   const resetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -23,7 +23,7 @@ export function ProductFeature({ product }: { product: Product }) {
   }, []);
 
   const handleAdd = (event: React.MouseEvent<HTMLButtonElement>) => {
-    addToCart(product.id);
+    addToCart(product);
     flyToCart(event.currentTarget);
     setJustAdded(true);
     if (resetTimer.current) clearTimeout(resetTimer.current);
@@ -128,12 +128,13 @@ export function ProductFeature({ product }: { product: Product }) {
           <button
             type="button"
             onClick={handleAdd}
+            disabled={!product.inStock}
             aria-live="polite"
-            className={`cursor-pointer rounded-full px-8 py-[15px] text-sm font-semibold tracking-[.16em] text-cream uppercase transition-[scale,background-color] duration-200 hover:scale-[1.04] active:scale-[.97] ${
+            className={`cursor-pointer rounded-full px-8 py-[15px] text-sm font-semibold tracking-[.16em] text-cream uppercase transition-[scale,background-color] duration-200 hover:scale-[1.04] active:scale-[.97] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100 ${
               justAdded ? "bg-dizzy-orange" : "bg-burgundy hover:bg-dizzy-orange"
             }`}
           >
-            {justAdded ? "in the jar!" : product.cta}
+            {!product.inStock ? "sold out" : justAdded ? "in the jar!" : product.cta}
           </button>
           <span className="rounded-full border-[3px] border-burgundy px-4 py-2.5 font-display text-lg leading-none font-extrabold">
             {money(product.price)} <span className="text-[11px] font-body font-semibold tracking-[.14em] uppercase">/ jar</span>

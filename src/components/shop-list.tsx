@@ -1,14 +1,20 @@
 import { Scallop } from "@/components/decor";
 import { ProductFeature } from "@/components/product-feature";
 import { SectionRail } from "@/components/section-rail";
-import { products } from "@/lib/content";
+import type { ShopProduct } from "@/lib/products";
 
 /**
  * Every flavour as its own full-bleed panel, one after another, for /shop.
  * Each panel is addressable (`/shop#pink-lemonade`) and scrolls in under the
  * sticky header. `scallop` is the colour of whatever sits above the first.
  */
-export function ShopList({ scallop = "#FF6A00" }: { scallop?: string }) {
+export function ShopList({
+  products,
+  scallop = "#FF6A00",
+}: {
+  products: ShopProduct[];
+  scallop?: string;
+}) {
   return (
     <>
       {products.map((product, i) => (
