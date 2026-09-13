@@ -1,14 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
+import { NewsletterForm } from "@/components/newsletter-form";
 import { useSite } from "@/components/site-provider";
-import { analytics } from "@/lib/analytics";
+import { newsletter } from "@/lib/content";
 
 export function NewsletterModal() {
   const { newsletterOpen, closeNewsletter } = useSite();
-  const [email, setEmail] = useState("");
-  const [subscribed, setSubscribed] = useState(false);
 
   useEffect(() => {
     if (!newsletterOpen) return;
@@ -23,7 +22,7 @@ export function NewsletterModal() {
 
   return (
     <div
-      className="fixed inset-0 z-40 flex items-center justify-center bg-burgundy/60 p-5"
+      className="fixed inset-0 z-40 flex items-center justify-center bg-burgundy/60 p-5 motion-safe:animate-fade-in"
       onClick={closeNewsletter}
     >
       <div
@@ -31,7 +30,7 @@ export function NewsletterModal() {
         aria-modal="true"
         aria-labelledby="newsletter-heading"
         onClick={(event) => event.stopPropagation()}
-        className="flex w-full max-w-[440px] flex-col gap-4 rounded-[18px] border-[3px] border-burgundy bg-lemon px-6 py-7"
+        className="flex w-full max-w-[440px] flex-col gap-4 rounded-[18px] border-[3px] border-burgundy bg-lemon px-6 py-7 motion-safe:animate-modal-in"
       >
         <div className="flex items-start justify-between gap-3">
           <h2
@@ -49,35 +48,9 @@ export function NewsletterModal() {
           </button>
         </div>
 
-        <p className="text-sm leading-[1.5] font-medium">
-          Bad day? Cake. Good day? Also cake. Sign up for drops, restocks, and 15% off your first
-          jar.
-        </p>
+        <p className="text-sm leading-[1.5] font-medium">{newsletter.blurb}</p>
 
-        <form
-          onSubmit={(event) => {
-            event.preventDefault();
-            if (!email || subscribed) return;
-            setSubscribed(true);
-            analytics.newsletterSubscribed();
-          }}
-          className="flex overflow-hidden rounded-full border-[3px] border-burgundy"
-        >
-          <input
-            type="email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            placeholder="you@somewhere.com"
-            aria-label="Email address"
-            className="min-w-0 flex-1 bg-cream px-[18px] py-3 text-sm text-burgundy outline-none"
-          />
-          <button
-            type="submit"
-            className="cursor-pointer bg-dizzy-orange px-[22px] py-3 text-xs font-semibold tracking-[.18em] text-cream uppercase"
-          >
-            {subscribed ? "Sent" : "Send"}
-          </button>
-        </form>
+        <NewsletterForm source="modal" />
       </div>
     </div>
   );

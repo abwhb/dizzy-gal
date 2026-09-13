@@ -1,9 +1,14 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Baloo_2, Poppins } from "next/font/google";
+import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
+import { JsonLd } from "@/components/json-ld";
+import { NewsletterModal } from "@/components/newsletter-modal";
 import { SiteProvider } from "@/components/site-provider";
+import { site } from "@/lib/content";
+import { organizationJsonLd, siteUrl, websiteJsonLd } from "@/lib/seo";
 
 import "./globals.css";
 
@@ -27,9 +32,47 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Dizzy Gals — Cake worth losing your head over",
-  description:
-    "Dizzy Gals is for the hopelessly obsessed dessert lovers. Bold flavours, creamy layers, and just the right amount of chaos. Go on. Dig in.",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: `${site.name} — Cake in a jar, delivered in DHA Lahore`,
+    template: `%s · ${site.name}`,
+  },
+  description: site.description,
+  keywords: site.keywords,
+  applicationName: site.name,
+  category: "food",
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    siteName: site.name,
+    locale: site.locale,
+    url: "/",
+    title: `${site.name} — ${site.tagline}`,
+    description: site.description,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${site.name} — ${site.tagline}`,
+    description: site.description,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  formatDetection: { telephone: false },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#FF6A00",
 };
 
 export default function RootLayout({
@@ -40,9 +83,20 @@ export default function RootLayout({
   return (
     // The font variables live on <html> so that the `--font-display` /
     // `--font-body` theme tokens, which resolve at :root, can reference them.
-    <html lang="en" className={`${baloo.variable} ${poppins.variable}`}>
+    // suppressHydrationWarning: the motion flag script below adds a class to
+    // <html> before React hydrates.
+    <html lang="en" className={`${baloo.variable} ${poppins.variable}`} suppressHydrationWarning>
       <body>
-        <SiteProvider>{children}</SiteProvider>
+        {/* Flags that JS is running so globals.css may pre-hide the elements
+            GSAP animates in. Runs before paint; without JS nothing is hidden. */}
+        <Script id="motion-flag" strategy="beforeInteractive">
+          {`document.documentElement.classList.add("js")`}
+        </Script>
+        <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
+        <SiteProvider>
+          {children}
+          <NewsletterModal />
+        </SiteProvider>
         {/* Vercel Web Analytics (page views + custom events) and Speed Insights
             (Core Web Vitals). Both are no-ops outside a Vercel deployment, and
             the analytics script only loads in production. */}

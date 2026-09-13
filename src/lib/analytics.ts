@@ -1,5 +1,8 @@
 import { track } from "@vercel/analytics";
 
+import { products } from "@/lib/content";
+import type { Order } from "@/lib/orders";
+
 /**
  * Custom events sent to Vercel Web Analytics.
  *
@@ -8,13 +11,23 @@ import { track } from "@vercel/analytics";
  * (string / number / boolean / null) — Vercel drops anything else.
  */
 export const analytics = {
-  addToCart(product: { id: string; name: string }, quantity = 1) {
-    track("add_to_cart", { product: product.id, name: product.name, quantity });
+  addToCart(productId: string, quantity = 1) {
+    const product = products.find((p) => p.id === productId);
+    track("add_to_cart", { product: productId, name: product?.name ?? productId, quantity });
+  },
+  orderPlaced(order: Order) {
+    track("order_placed", {
+      jars: order.jars,
+      total: order.total,
+      delivery: order.delivery,
+      area: order.customer.area,
+      payment: order.payment,
+    });
   },
   newsletterOpened() {
     track("newsletter_open");
   },
-  newsletterSubscribed() {
-    track("newsletter_subscribe");
+  newsletterSubscribed(source: "modal" | "footer") {
+    track("newsletter_subscribe", { source });
   },
 };

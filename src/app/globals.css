@@ -13,7 +13,16 @@
   --font-display: var(--font-baloo), "Baloo 2", system-ui, sans-serif;
   --font-body: var(--font-poppins), Helvetica, Arial, sans-serif;
 
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Continuous loops and the modal live in CSS; entrances and scroll
+     reveals are GSAP (components/motion.tsx). */
   --animate-marquee: marquee 60s linear infinite;
+  --animate-wiggle: wiggle 5s ease-in-out infinite;
+  --animate-spin-slow: spin-slow 18s linear infinite;
+  --animate-drift: drift 48s linear infinite;
+  --animate-fade-in: fade-in 0.3s ease-out both;
+  --animate-modal-in: modal-in 0.4s var(--ease-out-soft) both;
 
   @keyframes marquee {
     from {
@@ -23,10 +32,68 @@
       transform: translateX(-50%);
     }
   }
+
+  /* Round sticker text ring. */
+  @keyframes spin-slow {
+    to {
+      rotate: 360deg;
+    }
+  }
+
+  /* Pattern band creeps sideways by exactly one tile, so it loops. */
+  @keyframes drift {
+    to {
+      background-position-x: 320px;
+    }
+  }
+
+  /* The warning sticker rests at -10deg and drifts a few degrees. Animates
+     the `rotate` property (what Tailwind's -rotate-10 sets) rather than
+     `transform`, so the two don't stack. */
+  @keyframes wiggle {
+    0%,
+    100% {
+      rotate: -10deg;
+    }
+    50% {
+      rotate: -4deg;
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes modal-in {
+    from {
+      opacity: 0;
+      transform: translateY(20px) scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
 }
 
 /* Base layer, so `text-*` utilities still win over the default link colour. */
 @layer base {
+  html {
+    /* Anchor links stop below the sticky header instead of under it. */
+    scroll-padding-top: 64px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
   html,
   body {
     margin: 0;
@@ -35,6 +102,11 @@
     font-family: var(--font-body);
     font-weight: 400;
     -webkit-font-smoothing: antialiased;
+  }
+
+  a,
+  button {
+    -webkit-tap-highlight-color: transparent;
   }
 
   a {
@@ -65,10 +137,64 @@
     background: var(--color-burgundy);
     border-radius: 4px;
   }
+
+  /* Pre-hide for GSAP-driven elements. Only once JS has flagged <html>
+     (layout.tsx) and only when motion is allowed, so a page without JS or
+     with reduced motion renders everything as-is. GSAP lifts this inline. */
+  @media (prefers-reduced-motion: no-preference) {
+    html.js [data-hero],
+    html.js [data-reveal],
+    html.js [data-split],
+    html.js [data-deal] > * {
+      visibility: hidden;
+    }
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .animate-marquee {
+  .animate-marquee,
+  .animate-wiggle,
+  .animate-drift {
     animation: none;
+  }
+}
+
+/* The falling mascot only exists when scripting drives it. */
+[data-mascot] {
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html.js [data-mascot] {
+    display: block;
+  }
+}
+
+/* Custom cursors on pointer devices: a lemon slice by default, a slice of
+   cake over anything clickable. Unlayered so they beat the `cursor-pointer`
+   utilities; text fields keep the I-beam. */
+@media (hover: hover) and (pointer: fine) {
+  html,
+  body {
+    cursor:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%23FF6A00' stroke='%2357151F' stroke-width='2.5'/%3E%3Ccircle cx='16' cy='16' r='9.5' fill='%23FFD34D' stroke='%23F2EFE6' stroke-width='1.5'/%3E%3Cpath d='M16 6.5v19M24.2 11.25 7.8 20.75M24.2 20.75 7.8 11.25' stroke='%23F2EFE6' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E")
+        16 16,
+      auto;
+  }
+
+  a,
+  button,
+  [role="button"],
+  summary,
+  label {
+    cursor:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M16 5 28.5 11 16 17 3.5 11Z' fill='%23FF8BA7' stroke='%2357151F' stroke-width='2' stroke-linejoin='round'/%3E%3Cpath d='M3.5 11v9.5L16 26.5l12.5-6V11' fill='%23FFD34D' stroke='%2357151F' stroke-width='2' stroke-linejoin='round'/%3E%3Cpath d='M16 17v9.5M3.5 15.5 16 21.5l12.5-6' fill='none' stroke='%2357151F' stroke-width='1.6' stroke-linejoin='round'/%3E%3Ccircle cx='16' cy='9.5' r='2.4' fill='%23FF6A00' stroke='%2357151F' stroke-width='1.3'/%3E%3C/svg%3E")
+        16 16,
+      pointer;
+  }
+
+  input,
+  textarea {
+    cursor: text;
   }
 }
