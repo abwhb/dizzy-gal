@@ -47,7 +47,7 @@ band, footer, its own `<Motion/>`).
 | `/order/[id]` | Confirmation: what happens next, summary, delivery address |
 | `/orders` | Orders placed from this browser |
 | `/shipping`, `/terms`, `/privacy` | Content from `content.ts` via `legal-page.tsx` |
-| `/wholesale` | Pitch plus an enquiry form (`wholesale-form.tsx`); POSTs to `/api/wholesale`, a stub like the orders one — wire it to wholesale@ or a sheet. The perks' terms are placeholders |
+| `/wholesale` | Pitch plus an enquiry form (`wholesale-form.tsx`); POSTs to `/api/wholesale`, which emails the enquiry to wholesale@ (see **Email**). The perks' terms are placeholders |
 | anything else | Brand 404 |
 
 **How the cart works.** The cart is a tiny external store (`src/lib/cart-store.ts`) persisted in
@@ -56,9 +56,10 @@ band, footer, its own `<Motion/>`).
 
 **How orders work.** Payment is cash on delivery only. Placing an order builds an `Order`
 (`src/lib/orders.ts`), POSTs it to `/api/orders`, saves it to the browser's `localStorage`, clears
-the cart and routes to the confirmation. **`/api/orders` is a stub** — it validates the shape,
-logs the id and returns `ok`. Wire the real intake there (email to the kitchen, a sheet row, a
-WhatsApp message, a Shopify draft order). Until then the kitchen does not hear about orders.
+the cart and routes to the confirmation. `/api/orders` validates the order and emails it to the
+kitchen, plus a confirmation to the customer if they left an email (see **Email**). An email
+failure does not fail the order — the browser still holds the record — but it is logged and
+returned in the response as `emailed`.
 
 **Delivery rules.** DHA Lahore only (`store.areas`, one entry per phase) and only on set days
 (`store.deliveryDays`, currently Friday and Sunday). Checkout offers the next open delivery days
@@ -156,6 +157,27 @@ One rule when adding hovers to anything GSAP animates: transition the `scale` pr
 Copy, products, gallery labels, marquee lines and footer links are all in `src/lib/content.ts`.
 Adding a second flavour is a matter of appending to `products`; the shop section renders whatever
 is in that array.
+
+## Email
+
+Transactional email goes through [Resend](https://resend.com) from the verified
+`mail.dizzygals.com` subdomain. Everything lives in `src/lib/email.ts` (server-only): the
+sender addresses, the one brand-styled template and the three flows.
+
+| Flow | Route | Who gets what |
+| --- | --- | --- |
+| Order placed | `POST /api/orders` | Kitchen (`ORDERS_NOTIFY_EMAIL`) gets the full order, customer details and a reply-to of the customer. Customer gets a confirmation if they left an email |
+| Wholesale enquiry | `POST /api/wholesale` | Wholesale inbox (`WHOLESALE_NOTIFY_EMAIL`) gets the enquiry; enquirer gets an acknowledgement if they left an email. If the team email cannot be sent the route returns 502 and the form shows its "email us instead" copy |
+| Newsletter signup | `POST /api/newsletter` | The address is saved as a Resend contact and gets a welcome note. Send broadcasts to those contacts from the Resend dashboard. If a `source` string property is defined under Contacts → Properties in Resend, each contact also records `modal` or `footer`; without it the contact is saved plainly |
+
+Senders are `orders@`, `wholesale@` and `hello@` on `mail.dizzygals.com`; replies go to
+`hello@dizzygals.com` / `wholesale@dizzygals.com`.
+
+**Configuration.** Set `RESEND_API_KEY` in the Vercel project (Production, and Preview if you
+want previews to send). Without it every send is a logged no-op, so local dev and previews never
+email anyone by accident. `ORDERS_NOTIFY_EMAIL` and `WHOLESALE_NOTIFY_EMAIL` override the
+destination inboxes; `NEXT_PUBLIC_SITE_URL` sets the links inside the emails. See
+`.env.example`.
 
 ## Analytics
 
