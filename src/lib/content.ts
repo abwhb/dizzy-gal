@@ -4,21 +4,33 @@
  * lives here.
  */
 
-export type IllustrationName = "strawberry" | "lemon" | "cream" | "cake" | "heart";
+export const illustrationNames = ["strawberry", "lemon", "cream", "cake", "heart"] as const;
+export type IllustrationName = (typeof illustrationNames)[number];
 
 export type Ingredient = {
   label: string;
   illustration: IllustrationName;
 };
 
+/**
+ * Initial catalogue. `npm run db:seed` inserts any product whose `slug` isn't
+ * in the database yet; after that the database row is the source of truth
+ * (price, stock and copy are edited there, not here).
+ */
 export type Product = {
-  id: string;
+  slug: string;
   name: string;
   tag: string;
   description: string;
   warning: string;
   ingredients: Ingredient[];
   cta: string;
+  /** Whole-currency-unit prices are avoided on purpose: this is in cents. */
+  priceCents: number;
+  /** ISO 4217 code. */
+  currency: string;
+  /** Jars available to sell at launch. */
+  stock: number;
   /** Drop a photo in `public/` and point this at it to replace the slot. */
   jarImage?: string;
 };
@@ -52,7 +64,7 @@ export type FeedCard =
 
 export const products: Product[] = [
   {
-    id: "pink-lemonade",
+    slug: "pink-lemonade",
     name: "Pink Lemonade",
     tag: "Bestseller",
     description:
@@ -64,8 +76,17 @@ export const products: Product[] = [
       { label: "Whipped cream", illustration: "cream" },
     ],
     cta: "go on. dig in.",
+    // Placeholder launch price — no pricing in the brand handoff. Edit in the DB.
+    priceCents: 1200,
+    currency: "AUD",
+    stock: 100,
   },
 ];
+
+/** Orders of this many jars or more ship free (see `marqueeLines`). */
+export const FREE_SHIPPING_MIN_JARS = 6;
+/** Flat shipping below the free-shipping threshold, in cents. */
+export const FLAT_SHIPPING_CENTS = 995;
 
 export const promises: PromiseItem[] = [
   { label: "Real ingredients", illustration: "strawberry" },
