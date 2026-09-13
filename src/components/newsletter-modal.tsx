@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { useSite } from "@/components/site-provider";
+import { analytics } from "@/lib/analytics";
 
 export function NewsletterModal() {
   const { newsletterOpen, closeNewsletter } = useSite();
@@ -56,7 +57,9 @@ export function NewsletterModal() {
         <form
           onSubmit={(event) => {
             event.preventDefault();
-            if (email) setSubscribed(true);
+            if (!email || subscribed) return;
+            setSubscribed(true);
+            analytics.newsletterSubscribed();
           }}
           className="flex overflow-hidden rounded-full border-[3px] border-burgundy"
         >

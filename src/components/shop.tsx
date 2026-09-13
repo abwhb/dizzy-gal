@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Illustration } from "@/components/illustrations";
 import { SectionRail } from "@/components/section-rail";
 import { useSite } from "@/components/site-provider";
+import { analytics } from "@/lib/analytics";
 import { products } from "@/lib/content";
 
 export function Shop() {
@@ -75,7 +76,10 @@ export function Shop() {
 
               <button
                 type="button"
-                onClick={() => addToCart()}
+                onClick={() => {
+                  addToCart();
+                  analytics.addToCart(product);
+                }}
                 className="cursor-pointer self-start rounded-full bg-burgundy px-8 py-[15px] text-sm font-semibold tracking-[.16em] text-cream uppercase transition-colors hover:bg-dizzy-orange"
               >
                 {product.cta}

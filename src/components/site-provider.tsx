@@ -2,6 +2,8 @@
 
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
 
+import { analytics } from "@/lib/analytics";
+
 type SiteState = {
   cartCount: number;
   addToCart: (quantity?: number) => void;
@@ -19,7 +21,10 @@ export function SiteProvider({ children }: { children: React.ReactNode }) {
   const addToCart = useCallback((quantity = 1) => {
     setCartCount((count) => count + quantity);
   }, []);
-  const openNewsletter = useCallback(() => setNewsletterOpen(true), []);
+  const openNewsletter = useCallback(() => {
+    setNewsletterOpen(true);
+    analytics.newsletterOpened();
+  }, []);
   const closeNewsletter = useCallback(() => setNewsletterOpen(false), []);
 
   const value = useMemo(

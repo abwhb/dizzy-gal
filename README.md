@@ -36,6 +36,24 @@ Copy, products, gallery labels, marquee lines and footer links are all in `src/l
 Adding a second flavour is a matter of appending to `products`; the shop section renders whatever
 is in that array.
 
+## Analytics
+
+The site uses [Vercel Web Analytics](https://vercel.com/docs/analytics) and
+[Speed Insights](https://vercel.com/docs/speed-insights). Both are mounted once in
+`src/app/layout.tsx` and need no keys — they pick up the project automatically when deployed on
+Vercel, and are inert in local dev and on other hosts. Enable them once per project in the Vercel
+dashboard (**Analytics** and **Speed Insights** tabs) for data to appear.
+
+Custom events live in `src/lib/analytics.ts`:
+
+| Event | Fired when |
+| --- | --- |
+| `add_to_cart` | The shop CTA is clicked (with `product`, `name`, `quantity`) |
+| `newsletter_open` | The newsletter modal is opened |
+| `newsletter_subscribe` | The newsletter form is submitted with an email |
+
+Add new events there rather than calling `track` inline, so names stay consistent.
+
 ## Brand
 
 | Token | Value |
