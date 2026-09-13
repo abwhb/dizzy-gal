@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { products, site, store, type Product } from "@/lib/content";
+import { site, store, type Product } from "@/lib/content";
 
 /**
  * The canonical origin. Set NEXT_PUBLIC_SITE_URL once the domain is live;
@@ -125,8 +125,8 @@ export function productJsonLd(product: Product) {
   };
 }
 
-/** The flavours as an ItemList, for the home page. */
-export function productListJsonLd() {
+/** The flavours as an ItemList, for the home and shop pages. */
+export function productListJsonLd(products: Product[]) {
   return {
     "@context": "https://schema.org",
     "@type": "ItemList",

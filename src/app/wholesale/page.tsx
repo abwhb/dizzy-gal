@@ -3,6 +3,7 @@ import { JsonLd } from "@/components/json-ld";
 import { PageBody, PageShell } from "@/components/page-shell";
 import { WholesaleForm } from "@/components/wholesale-form";
 import { site, wholesalePage } from "@/lib/content";
+import { listProducts } from "@/lib/products";
 import { breadcrumbJsonLd, pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
@@ -11,8 +12,11 @@ export const metadata = pageMetadata({
   path: "/wholesale",
 });
 
-export default function WholesalePage() {
+export const dynamic = "force-dynamic";
+
+export default async function WholesalePage() {
   const domain = site.email.split("@")[1];
+  const products = await listProducts();
   return (
     <PageShell title={wholesalePage.heading} kicker={wholesalePage.kicker} doodle={wholesalePage.doodle}>
       <JsonLd data={breadcrumbJsonLd([{ name: wholesalePage.title, path: "/wholesale" }])} />
@@ -44,7 +48,7 @@ export default function WholesalePage() {
         </div>
 
         <div className="rounded-2xl border-[3px] border-burgundy bg-strawberry/40 p-6 sm:p-8">
-          <WholesaleForm />
+          <WholesaleForm products={products} />
         </div>
       </PageBody>
     </PageShell>

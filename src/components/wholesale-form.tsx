@@ -5,7 +5,7 @@ import { useState } from "react";
 import { error, field, label } from "@/components/form-styles";
 import { Illustration } from "@/components/illustrations";
 import { pillPrimary } from "@/components/page-shell";
-import { products, site, wholesalePage } from "@/lib/content";
+import { site, wholesalePage } from "@/lib/content";
 
 export type WholesaleEnquiry = {
   business: string;
@@ -44,7 +44,7 @@ const blank: WholesaleEnquiry = {
   message: "",
 };
 
-export function WholesaleForm() {
+export function WholesaleForm({ products }: { products: { id: string; name: string }[] }) {
   const [enquiry, setEnquiry] = useState<WholesaleEnquiry>(blank);
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "failed">("idle");

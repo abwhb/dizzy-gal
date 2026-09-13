@@ -11,7 +11,7 @@ type SiteState = {
   cartCount: number;
   /** True once the cart has been read from this browser's storage. */
   hydrated: boolean;
-  addToCart: (productId: string, quantity?: number) => void;
+  addToCart: (product: { id: string; name: string }, quantity?: number) => void;
   setQty: (productId: string, quantity: number) => void;
   removeItem: (productId: string) => void;
   clearCart: () => void;
@@ -38,9 +38,9 @@ export function SiteProvider({ children }: { children: React.ReactNode }) {
 
   // Every add-to-cart on the site goes through here, so this is the one place
   // the conversion is reported.
-  const addToCart = useCallback((productId: string, quantity = 1) => {
-    cart.add(productId, quantity);
-    analytics.addToCart(productId, quantity);
+  const addToCart = useCallback((product: { id: string; name: string }, quantity = 1) => {
+    cart.add(product.id, quantity);
+    analytics.addToCart(product.id, product.name, quantity);
   }, []);
 
   const cartCount = useMemo(() => Object.values(items).reduce((n, q) => n + q, 0), [items]);

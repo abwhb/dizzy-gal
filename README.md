@@ -1,16 +1,81 @@
 # Dizzy Gals
 
-Marketing site for Dizzy Gals — *cake worth losing your head over*. Built with Next.js 16 (App
-Router), React 19 and Tailwind CSS v4.
+Storefront and admin for Dizzy Gals — *cake worth losing your head over*. Built with Next.js 16
+(App Router), React 19 and Tailwind CSS v4, with Prisma 7 on Postgres behind it, shadcn/ui for
+the admin and Resend for email.
 
 ## Running it
 
 ```bash
-npm install
-npm run dev     # http://localhost:3000
-npm run build   # production build
+cp .env.example .env   # fill in the dizzy_gals_* values
+npm install            # also runs `prisma generate`
+npm run db:migrate     # apply migrations to the database in .env
+npm run db:seed        # insert the launch flavours (safe to re-run)
+npm run dev            # http://localhost:3000, admin at /admin
+npm run build
 npm run lint
+npm run typecheck
 ```
+
+## Configuration
+
+Every variable is prefixed `dizzy_gals_`; a plain `DATABASE_URL` or `RESEND_API_KEY` is
+deliberately ignored so another project's settings on the same machine can't leak in. See
+`.env.example`.
+
+| Variable | Purpose |
+| --- | --- |
+| `dizzy_gals_PRISMA_DATABASE_URL` / `dizzy_gals_POSTGRES_URL` | Postgres connection string (either name; the Vercel × Prisma Postgres integration sets both) |
+| `dizzy_gals_ADMIN_PASSWORD` | Password for `/admin` |
+| `dizzy_gals_ADMIN_SESSION_SECRET` | Signs the admin session cookie (`openssl rand -hex 32`) |
+| `dizzy_gals_RESEND_API_KEY` (or `dizzy_gals_RESEND`) | Resend key; email is skipped with a log line when unset |
+| `dizzy_gals_ORDERS_NOTIFY_EMAIL`, `dizzy_gals_WHOLESALE_NOTIFY_EMAIL` | Where orders and enquiries are emailed (defaults `hello@` / `wholesale@dizzygals.com`) |
+| `NEXT_PUBLIC_SITE_URL` | Canonical origin for emails, canonicals and structured data |
+
+## Backend
+
+`prisma/schema.prisma` — `Product`, `Order` / `OrderItem`, `WholesaleEnquiry`,
+`NewsletterSubscriber`. Money is whole rupees. Order lines snapshot the flavour name and price at
+checkout. Migrations live in `prisma/migrations/`; the generated client in `src/generated/prisma/`
+is git-ignored and rebuilt on install.
+
+**Products.** The database is the catalogue. `products` in `src/lib/content.ts` is the launch
+list: `npm run db:seed` inserts any flavour whose id isn't in the database yet and leaves existing
+rows alone, so edits made in the admin win. Storefront pages read products through
+`listProducts()` (`src/lib/products.ts`), once per request; if the database can't be reached the
+launch list is served instead, with an error logged, so the site stays up.
+
+**Orders.** `POST /api/orders` takes the browser's cart (flavour id → quantity), the chosen
+delivery day and the customer, prices it from the database, checks the day is a real future
+delivery day and the area is one we serve, takes the jars off stock in a guarded transaction, and
+returns the order (`DG-XXXXXXX`) in the shape the confirmation page keeps in `localStorage`. The
+kitchen email and the customer's confirmation go out after the response. Statuses run
+Placed → Confirmed (after the call) → Delivered; cancelling puts the jars back.
+`GET /api/orders/:code?phone=` returns a customer's own order.
+
+**Newsletter and wholesale.** `POST /api/newsletter` stores the address, then mirrors it to a
+Resend contact and sends the welcome note. `POST /api/wholesale` stores the enquiry (flagged if
+the team email didn't go out), then emails it.
+
+Errors come back as `{ "error": { "message", "details"? } }` with a 4xx/5xx status;
+`GET /api/health` reports whether the database is reachable.
+
+## Admin
+
+`/admin` (shadcn/ui, neutral theme) — dashboard (orders to call, jars per upcoming delivery day,
+cash collected, low stock), orders (filter by status, change status), flavours (create, edit price,
+stock, copy, ingredient badges and panel colours; activate/deactivate; delete if never ordered),
+wholesale enquiries (mark handled), subscribers (list, remove, CSV export).
+
+Sign-in is a single password. The session is an HMAC-signed, HttpOnly cookie scoped to `/admin`
+that lasts 12 hours; `src/proxy.ts` redirects unauthenticated requests to `/admin/login`, and every
+page and server action checks again.
+
+## Deploying
+
+On Vercel the `vercel-build` script runs `prisma migrate deploy`, seeds any missing flavours, then
+builds. Set the `dizzy_gals_*` variables in the project (the Prisma Postgres integration provides
+the database ones).
 
 ## What's on the page
 
@@ -54,21 +119,20 @@ band, footer, its own `<Motion/>`).
 `localStorage`, read with `useSyncExternalStore` so the server and first paint agree (empty,
 `hydrated: false`) and the saved cart appears right after. `site-provider.tsx` exposes it.
 
-**How orders work.** Payment is cash on delivery only. Placing an order builds an `Order`
-(`src/lib/orders.ts`), POSTs it to `/api/orders`, saves it to the browser's `localStorage`, clears
-the cart and routes to the confirmation. `/api/orders` validates the order and emails it to the
-kitchen, plus a confirmation to the customer if they left an email (see **Email**). An email
-failure does not fail the order — the browser still holds the record — but it is logged and
-returned in the response as `emailed`.
+**How orders work.** Payment is cash on delivery only. Placing an order sends the cart, delivery
+day and customer to `/api/orders` (see **Backend**); the server prices it, stores it and returns
+the `Order`, which the browser saves to `localStorage`, then clears the cart and routes to the
+confirmation. If the server rejects the order (sold out, bad day, unreachable) the form says so
+and nothing is saved.
 
 **Delivery rules.** DHA Lahore only (`store.areas`, one entry per phase) and only on set days
 (`store.deliveryDays`, currently Friday and Sunday). Checkout offers the next open delivery days
 (`src/lib/delivery.ts`); a day closes at `store.cutoffHour` the day before. Every order carries
 its `deliveryDate` and `customer.area`. Open a new day or phase by adding it to the array.
 
-**Placeholder settings.** `store` in `content.ts` also holds the currency (`Rs`), per-jar prices,
-the delivery fee and the free-delivery threshold. Those are guesses so the checkout works — set
-the real ones.
+**Placeholder settings.** `store` in `content.ts` holds the currency (`Rs`), the delivery fee and
+the free-delivery threshold; per-jar prices and stock live in the database and are edited in
+`/admin/products`. The store values are guesses so the checkout works — set the real ones.
 
 **One rule for client-only views.** Content that mounts after hydration (anything read from
 `localStorage`) must not carry `data-reveal` / `data-split` / `data-draw`: `<Motion/>` scans once
@@ -154,9 +218,9 @@ One rule when adding hovers to anything GSAP animates: transition the `scale` pr
 
 ## Editing content
 
-Copy, products, gallery labels, marquee lines and footer links are all in `src/lib/content.ts`.
-Adding a second flavour is a matter of appending to `products`; the shop section renders whatever
-is in that array.
+Copy, gallery labels, marquee lines and footer links are in `src/lib/content.ts`. Flavours are
+read from the database: add or edit them in `/admin/products` (or append to `products` in
+`content.ts` and run `npm run db:seed` for a fresh database).
 
 ## Email
 
@@ -166,18 +230,18 @@ sender addresses, the one brand-styled template and the three flows.
 
 | Flow | Route | Who gets what |
 | --- | --- | --- |
-| Order placed | `POST /api/orders` | Kitchen (`ORDERS_NOTIFY_EMAIL`) gets the full order, customer details and a reply-to of the customer. Customer gets a confirmation if they left an email |
-| Wholesale enquiry | `POST /api/wholesale` | Wholesale inbox (`WHOLESALE_NOTIFY_EMAIL`) gets the enquiry; enquirer gets an acknowledgement if they left an email. If the team email cannot be sent the route returns 502 and the form shows its "email us instead" copy |
-| Newsletter signup | `POST /api/newsletter` | The address is saved as a Resend contact and gets a welcome note. Send broadcasts to those contacts from the Resend dashboard. If a `source` string property is defined under Contacts → Properties in Resend, each contact also records `modal` or `footer`; without it the contact is saved plainly |
+| Order placed | `POST /api/orders` | Kitchen (`dizzy_gals_ORDERS_NOTIFY_EMAIL`) gets the full order, customer details and a reply-to of the customer. Customer gets a confirmation if they left an email |
+| Wholesale enquiry | `POST /api/wholesale` | Wholesale inbox (`dizzy_gals_WHOLESALE_NOTIFY_EMAIL`) gets the enquiry; enquirer gets an acknowledgement if they left an email. The enquiry is stored either way and flagged in `/admin/enquiries` if the email didn't go out |
+| Newsletter signup | `POST /api/newsletter` | The address is stored, saved as a Resend contact and sent a welcome note. Send broadcasts to those contacts from the Resend dashboard, or export the list as CSV from `/admin/subscribers`. If a `source` string property is defined under Contacts → Properties in Resend, each contact also records `modal` or `footer`; without it the contact is saved plainly |
 
 Senders are `orders@`, `wholesale@` and `hello@` on `mail.dizzygals.com`; replies go to
 `hello@dizzygals.com` / `wholesale@dizzygals.com`.
 
-**Configuration.** Set `RESEND_API_KEY` in the Vercel project (Production, and Preview if you
-want previews to send). Without it every send is a logged no-op, so local dev and previews never
-email anyone by accident. `ORDERS_NOTIFY_EMAIL` and `WHOLESALE_NOTIFY_EMAIL` override the
-destination inboxes; `NEXT_PUBLIC_SITE_URL` sets the links inside the emails. See
-`.env.example`.
+**Configuration.** Set `dizzy_gals_RESEND_API_KEY` in the Vercel project (Production, and
+Preview if you want previews to send). Without it every send is a logged no-op, so local dev and
+previews never email anyone by accident. `dizzy_gals_ORDERS_NOTIFY_EMAIL` and
+`dizzy_gals_WHOLESALE_NOTIFY_EMAIL` override the destination inboxes; `NEXT_PUBLIC_SITE_URL`
+sets the links inside the emails. See `.env.example`.
 
 ## Analytics
 

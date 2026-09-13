@@ -8,25 +8,33 @@
  * thing, so don't let it slip through.
  */
 
-export type IllustrationName =
-  | "strawberry"
-  | "lemon"
-  | "cream"
-  | "cake"
-  | "heart"
-  | "zzz"
-  | "star"
-  | "spoon"
-  | "smiley"
-  | "jar"
-  | "chocolate"
-  | "coffee";
+export const illustrationNames = [
+  "strawberry",
+  "lemon",
+  "cream",
+  "cake",
+  "heart",
+  "zzz",
+  "star",
+  "spoon",
+  "smiley",
+  "jar",
+  "chocolate",
+  "coffee",
+] as const;
+export type IllustrationName = (typeof illustrationNames)[number];
 
 export type Ingredient = {
   label: string;
   illustration: IllustrationName;
 };
 
+/**
+ * A flavour as the storefront renders it. `products` below is the launch
+ * catalogue: `npm run db:seed` inserts any flavour whose `id` isn't in the
+ * database yet, and from then on the database row (edited in /admin) is the
+ * source of truth for price, stock, copy and colours.
+ */
 export type Product = {
   id: string;
   name: string;
@@ -45,6 +53,8 @@ export type Product = {
   dark?: boolean;
   /** Drop a photo in `public/` and point this at it to replace the slot. */
   jarImage?: string;
+  /** Jars available to sell at launch (seed only; live stock is in the database). */
+  stock?: number;
   placeholder?: boolean;
 };
 

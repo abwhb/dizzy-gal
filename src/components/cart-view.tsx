@@ -5,13 +5,14 @@ import Link from "next/link";
 import { Illustration } from "@/components/illustrations";
 import { PageBody, pillPrimary, pillSecondary } from "@/components/page-shell";
 import { useSite } from "@/components/site-provider";
-import { checkoutCopy, products, store } from "@/lib/content";
+import { checkoutCopy, store } from "@/lib/content";
 import { money } from "@/lib/format";
 import { linesFor, totalsFor } from "@/lib/orders";
+import type { ShopProduct } from "@/lib/products";
 
-export function CartView() {
+export function CartView({ products }: { products: ShopProduct[] }) {
   const { items, hydrated, setQty, removeItem } = useSite();
-  const lines = linesFor(items);
+  const lines = linesFor(items, products);
   const totals = totalsFor(lines);
 
   if (!hydrated) return <PageBody className="min-h-[40vh]" />;
