@@ -1,0 +1,122 @@
+// Dizzy Gals data model.
+//
+// Prisma 7: the connection URL lives in `prisma.config.ts`, not here, and the
+// client is generated into `src/generated/prisma` (git-ignored, rebuilt by
+// `prisma generate` on install).
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// A cake in a jar. Seeded from `src/lib/content.ts`; the database is the
+/// source of truth once seeded (price, stock and copy can be edited in place).
+model Product {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  tag         String?
+  description String
+  warning     String?
+  /// `{ label, illustration }[]` — see `IllustrationName` in `src/lib/content.ts`.
+  ingredients Json     @default("[]")
+  cta         String
+  imageUrl    String?
+  priceCents  Int
+  currency    String   @default("AUD")
+  stock       Int      @default(0)
+  active      Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  cartItems  CartItem[]
+  orderItems OrderItem[]
+
+  @@index([active, sortOrder])
+}
+
+model NewsletterSubscriber {
+  id             String    @id @default(cuid())
+  email          String    @unique
+  source         String?
+  createdAt      DateTime  @default(now())
+  unsubscribedAt DateTime?
+}
+
+/// An anonymous cart, identified by the `dg_cart` cookie (the `token`).
+model Cart {
+  id        String   @id @default(cuid())
+  token     String   @unique @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items CartItem[]
+  order Order?
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  cartId    String
+  productId String
+  quantity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  cart    Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+
+  @@unique([cartId, productId])
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  FULFILLED
+  CANCELLED
+}
+
+model Order {
+  id            String      @id @default(cuid())
+  /// Human-friendly order number, shown to the customer.
+  number        Int         @unique @default(autoincrement())
+  status        OrderStatus @default(PENDING)
+  email         String
+  name          String
+  addressLine1  String
+  addressLine2  String?
+  city          String
+  region        String?
+  postcode      String
+  country       String
+  notes         String?
+  subtotalCents Int
+  shippingCents Int
+  totalCents    Int
+  currency      String
+  cartId        String?     @unique
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  cart  Cart?       @relation(fields: [cartId], references: [id], onDelete: SetNull)
+  items OrderItem[]
+
+  @@index([email])
+}
+
+/// Line items snapshot the product name and price at the time of ordering.
+model OrderItem {
+  id             String @id @default(cuid())
+  orderId        String
+  productId      String
+  name           String
+  unitPriceCents Int
+  quantity       Int
+
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+}

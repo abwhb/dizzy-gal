@@ -14,6 +14,8 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     // Claude Design handoff bundle — vendored prototypes and runtime, not ours to lint.
     "project/**",
+    // Prisma client, regenerated on install.
+    "src/generated/**",
   ]),
 ]);
 
