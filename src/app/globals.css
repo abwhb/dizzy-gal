@@ -86,6 +86,10 @@
   html {
     /* Anchor links stop below the sticky header instead of under it. */
     scroll-padding-top: 64px;
+    /* Nothing mid-animation may widen the page: `clip` blocks sideways
+       panning on phones without creating a scroll container, so sticky and
+       ScrollTrigger pinning keep working. */
+    overflow-x: clip;
   }
 
   @media (prefers-reduced-motion: no-preference) {
