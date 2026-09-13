@@ -2,10 +2,18 @@
 
 import { useState } from "react";
 
+import { analytics } from "@/lib/analytics";
 import { newsletter } from "@/lib/content";
 
 /** The pill email form, shared by the modal and the footer. */
-export function NewsletterForm({ className = "" }: { className?: string }) {
+export function NewsletterForm({
+  source,
+  className = "",
+}: {
+  /** Where the form lives; reported with the subscribe event. */
+  source: "modal" | "footer";
+  className?: string;
+}) {
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
 
@@ -13,7 +21,9 @@ export function NewsletterForm({ className = "" }: { className?: string }) {
     <form
       onSubmit={(event) => {
         event.preventDefault();
-        if (email) setSubscribed(true);
+        if (!email || subscribed) return;
+        setSubscribed(true);
+        analytics.newsletterSubscribed(source);
       }}
       className={`flex overflow-hidden rounded-full border-[3px] border-burgundy ${className}`}
     >

@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Baloo_2, Poppins } from "next/font/google";
 import Script from "next/script";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 import { JsonLd } from "@/components/json-ld";
 import { NewsletterModal } from "@/components/newsletter-modal";
@@ -95,6 +97,11 @@ export default function RootLayout({
           {children}
           <NewsletterModal />
         </SiteProvider>
+        {/* Vercel Web Analytics (page views + custom events) and Speed Insights
+            (Core Web Vitals). Both are no-ops outside a Vercel deployment, and
+            the analytics script only loads in production. */}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

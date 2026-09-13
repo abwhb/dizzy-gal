@@ -36,7 +36,7 @@ export function SiteFooter() {
             {footer.headline[1]}
           </p>
           <p className="mt-4 text-sm leading-[1.55] font-medium">{footer.blurb}</p>
-          <NewsletterForm className="mt-5 max-w-sm" />
+          <NewsletterForm source="footer" className="mt-5 max-w-sm" />
         </div>
 
         {/* overflow-wrap: the email addresses are wider than a column on the

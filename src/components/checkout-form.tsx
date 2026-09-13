@@ -7,6 +7,7 @@ import { useMemo, useState } from "react";
 import { error, field, label } from "@/components/form-styles";
 import { PageBody, pillPrimary } from "@/components/page-shell";
 import { useSite } from "@/components/site-provider";
+import { analytics } from "@/lib/analytics";
 import { checkoutCopy, store } from "@/lib/content";
 import { upcomingDeliveryDates } from "@/lib/delivery";
 import { money } from "@/lib/format";
@@ -102,6 +103,7 @@ export function CheckoutForm() {
     }
 
     saveOrder(order);
+    analytics.orderPlaced(order);
     clearCart();
     router.push(`/order/${order.id}`);
   };

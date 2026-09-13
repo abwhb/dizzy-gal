@@ -3,6 +3,7 @@
 import { createContext, useCallback, useContext, useMemo, useState, useSyncExternalStore } from "react";
 
 import { cart, getCartSnapshot, getServerCartSnapshot, subscribeCart } from "@/lib/cart-store";
+import { analytics } from "@/lib/analytics";
 import type { CartItems } from "@/lib/orders";
 
 type SiteState = {
@@ -29,8 +30,18 @@ export function SiteProvider({ children }: { children: React.ReactNode }) {
   );
   const [newsletterOpen, setNewsletterOpen] = useState(false);
 
-  const openNewsletter = useCallback(() => setNewsletterOpen(true), []);
+  const openNewsletter = useCallback(() => {
+    setNewsletterOpen(true);
+    analytics.newsletterOpened();
+  }, []);
   const closeNewsletter = useCallback(() => setNewsletterOpen(false), []);
+
+  // Every add-to-cart on the site goes through here, so this is the one place
+  // the conversion is reported.
+  const addToCart = useCallback((productId: string, quantity = 1) => {
+    cart.add(productId, quantity);
+    analytics.addToCart(productId, quantity);
+  }, []);
 
   const cartCount = useMemo(() => Object.values(items).reduce((n, q) => n + q, 0), [items]);
 
@@ -39,7 +50,7 @@ export function SiteProvider({ children }: { children: React.ReactNode }) {
       items,
       cartCount,
       hydrated,
-      addToCart: cart.add,
+      addToCart,
       setQty: cart.setQty,
       removeItem: cart.remove,
       clearCart: cart.clear,
@@ -47,7 +58,7 @@ export function SiteProvider({ children }: { children: React.ReactNode }) {
       openNewsletter,
       closeNewsletter,
     }),
-    [items, cartCount, hydrated, newsletterOpen, openNewsletter, closeNewsletter],
+    [items, cartCount, hydrated, addToCart, newsletterOpen, openNewsletter, closeNewsletter],
   );
 
   return <SiteContext.Provider value={value}>{children}</SiteContext.Provider>;

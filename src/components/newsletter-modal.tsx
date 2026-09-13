@@ -50,7 +50,7 @@ export function NewsletterModal() {
 
         <p className="text-sm leading-[1.5] font-medium">{newsletter.blurb}</p>
 
-        <NewsletterForm />
+        <NewsletterForm source="modal" />
       </div>
     </div>
   );
