@@ -310,12 +310,5 @@ copies are included in this repository.
 
 ## Design source
 
-This site implements a Claude Design handoff. The original prototype, brand board and the
-conversation that produced them are preserved in `project/` and `chats/`:
-
-- `project/Dizzy Gals.dc.html` — the design this site is built from
-- `project/uploads/pasted-*.png` — the Dizzy Gals brand board
-- `chats/chat1.md` — the design conversation
-- `project/HANDOFF.md` — the original handoff instructions
-
-Those files are reference material and are excluded from linting; they are not part of the build.
+This site implements a Claude Design handoff (prototype, brand board and design conversation).
+The handoff bundle was removed from the working tree; it survives in git history if ever needed.
